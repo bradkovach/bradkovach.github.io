@@ -1,0 +1,39 @@
+@if( puzzle$ | async; as puzzle ){
+<h2>Puzzle {{ puzzle.id }}</h2>
+
+<div class="board">
+  @if(completedGroups.length > 0){
+
+  <ul class="completed"></ul>
+  }
+  <ul class="puzzle">
+    @for(group of groups; track $index; ){
+    <li class="group">
+      <ul class="group-items">
+        @for(tile of group; track $index; ){
+        <li
+          class="tile"
+          [class.tile--committed]=""
+          [class.tile--selected]="selected.has(tile)"
+          (click)="
+            selected.size < 4 && !selected.has(tile)
+              ? selected.add(tile)
+              : selected.delete(tile)
+          "
+        >
+          {{ tile }}
+        </li>
+        }
+      </ul>
+    </li>
+    }
+  </ul>
+</div>
+
+<p>Mistakes remaining: {{ mistakesRemaining }}</p>
+<p>
+  <button>Shuffle</button>
+  <button>Deselect All</button>
+  <button>Submit</button>
+</p>
+}
