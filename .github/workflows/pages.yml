@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Pages
         uses: actions/configure-pages@v4
-      - run: npm ci && npm run ng -- build --configuration production
+      - run: npm ci && npm run ng -- build --configuration production && cp dist/connections/browser/index.html dist/connections/browser/404.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
