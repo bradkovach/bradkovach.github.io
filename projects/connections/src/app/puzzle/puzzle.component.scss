@@ -1,0 +1,189 @@
+.board {
+  position: relative;
+
+  .completed-groups {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1rem;
+    .completed-group {
+      text-align: center;
+      padding: 20px;
+      border-radius: 0.5em;
+      font-size: 20px;
+      line-height: 1;
+      h3 {
+        font-weight: bold;
+      }
+      h3,
+      p {
+        margin: 0;
+        font-size: 20px;
+      }
+    }
+  }
+
+  .completed-groups {
+    margin-bottom: 1rem;
+  }
+
+  .remaining-tiles {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  .tile {
+    list-style-type: none;
+    border-radius: 7px;
+    text-align: center;
+    padding: 30px 0;
+    background-color: #efefef;
+    font-weight: bolder;
+    font-size: 20px;
+
+    cursor: pointer;
+
+    &.tile--selected {
+      background-color: #5a594e;
+      color: #fff;
+    }
+  }
+}
+.puzzle {
+  position: relative;
+  .heckle {
+    position: absolute;
+    bottom: 2.5em;
+    left: 50%;
+    transform: translateX(-50%) translateY(-50%);
+    background-color: #000;
+    margin: 0;
+    padding: 0.75em;
+    color: #fff;
+  }
+}
+
+// .completed-groups-move,
+.remaining-tiles-move {
+  transition: transform 0.5s;
+}
+
+.mistakes-remaining {
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin: 24px 0;
+
+  button {
+    border: solid 1px #000;
+    font-family: inherit;
+    display: inline-block;
+    height: 3em;
+    line-height: 3em;
+    padding: 0 15px;
+    font-size: 15px;
+    font-weight: bold;
+    background-color: #fff;
+    cursor: pointer;
+    border-radius: 1.5em;
+    &[disabled] {
+      color: #7f7f7f;
+      border-color: #7f7f7f;
+    }
+    &.button--primary {
+      background-color: #000;
+      color: #fff;
+    }
+  }
+}
+
+.mistakes-remaining {
+  display: flex;
+  flex-direction: row;
+  gap: 1em;
+  align-items: center;
+  justify-content: center;
+  ol {
+    display: contents;
+    // screen-reader only
+    li {
+      $size: 1em;
+      display: inline-block;
+      width: $size;
+      height: $size;
+      line-height: $size;
+      text-align: center;
+      background-color: #000;
+      border-radius: 50%;
+    }
+  }
+}
+
+.sr-only {
+  border: 0;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  word-wrap: normal !important;
+}
+
+.puzzle {
+  .title {
+    margin: 3rem 0;
+    h3 {
+      display: flex;
+      align-items: baseline;
+      justify-content: flex-start;
+      font-weight: normal;
+      > * + * {
+        margin-left: 1em;
+      }
+      .name {
+        font-family: serif;
+        font-weight: bold;
+        font-size: 2em;
+      }
+      .date {
+        font-weight: normal;
+        font-size: 1.5em;
+      }
+      .permalink {
+        // align item to the far right
+      }
+    }
+  }
+  .description {
+    text-align: center;
+  }
+  .board {
+    .completed-groups {
+    }
+    .remaining-tiles {
+      .tile {
+      }
+    }
+  }
+  .mistakes-remaining {
+    text-align: center;
+  }
+  section {
+  }
+  section + section {
+    margin-top: 24px;
+  }
+}

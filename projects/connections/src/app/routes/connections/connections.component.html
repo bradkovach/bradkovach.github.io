@@ -1,0 +1,41 @@
+<h2>Connections</h2>
+<h3>Solve</h3>
+<p>Play a Connections puzzle from any day in the past.</p>
+<ol>
+  <li>
+    <label>
+      Select a date:
+      <input
+        [ngModel]="date | date: 'yyyy-MM-dd'"
+        (ngModelChange)="date = $event"
+        [min]="connectionsEpoch | date: 'yyyy-MM-dd'"
+        type="date"
+        name="connectionsDate"
+      />
+    </label>
+  </li>
+  <li>
+    <a href="{{ getRedirectUri() }}"
+      >Load the {{ date | date: "MMMM d, YYYY" }} puzzle</a
+    >
+  </li>
+  <li>
+    Or, download the
+    <a
+      href="https://www.nytimes.com/svc/connections/v1/{{
+        date | date: 'YYYY-MM-dd'
+      }}.json"
+      target="_blank"
+      download="connections-{{ date | date: 'YYYY-MM-dd' }}.json"
+      >{{ date | date: "MMMM d, YYYY" }} data file</a
+    >
+    and paste it here: <br />
+    <textarea [(ngModel)]="puzzleData" cols="30" rows="10"></textarea>
+  </li>
+  <li>
+    <button (click)="loadPuzzle()">Load Puzzle</button>
+  </li>
+</ol>
+
+<h3>Create</h3>
+<p>Create a new Connections puzzle.</p>

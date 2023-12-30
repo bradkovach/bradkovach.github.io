@@ -1,0 +1,47 @@
+@if (vm$ | async; as vm) {
+  @if (vm.status == "loaded") {
+    <app-puzzle [puzzle]="vm.puzzle"></app-puzzle>
+  } @else {
+    <h2>Connections Player</h2>
+    <h3>Solve a Connections Puzzle</h3>
+    <p>
+      This is a player for the New York Times Connections puzzle. To play a
+      puzzle, provide the <code>puzzle</code> query param of a base64-encoded
+      JSON NYT puzzle in the URL.
+    </p>
+    <ol>
+      <li>Get (or create) puzzle data as JSON.</li>
+      <li>Encode any UTF-8 characters in your JSON string.</li>
+      <li>Encode the JSON string as base64.</li>
+    </ol>
+
+    <p>
+      As a pseudocode,
+      <code
+        >/connections/solve?puzzle=b64encode(utf8escape(jsonencode(puzzledata)))</code
+      >.
+    </p>
+
+    <h4>Why the fuss? Just give me the puzzles.</h4>
+    <p>
+      The Connections game data and format are intellectual property of The New
+      York Times. This application is an artistic/educational interpretation of
+      the format, but does not include any of the puzzles.
+    </p>
+    <p>
+      This Angular client resolves puzzles by reference, not by value, so it is
+      possible to play a puzzle that consists entirely of the same word. This is
+      not possible in the NYT client.
+    </p>
+
+    <hr />
+
+    <h3>Create a Connections Puzzle</h3>
+    <p>
+      Make your own connections puzzle! This is a tool for creating/editing a
+      puzzle. Have fun making your own puzzles, and share them with your
+      friends. Puzzles in this editor can contain duplicates.
+    </p>
+    <a [routerLink]="['/connections', 'create']">Create a Connections Puzzle</a>
+  }
+}

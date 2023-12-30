@@ -1,0 +1,37 @@
+<h1>Create a Connections Puzzle</h1>
+
+<p class="buttons">
+  <button (click)="loadExample('normal')" class="button">
+    Load Normal Sample
+  </button>
+  <button (click)="loadExample('chaotic')" class="button button--secondary">
+    Load Chaotic Sample
+  </button>
+</p>
+
+<div class="puzzle">
+  @for (category of [0, 1, 2, 3]; track $index) {
+    <div class="category" [style.background-color]="colors[category]">
+      <h2>
+        <span class="emoji">
+          {{ emoji[category] }}
+        </span>
+        <input type="text" [(ngModel)]="categories[category]" />
+      </h2>
+      <div class="words">
+        @for (word of [0, 1, 2, 3]; track $index) {
+          <input type="text" [(ngModel)]="words[category][word]" />
+        }
+      </div>
+    </div>
+  }
+</div>
+
+<h3>Next Steps</h3>
+<p class="buttons">
+  <button class="button" (click)="toPermalink()">Get Permalink</button>
+  <button class="button button--secondary" (click)="toPlayer()">
+    Load in Player
+  </button>
+  <button class="button button--secondary" (click)="toJson()">Get JSON</button>
+</p>
