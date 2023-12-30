@@ -143,6 +143,16 @@
 }
 
 .puzzle {
+  // screens smaller than 600px
+  @media (max-width: 600px) {
+    .title h3 {
+      flex-direction: column;
+      > * {
+        padding-top: 0.5em;
+      }
+    }
+  }
+
   .title {
     margin: 3rem 0;
     h3 {

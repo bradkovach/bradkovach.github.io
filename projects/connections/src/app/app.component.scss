@@ -3,3 +3,11 @@
   max-width: 50em;
   margin: 0 auto;
 }
+
+// small screens, 90%
+@media (max-width: 600px) {
+  .container {
+    width: 90%;
+    max-width: 90%;
+  }
+}
