@@ -283,28 +283,30 @@ export class PuzzleComponent {
       this.verdict(Heckle.None, true, true);
 
       if (this.tilesAvailable.size === 0) {
-        alert('u win');
         // render guess history as emoji
+        this.symbolPuzzle$.subscribe((puzzle) => {
+          const shareMessage = `u win
 
-        const shareMessage = `Connections
+           Connections #${puzzle.id}
 
-        ${this.guessHistory
-          .map((guess) => {
-            return [...guess]
-              .map(
-                (symbolMember) =>
-                  this.symbolMemberToLevel.get(symbolMember)?.level,
-              )
-              .filter((level): level is number => level !== undefined)
-              .map((levelIdx) => this.getEmoji(levelIdx))
-              .join('');
-          })
-          .join('\n')}`
-          .split('\n')
-          .map((line) => line.trim())
-          .join('\n');
+           ${this.guessHistory
+             .slice(0, 8)
+             .map((guess) => {
+               return [...guess]
+                 .map(
+                   (symbolMember) =>
+                     this.symbolMemberToLevel.get(symbolMember)?.level,
+                 )
+                 .filter((level): level is number => level !== undefined)
+                 .map((levelIdx) => this.getEmoji(levelIdx))
+                 .join('');
+             })
+             .map((line) => line.trim())
+             .join('\n')}`;
 
-        console.log(shareMessage);
+          prompt('Paste Your Progress', shareMessage);
+          console.log(shareMessage);
+        });
 
         // TODO: Launch modal and copy to clipboard
       }
