@@ -3,5 +3,5 @@ export const toSlug = (title: string) =>
     .toLowerCase()
     .trim()
     .split(/\s+/)
-    .map((word: string) => word.replace(/[^a-z0-9]/g, ""))
+    .map((word: string) => word.replace(/[^a-z0-9-]/g, ""))
     .join("-");

@@ -10,36 +10,33 @@
           "style": "scss"
         }
       },
-      "root": "projects/connections",
-      "sourceRoot": "projects/connections/src",
+      "root": "projects/bradkovach.github.io",
+      "sourceRoot": "projects/bradkovach.github.io/src",
       "prefix": "app",
       "architect": {
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
             "outputPath": "dist/connections",
-            "index": "projects/connections/src/index.html",
-            "browser": "projects/connections/src/main.ts",
+            "index": "projects/bradkovach.github.io/src/index.html",
+            "browser": "projects/bradkovach.github.io/src/main.ts",
             "polyfills": [
               "zone.js"
             ],
-            "tsConfig": "projects/connections/tsconfig.app.json",
+            "tsConfig": "projects/bradkovach.github.io/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "projects/connections/src/favicon.ico",
-              "projects/connections/src/assets"
+              "projects/bradkovach.github.io/src/favicon.ico",
+              "projects/bradkovach.github.io/src/assets"
             ],
             "styles": [
-              "projects/connections/src/styles.scss"
+              "projects/bradkovach.github.io/src/styles.scss"
             ],
             "scripts": [],
-            "server": "projects/connections/src/main.server.ts",
+            "server": "projects/bradkovach.github.io/src/main.server.ts",
             "prerender": {
               "discoverRoutes": false,
               "routesFile": "routes.txt"
-            },
-            "ssr": {
-              "entry": "projects/connections/server.ts"
             }
           },
           "configurations": {
@@ -48,7 +45,7 @@
                 {
                   "type": "initial",
                   "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumError": "2mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -91,14 +88,14 @@
               "zone.js",
               "zone.js/testing"
             ],
-            "tsConfig": "projects/connections/tsconfig.spec.json",
+            "tsConfig": "projects/bradkovach.github.io/tsconfig.spec.json",
             "inlineStyleLanguage": "scss",
             "assets": [
-              "projects/connections/src/favicon.ico",
-              "projects/connections/src/assets"
+              "projects/bradkovach.github.io/src/favicon.ico",
+              "projects/bradkovach.github.io/src/assets"
             ],
             "styles": [
-              "projects/connections/src/styles.scss"
+              "projects/bradkovach.github.io/src/styles.scss"
             ],
             "scripts": []
           }

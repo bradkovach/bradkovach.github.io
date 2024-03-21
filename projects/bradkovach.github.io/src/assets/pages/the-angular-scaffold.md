@@ -15,7 +15,10 @@ This article serves as a guide to initializing a new Angular project. The goal i
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/en/)
+- Install Node
+- Install Angular
+- Install Visual Studio Code
+- Install Git
 
 ### Code Scaffolding
 

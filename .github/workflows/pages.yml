@@ -39,12 +39,12 @@ jobs:
         uses: actions/configure-pages@v4
       - run: npm ci
           && npm run ng -- build --configuration production
-          && cp dist/connections/browser/index.html dist/connections/browser/404.html
+          && cp dist/bradkovach.github.io/browser/index.html dist/bradkovach.github.io/browser/404.html
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload entire repository
-          path: "dist/connections/browser/"
+          path: "dist/bradkovach.github.io/browser/"
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4

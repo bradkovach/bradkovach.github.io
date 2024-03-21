@@ -210,4 +210,19 @@ code {
   font-family: monospace;
 }
 
+pre > code {
+  display: block;
+  padding: 1.5em;
+  line-height: 1.5;
+  background-color: #fafafa;
+  border: solid 1px #d0d0d0;
+}
+
+em {
+  font-style: italic;
+}
+
+strong {
+  font-weight: bold;
+}
 @import url("../../../node_modules/highlight.js/styles/github.css");
