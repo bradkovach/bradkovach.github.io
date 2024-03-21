@@ -1,5 +1,0 @@
-@if (page$ | async; as page) {
-  <h2>{{ page.title }}</h2>
-  <p>{{ page.date | date: "full" }}</p>
-  <div [innerHTML]="page.body"></div>
-}
