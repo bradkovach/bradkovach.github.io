@@ -1,0 +1,43 @@
+:host {
+  display: flex;
+  .value {
+    flex: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // font-size: 30px;
+  }
+  .controls {
+    margin-left: 1em;
+    flex: 1 0 30px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    button {
+      width: 100%;
+      // margin: 5px 0;
+      border: none;
+      line-height: 30px;
+      font-weight: bold;
+      font-size: 20px;
+      &:disabled {
+        cursor: not-allowed;
+      }
+    }
+    .decrement {
+      background-color: #aa0000;
+      color: white;
+      &:disabled {
+        background-color: #ffcccc;
+      }
+    }
+    .increment {
+      background-color: #00aa00;
+      color: white;
+      &:disabled {
+        background-color: #ccffcc;
+      }
+    }
+  }
+}

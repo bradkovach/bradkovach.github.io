@@ -1,9 +1,24 @@
 import { Routes } from '@angular/router';
-import { SolveComponent } from './routes/connections/solve/solve.component';
 import { CreateComponent } from './routes/connections/create/create.component';
-import { ConnectionsComponent } from './routes/connections/connections.component';
+import { SolveComponent } from './routes/connections/solve/solve.component';
+import { PageComponent } from './routes/page/page.component';
 
 export const routes: Routes = [
+  {
+    path: 'blog',
+    loadChildren: () =>
+      import('./routes/posts/posts.routes').then((m) => m.POSTS_ROUTES),
+  },
+  {
+    path: 'games',
+    loadChildren: () =>
+      import('./routes/games/games.routes').then((m) => m.GAMES_ROUTES),
+  },
+  {
+    path: 'notary',
+    loadChildren: () =>
+      import('./routes/notary/notary.module').then((m) => m.NotaryModule),
+  },
   {
     path: 'connections',
     children: [
@@ -27,7 +42,11 @@ export const routes: Routes = [
     ],
   },
   {
+    path: ':slug',
+    component: PageComponent,
+  },
+  {
     path: '**',
-    redirectTo: 'connections',
+    component: PageComponent,
   },
 ];

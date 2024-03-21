@@ -1,0 +1,15 @@
+@if (post$ | async; as post) {
+  @if (post.title) {
+    <h1>{{ post.title }}</h1>
+  }
+  @if (post.date) {
+    <p>{{ post.date | date: "medium" }}</p>
+  }
+  @if (post.categories) {
+    <p>Categories: {{ post.categories.join(", ") }}</p>
+  }
+  @if (post.tags) {
+    <p>Tags: {{ post.tags.join(", ") }}</p>
+  }
+  <div class="post" [innerHTML]="post.body"></div>
+}
