@@ -4,7 +4,7 @@
       <h3>
         <span class="name">Connections</span>
         <span class="date" title="Puzzle {{ symbolPuzzle.id }}">{{
-          puzzleDate | date: "MMMM d, YYYY"
+          symbolPuzzle.id | epochToDate | date: "MMMM d, YYYY"
         }}</span>
         <a
           class="permalink"

@@ -32,7 +32,15 @@
             "styles": [
               "projects/connections/src/styles.scss"
             ],
-            "scripts": []
+            "scripts": [],
+            "server": "projects/connections/src/main.server.ts",
+            "prerender": {
+              "discoverRoutes": false,
+              "routesFile": "routes.txt"
+            },
+            "ssr": {
+              "entry": "projects/connections/server.ts"
+            }
           },
           "configurations": {
             "production": {

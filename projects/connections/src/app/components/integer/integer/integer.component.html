@@ -1,0 +1,25 @@
+<div class="value">
+  {{ value | number }}
+</div>
+<div class="controls">
+  <button
+    class="decrement"
+    (click)="decrement($event)"
+    title="ctrl, -{{ ctrlCoefficient * step }}; shift, -{{
+      shiftCoefficient * step
+    }}, ctrl+shift, -{{ ctrlCoefficient * shiftCoefficient * step }}"
+    [disabled]="value <= min"
+  >
+    -
+  </button>
+  <button
+    class="increment"
+    (click)="increment($event)"
+    title="ctrl, +{{ ctrlCoefficient * step }}; shift, +{{
+      shiftCoefficient * step
+    }}, ctrl+shift, +{{ ctrlCoefficient * shiftCoefficient * step }}"
+    [disabled]="value >= max"
+  >
+    +
+  </button>
+</div>

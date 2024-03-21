@@ -1,5 +1,26 @@
 <div class="container">
   <router-outlet></router-outlet>
   <hr />
+  <nav>
+    <ul>
+      <li>
+        <a [routerLink]="['/blog']">Blog</a>
+      </li>
+      <li>
+        <a [routerLink]="['/notary']">Notary Tools</a>
+      </li>
+      <li>
+        Games
+        <ul>
+          <li>
+            <a [routerLink]="['/connections', 'solve']">NYT Connections</a>
+          </li>
+          <li>
+            <a [routerLink]="['/games', 'acquire']">Acquire</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
   <p><a [routerLink]="['/connections', 'solve']">About</a></p>
 </div>

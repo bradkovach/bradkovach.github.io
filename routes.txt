@@ -1,0 +1,7 @@
+/blog/index
+/blog/2024/03/21/what-im-reading
+/blog/2024/03/21/welcome-to-my-new-website
+/blog/2024/03/20/whatimreadingmarch2024
+/blog/2024/03/20/the-cost-of-esm
+/the-objectoriented-approach-to-bem
+/the-angular-scaffold

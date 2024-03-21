@@ -1,0 +1,36 @@
+td.numeric {
+  min-width: 5em;
+  font-family: monospace;
+  text-align: right;
+}
+
+td.property {
+  text-align: center;
+}
+
+td button {
+  display: block;
+  width: 100%;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+input[type="number"] {
+  min-width: 5em;
+}
+
+th,
+td {
+  padding: 5px;
+}
+
+th {
+  font-weight: bold;
+}
+
+// stripe odd row td and th
+tr:nth-child(odd) {
+  background-color: #dfdfdf;
+}

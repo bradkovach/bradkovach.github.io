@@ -5,8 +5,6 @@ import { RouterLink } from '@angular/router';
 import {
   Observable,
   ReplaySubject,
-  Subject,
-  filter,
   map,
   share,
   shareReplay,
@@ -15,6 +13,7 @@ import {
   timer,
 } from 'rxjs';
 import { BoardOf } from '../../types/BoardOf';
+import { Heckle } from '../../types/Heckle';
 import { ArrayRowOf } from '../../types/RowOf';
 import { StringPuzzle } from '../../types/StringPuzzle';
 import { SymbolLevel } from '../../types/SymbolLevel';
@@ -22,12 +21,11 @@ import { SymbolMember } from '../../types/SymbolMember';
 import { SymbolMemberRow } from '../../types/SymbolMemberRow';
 import { SymbolPuzzle } from '../../types/SymbolPuzzle';
 import { PuzzleHelpers } from '../helpers/puzzle-helpers';
+import { ExclusiveRangePipe } from '../pipes/exclusive-range/exclusive-range.pipe';
+import { PrintSymbolMembersPipe } from '../pipes/print-symbol-members/print-symbol-members.pipe';
+import { EpochToDatePipe } from '../pipes/since-cnx-epoch/since-cnx-epoch.pipe';
 import { TransitionGroupItemDirective } from '../transition-group/transition-group-item.directive';
 import { TransitionGroupComponent } from '../transition-group/transition-group.component';
-import { PrintSymbolMembersPipe } from '../pipes/print-symbol-members/print-symbol-members.pipe';
-import { Heckle } from '../../types/Heckle';
-import { InclusiveRangePipe } from '../pipes/inclusive-range/inclusive-range.pipe';
-import { ExclusiveRangePipe } from '../pipes/exclusive-range/exclusive-range.pipe';
 
 type PuzzleViewModel = {
   puzzle: StringPuzzle;
@@ -58,6 +56,7 @@ const mapSet = <T, U>(set: Set<T>, fn: (item: T) => U): Set<U> => {
     RouterLink,
     PrintSymbolMembersPipe,
     ExclusiveRangePipe,
+    EpochToDatePipe,
   ],
   templateUrl: './puzzle.component.html',
   styleUrls: ['./puzzle.component.scss'],
@@ -71,7 +70,6 @@ export class PuzzleComponent {
   private readonly puzzleSubject = new ReplaySubject<StringPuzzle>(1);
   private readonly symbolMemberToLevel: Map<Symbol, SymbolLevel> = new Map();
 
-  readonly Epoch = new Date('2023-06-11T00:00:00.000Z');
   readonly Heckle = Heckle;
   readonly groupsComplete = new Map<string, SymbolLevel>();
   readonly heckle$: Observable<Heckle> = this.heckleSubject.asObservable();
@@ -145,6 +143,8 @@ export class PuzzleComponent {
   public readonly symbolPuzzle$$ = this.symbolPuzzle$
     .pipe(takeUntilDestroyed())
     .subscribe((puzzle) => {
+      // set the date for the puzzle
+
       // populate initial groups
       Object.entries(puzzle.groups).forEach(([title, group]) => {
         this.groupsAll.set(title, group);

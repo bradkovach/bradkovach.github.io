@@ -6,7 +6,11 @@
     "start": "ng serve",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
-    "test": "ng test"
+    "test": "ng test",
+    "new-page": "ts-node --esm --project ./scripts/tsconfig.json ./scripts/new-page.mts --",
+    "new-post": "ts-node --esm --project ./scripts/tsconfig.json ./scripts/new-post.mts --",
+    "generate-routes": "ts-node --esm --project ./scripts/tsconfig.json ./scripts/generate-routes.mts",
+    "serve:ssr:connections": "node dist/connections/server/server.mjs"
   },
   "private": true,
   "dependencies": {
@@ -17,7 +21,13 @@
     "@angular/forms": "^17.0.0",
     "@angular/platform-browser": "^17.0.0",
     "@angular/platform-browser-dynamic": "^17.0.0",
+    "@angular/platform-server": "^17.0.0",
     "@angular/router": "^17.0.0",
+    "@angular/ssr": "^17.0.7",
+    "express": "^4.18.2",
+    "highlight.js": "^11.9.0",
+    "markdown-it": "^14.1.0",
+    "markdown-it-replace-link": "^1.2.1",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0",
     "zone.js": "~0.14.2"
@@ -26,8 +36,17 @@
     "@angular-devkit/build-angular": "^17.0.7",
     "@angular/cli": "^17.0.7",
     "@angular/compiler-cli": "^17.0.0",
+    "@types/express": "^4.17.17",
+    "@types/inquirer": "^9.0.7",
     "@types/jasmine": "~5.1.0",
+    "@types/markdown-it": "^13.0.7",
+    "@types/node": "^20.11.30",
+    "@types/yargs": "^17.0.32",
+    "dedent": "^1.5.1",
     "eslint": "^8.55.0",
+    "front-matter": "^4.0.2",
+    "glob": "^10.3.10",
+    "inquirer": "^9.2.16",
     "jasmine-core": "~5.1.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",
@@ -35,6 +54,9 @@
     "karma-jasmine": "~5.1.0",
     "karma-jasmine-html-reporter": "~2.1.0",
     "prettier": "^3.1.1",
-    "typescript": "~5.2.2"
+    "ts-node": "^10.9.2",
+    "typescript": "~5.2.2",
+    "yaml": "^2.4.1",
+    "yargs": "^17.7.2"
   }
 }
