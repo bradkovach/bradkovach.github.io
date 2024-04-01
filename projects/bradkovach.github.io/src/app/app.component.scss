@@ -1,13 +1,18 @@
 .container {
-  width: 50%;
-  max-width: 50em;
-  margin: 0 auto;
+	width: 50%;
+	max-width: 50em;
+	margin: 0 auto;
+}
+
+.container.container--fluid {
+	width: 90%;
+	max-width: 90%;
 }
 
 // small screens, 90%
 @media (max-width: 600px) {
-  .container {
-    width: 90%;
-    max-width: 90%;
-  }
+	.container {
+		width: 90%;
+		max-width: 90%;
+	}
 }
