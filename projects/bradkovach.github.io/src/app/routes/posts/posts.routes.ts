@@ -5,16 +5,16 @@ import { PostsComponent } from './posts/posts.component';
 
 export const POSTS_ROUTES: Routes = [
   {
-    path: '',
     component: PostsComponent,
+    path: '',
     pathMatch: 'full',
   },
   {
-    path: ':year/:month/:day',
     component: ArchiveComponent,
+    path: ':year/:month/:day',
   },
   {
-    path: ':year/:month/:day/:slug',
     component: PostComponent,
+    path: ':year/:month/:day/:slug',
   },
 ];

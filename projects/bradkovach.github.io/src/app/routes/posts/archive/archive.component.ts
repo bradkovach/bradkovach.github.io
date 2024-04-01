@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 
 @Component({
+  imports: [],
   selector: 'app-archive',
   standalone: true,
-  imports: [],
-  templateUrl: './archive.component.html',
-  styleUrl: './archive.component.scss'
+  styleUrl: './archive.component.scss',
+  templateUrl: './archive.component.html'
 })
 export class ArchiveComponent {
 

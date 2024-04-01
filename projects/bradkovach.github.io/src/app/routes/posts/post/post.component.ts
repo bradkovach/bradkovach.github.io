@@ -32,15 +32,15 @@ export class MarkdownService {
 }
 
 @Component({
+  imports: [AsyncPipe, JsonPipe, DatePipe],
   selector: 'app-post',
   standalone: true,
-  imports: [AsyncPipe, JsonPipe, DatePipe],
-  templateUrl: './post.component.html',
   styleUrl: './post.component.scss',
+  templateUrl: './post.component.html',
 })
 export class PostComponent {
-  private posts = inject(PostsService);
   private md = inject(MarkdownService);
+  private posts = inject(PostsService);
 
   private route = inject(ActivatedRoute);
 
@@ -62,11 +62,11 @@ export class PostComponent {
       }>(post);
 
       return {
-        title: parsed.attributes.title,
+        body: this.md.render(parsed.body),
+        categories: parsed.attributes.categories,
         date: parsed.attributes.date,
         tags: parsed.attributes.tags,
-        categories: parsed.attributes.categories,
-        body: this.md.render(parsed.body),
+        title: parsed.attributes.title,
       };
     }),
   );

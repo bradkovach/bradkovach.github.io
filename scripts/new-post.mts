@@ -2,82 +2,82 @@ import dedent from "dedent";
 import fs from "node:fs";
 import path from "node:path";
 import YAML from "yaml";
-import { isCategoryValid } from "./isCategoryValid.mjs";
-import { isDateValid } from "./isDateValid.mjs";
-import { isTagValid } from "./isTagValid.mjs";
-import { isTitleValid } from "./isTitleValid.mjs";
-import { negatePromise } from "./negatePromise.mjs";
-import { toSlug } from "./toSlug.mjs";
+import { isCategoryValid } from "./util/isCategoryValid.mjs";
+import { isDateValid } from "./util/isDateValid.mjs";
+import { isTagValid } from "./util/isTagValid.mjs";
+import { isTitleValid } from "./util/isTitleValid.mjs";
+import { negatePromise } from "./util/negatePromise.mjs";
+import { toSlug } from "./util/toSlug.mjs";
 
 async function run(yargs: any, inquirer: any) {
-  let argv = yargs(process.argv)
+  const argv = yargs(process.argv)
     .option("title", {
       alias: "n",
-      type: "string",
       description: "The name of the post",
+      type: "string",
     })
     .option("date", {
       alias: "d",
-      type: "string",
-      description: "The date of the post, in YYYY-MM-DD format.",
       default: new Date().toISOString(),
+      description: "The date of the post, in YYYY-MM-DD format.",
+      type: "string",
     })
     .option("category", {
       alias: "c",
-      type: "string",
-      description: "The categories of the post",
       array: true,
+      description: "The categories of the post",
+      type: "string",
     })
     .option("tag", {
       alias: "t",
-      type: "string",
-      description: "The tags of the post",
       array: true,
+      description: "The tags of the post",
+      type: "string",
     })
     .parseSync();
 
-  const { title, date, category, tag } = argv;
+  const { category, date, tag, title } = argv;
 
   const prompts = await inquirer.prompt([
     {
-      type: "input",
-      name: "title",
       message: "Enter the title of the new page",
+      name: "title",
+      type: "input",
       validate: isTitleValid,
       when: negatePromise(isTitleValid(title)),
     },
     {
-      type: "input",
-      name: "date",
+      default: new Date().toISOString(),
       message: "Enter the date for the page (YYYY-MM-DDT00:00:00.000Z)",
+      name: "date",
+      type: "input",
       validate: isDateValid,
       when: negatePromise(isDateValid(date)),
-      default: new Date().toISOString(),
     },
     {
-      type: "input",
-      name: "category",
+      filter: (input: string) => input.split(",").map((c) => c.trim()),
       message:
         "Enter the categories for the page (--category xxx, --category yyy)",
-      filter: (input: string) => input.split(",").map((c) => c.trim()),
+      name: "category",
+      type: "input",
       validate: isCategoryValid,
       when: negatePromise(isCategoryValid(category)),
     },
     {
-      type: "input",
-      name: "tag",
-      message: "Enter the tags for the page (--tag xxx, --tag yyy)",
       filter: (input: string) => input.split(",").map((c) => c.trim()),
+      message: "Enter the tags for the page (--tag xxx, --tag yyy)",
+      name: "tag",
+      type: "input",
       validate: isTagValid,
       when: negatePromise(isTagValid(tag)),
     },
   ]);
 
-  const combined = Object.assign({}, { title, date, category, tag }, prompts);
+  const combined = Object.assign({}, { category, date, tag, title }, prompts);
 
   const built: Record<string, any> = {
-    title: combined.title,
     date: combined.date,
+    title: combined.title,
   };
   if (combined.category) {
     built["categories"] = combined.category;
