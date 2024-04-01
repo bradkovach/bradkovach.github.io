@@ -1,0 +1,133 @@
+<h2>Choice Gas Calculator</h2>
+<p>
+	This tool will take a few usage details from you, and let you see natural
+	gas suppliers with a simulated rate.
+</p>
+
+<h3>Monthly Therm Usage</h3>
+<p>
+	How many therms do you use each month? You can copy this from your choice
+	gas ballot. This information will be saved in your browser, so you can come
+	back to it as needed.
+</p>
+
+<table>
+	<tbody>
+		@for (idx of MonthKeys; track $index) {
+			<tr>
+				<th>{{ MonthLabels[idx] }}</th>
+				<td>
+					<input
+						type="number"
+						[ngModel]="usage[idx]"
+						(ngModelChange)="setUsage(idx, $event)"
+					/>
+				</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
+<h3>Other Rates</h3>
+<table>
+	<tbody>
+		@for (r of MarketKeys; track $index) {
+			@if (rates; as rates) {
+				<tr>
+					<th>{{ marketLabels[r] }}</th>
+					<td>
+						<input
+							type="number"
+							#rate
+							[ngModel]="rates[r]"
+							(blur)="setRate(r, rate.value)"
+						/>
+					</td>
+				</tr>
+			}
+		}
+	</tbody>
+</table>
+
+<h3>Add Other Charges</h3>
+<p>
+	These charges will be calculated in addition to the commodity charge. These
+	are optional, but can help you get a more accurate picture of your costs.
+</p>
+
+<table>
+	@for (charge of charges; track $index) {
+		<tr>
+			<td>
+				<input
+					type="text"
+					#name
+					[ngModel]="charge.name"
+					(blur)="setCharge($index, name.value, undefined, undefined)"
+				/>
+			</td>
+			<td>
+				<input
+					type="number"
+					#rate
+					[ngModel]="charge.rate"
+					(blur)="setCharge($index, undefined, rate.value, undefined)"
+				/>
+			</td>
+			<td>
+				<select
+					[ngModel]="charge.type"
+					(ngModelChange)="
+						setCharge($index, undefined, undefined, $event)
+					"
+				>
+					<option [value]="ChargeType.PerTherm">Per Therm</option>
+					<option [value]="ChargeType.PerMonth">Per Month</option>
+					<option [value]="ChargeType.Tax">Tax</option>
+				</select>
+			</td>
+			<td>
+				<button (click)="removeCharge($index)">Remove</button>
+			</td>
+		</tr>
+	} @empty {
+		<tr>
+			<td colspan="3">No charges added</td>
+		</tr>
+	}
+</table>
+<button (click)="addCharge()">Add a Charge</button>
+
+@for (vendor of vendors; track $index) {
+	<h2>{{ vendor.name }}</h2>
+	@for (offer of vendor.getOffersArray(); track offer.id) {
+		<details>
+			<summary class="">
+				{{ offer.name }} ({{ offer.term }}
+				{{ offer.term === 1 ? 'Year' : 'Years' }})
+			</summary>
+			@for (month of MonthKeys; track $index) {
+				@if (
+					offer
+						| bill: month : usage : charges : rates : marketLabels;
+					as monthly
+				) {
+					<details>
+						<summary>
+							<div class="as-inline-flex">
+								<strong style="flex: 1">
+									{{ MonthLabels[$index] }}</strong
+								>
+
+								<span class="at-end">
+									${{ monthly.total | number: '1.2-2' }}
+								</span>
+							</div>
+						</summary>
+						<app-bill [bill]="monthly"></app-bill>
+					</details>
+				}
+			}
+		</details>
+	}
+}

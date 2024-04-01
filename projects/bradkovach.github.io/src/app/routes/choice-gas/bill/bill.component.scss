@@ -1,0 +1,27 @@
+table {
+	width: 100%;
+}
+
+td,
+th {
+	padding: 0.1em;
+	// border-top: solid 1px #000;
+}
+td + td {
+	border-left: solid 1px #000;
+}
+
+tr + tr > td {
+	border-top: solid 1px #000;
+}
+td.numeric {
+	text-align: right;
+}
+th {
+	text-align: left;
+	font-weight: bold;
+}
+
+th[colspan] {
+	padding-top: 1em;
+}
