@@ -1,0 +1,351 @@
+<h2>Developer Portal</h2>
+
+<p>
+	This application helps users quickly visualize lots of data. If you have
+	offers that you would like customers to consider, you can make it easy for
+	customers to import their offers. The tool does not make any HTTP requests,
+	and does not store any data. It is a client-side only application. To bring
+	your offers into the tool, a GET request to the
+	<code>/choice-gas/import</code>
+	endpoint will allow users to import your data.
+</p>
+
+<h3>GET /choice-gas/import</h3>
+
+<h4>Query Parameters</h4>
+<dl>
+	<dt>vendor</dt>
+	<dd>
+		One or more objects representing a Vendor.
+		<dl>
+			<dt><code>id: string</code></dt>
+			<dd>A unique namespace for the vendor.</dd>
+			<dt><code>name: string</code></dt>
+			<dd>The term of the offer in years.</dd>
+			<dt><code>website: string</code></dt>
+			<dd>The URL of the vendor's website.</dd>
+			<dt><code>phone: string</code></dt>
+			<dd>The vendor's phone number.</dd>
+		</dl>
+	</dd>
+	<dt>offer</dt>
+	<dd>
+		One or more objects representing an Offer.
+		<dl>
+			<dt><code>vendor_id: string</code></dt>
+			<dd>The id of the vendor.</dd>
+
+			<dt><code>id: string</code></dt>
+			<dd>
+				A unique identifier for the offer. If possible, this should be a
+				Confirmation Code.
+			</dd>
+
+			<dt><code>term: 1 | 2</code></dt>
+			<dd>The term of the offer in years.</dd>
+
+			<dt><code>type: OfferType</code></dt>
+			<dd>
+				The type of offer. One of:
+				<dl>
+					<dt>custom</dt>
+					<dd>
+						A custom offer. A number of coefficients and addends can
+						be provided. The pricing engine normalizes all rate
+						types into a "custom" rate.
+
+						<ul>
+							<li>
+								<code>{{
+									"{ type: 'fpt', rate: 0.5 } 	=> { type: 'custom', coefTherm: 0.5 }"
+								}}</code>
+							</li>
+							<li>
+								<code>{{
+									"{ type: 'fpm', rate: 50 }		=> { type: 'custom', addendMonth: 50 }"
+								}}</code>
+							</li>
+							<li>
+								<code>{{
+									"{ type: 'index', rate: 0.5 }	=> { type: 'custom', addendIndex: 0.5 }"
+								}}</code>
+							</li>
+							<li>
+								<code>
+									{{
+										"{ type: 'gca', rate: -0.1 }		=> { type: 'custom', addendGca: -0.1 }"
+									}}
+								</code>
+							</li>
+						</ul>
+
+						<dl>
+							<dt>coefIndex</dt>
+							<dd>
+								A coefficient to apply to the CIG/Index rate. If
+								<code>addendIndex</code> is set, default is
+								<code>1</code>, otherwise,
+								<code>0</code>
+							</dd>
+
+							<dt>addendIndex</dt>
+							<dd>
+								An addend to apply to the CIG/Index rate.
+								Default is <code>0</code>.
+							</dd>
+
+							<dt>coefTherm</dt>
+							<dd>
+								A coefficient to apply to the per-therm rate. If
+								<code>addendTherm</code> is set, default is
+								<code>1</code>, otherwise,
+								<code>0</code>
+							</dd>
+							<dt>addendTherm</dt>
+							<dd>
+								An addend to apply to the per-therm rate.
+								Default is <code>0</code>.
+							</dd>
+
+							<dt>coefGca</dt>
+							<dd>
+								A coefficient to apply to the Gas Cost
+								Adjustment rate. If <code>addendGca</code> is
+								set, default is <code>1</code>, otherwise,
+								<code>0</code>.
+							</dd>
+
+							<dt>addendGca</dt>
+							<dd>
+								An addend to apply to the Gas Cost Adjustment
+								rate. Default is <code>0</code>.
+							</dd>
+
+							<dt>coefMonth</dt>
+							<dd>
+								A coefficient to apply to the calculated monthly
+								rate. If
+								<code>addendMonth</code> is set, default is
+								<code>1</code>, otherwise, <code>0</code>.
+							</dd>
+
+							<dt>addendMonth</dt>
+							<dd>
+								An addend to apply to the calculated monthly
+								rate. Default is <code>0</code>.
+							</dd>
+						</dl>
+					</dd>
+					<dt>index</dt>
+					<dd>
+						An index offer. The <code>rate</code> is added to the
+						CIG market rate.
+					</dd>
+					<dt>fpm</dt>
+					<dd>
+						A fixed monthly offer. The <code>rate</code> is added to
+						the monthly amount.
+					</dd>
+					<dt>fpt</dt>
+					<dd>
+						A fixed per therm offer. The <code>rate</code> is
+						multiplied by therm usage.
+					</dd>
+					<dt>blended</dt>
+					<dd>
+						A blended offer. A series of offers are combined and
+						applied with weights.
+
+						<h4>Example</h4>
+						<p>
+							This rate is billed at 50% Fixed/Therm and 50%
+							Fixed/Month... `charge = 0.5 * (therms * 0.5) + 0.5
+							(50)`
+						</p>
+						<pre><code>{{
+								{
+									type: 'blended',
+									offers: [
+										[0.5, { type: 'fpt', rate: 0.5 }],
+										[0.5, { type: 'fpm', rate: 50 }]
+									]
+								} | json
+							}}</code></pre>
+
+						<dl>
+							<dt><code>offers: [number, Offer][]</code></dt>
+							<dd>
+								An array of tuples representing offers.
+								<code>[weight, Offer]</code>, where
+								<code>weight</code> is a number between 0 and 1,
+								and <code>offer</code> is an object with the
+								same properties as an <code>offer</code> object.
+							</dd>
+						</dl>
+					</dd>
+					<dt>best</dt>
+					<dd>
+						A best of offer. All offers are calculated and the
+						lowest rate is selected. Use for "index with a cap"
+						rates.
+
+						<dl>
+							<dt>offers</dt>
+							<dd>
+								An array of <code>Offer</code> objects. The
+								lowest rate is selected.
+							</dd>
+						</dl>
+
+						<div>
+							<h4>
+								Example: 50% &#64; $0.50/therm OR 50% &#64;
+								$50/month
+							</h4>
+							<p>
+								This rate is the best of the Fixed/Therm and
+								Fixed/Month rates... `charge = min(therms * 0.5,
+								50)`
+							</p>
+							<pre><code>{{
+								{
+									type: 'bestOf',
+									offers: [
+										{ type: 'fpt', rate: 0.5 },
+										{ type: 'fpm', rate: 50 }
+									]
+								} | json
+							}}</code></pre>
+						</div>
+					</dd>
+					<dt>gca</dt>
+					<dd>An offer that tracks the Gas Cost Adjustment Rate</dd>
+				</dl>
+			</dd>
+		</dl>
+	</dd>
+</dl>
+
+<h4>Type Reference</h4>
+
+<dl>
+	<dt><code>OfferType</code></dt>
+	<dd></dd>
+
+	<dt><code>Offer</code></dt>
+	<dd>
+		A discriminated union of offer types, on the <code>type</code> property.
+		<div>
+			<table>
+				<thead>
+					<tr>
+						<th>`type` value</th>
+						<th>Type</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<th><code>fpt</code></th>
+						<td><code>FixedPerThermOffer</code></td>
+					</tr>
+					<tr>
+						<th><code>fpm</code></th>
+						<td><code>FixedPerMonthOffer</code></td>
+					</tr>
+					<tr>
+						<th><code>index</code></th>
+						<td><code>IndexOffer</code></td>
+					</tr>
+					<tr>
+						<th><code>gca</code></th>
+						<td><code>GcaOffer</code></td>
+					</tr>
+					<tr>
+						<th><code>blended</code></th>
+						<td><code>BlendedOffer</code></td>
+					</tr>
+					<tr>
+						<th><code>best</code></th>
+						<td><code>BestOfOffer</code></td>
+					</tr>
+					<tr>
+						<th><code>custom</code></th>
+						<td><code>CustomOffer</code></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</dd>
+
+	<dt><code>FixedPerThermOffer</code></dt>
+	<dd>
+		An offer that charges a fixed rate per therm.
+
+		<dl>
+			<dt><code>type: 'fpt'</code></dt>
+			<dd>Discriminator field.</dd>
+			<dt><code>rate: number</code></dt>
+			<dd>The amount to charge per therm consumed.</dd>
+		</dl>
+	</dd>
+
+	<dt><code>FixedPerMonthOffer</code></dt>
+	<dd>
+		An offer that charges a fixed rate per month. The calculated commodity
+		charge will NOT change based on usage, but does not necessarily cause
+		the bill to have a fixed amount.
+
+		<dl>
+			<dt><code>type: 'fpm'</code></dt>
+			<dd>Discriminator field.</dd>
+			<dt><code>rate: number</code></dt>
+			<dd>The amount to charge per month.</dd>
+		</dl>
+	</dd>
+
+	<dt><code>IndexOffer</code></dt>
+	<dd>
+		An offer that tracks the CIG market rate.
+
+		<dl>
+			<dt><code>type: 'index'</code></dt>
+			<dd>Discriminator field.</dd>
+			<dt><code>rate: number</code></dt>
+			<dd>The amount to add to the CIG market rate.</dd>
+		</dl>
+	</dd>
+
+	<dt><code>GcaOffer</code></dt>
+	<dd>
+		An offer that tracks the Gas Cost Adjustment rate.
+
+		<dl>
+			<dt><code>type: 'gca'</code></dt>
+			<dd>Discriminator field.</dd>
+			<dt><code>rate: number</code></dt>
+			<dd>The amount to charge per therm consumed.</dd>
+		</dl>
+	</dd>
+
+	<dt><code>BlendedOffer</code></dt>
+	<dd>
+		An offer that combines multiple offers with weights.
+
+		<dl>
+			<dt><code>type: 'blended'</code></dt>
+			<dd>Discriminator field.</dd>
+			<dt><code>offers: [number, Offer][]</code></dt>
+			<dd>
+				An array of tuples representing offers.
+				<code>[weight, Offer]</code>, where <code>weight</code> is a
+				number between 0 and 1, and <code>offer</code> is an object with
+				the same properties as an <code>Offer</code> object.
+			</dd>
+		</dl>
+	</dd>
+
+	<dt><code>BestOfOffer</code></dt>
+	<dd>
+		An offer that picks the best calculated rate from a series of rates.
+	</dd>
+</dl>

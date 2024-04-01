@@ -1,0 +1,18 @@
+summary {
+	cursor: pointer;
+}
+
+details > details {
+	margin-left: 1em;
+}
+
+.as-inline-flex {
+	width: calc(100% - 1em);
+	display: inline-flex;
+	justify-content: space-between;
+}
+
+.at-end {
+	align-self: flex-end;
+	text-align: end;
+}
