@@ -108,6 +108,7 @@ nav,
 section {
   display: block;
 }
+
 /* HTML5 hidden-attribute fix for newer browsers */
 *[hidden] {
   display: none;
@@ -150,19 +151,24 @@ html {
     "Helvetica Neue",
     sans-serif;
 }
-
 * {
   box-sizing: border-box;
 }
 
+// line height is 1.5
+body {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin: 0;
+  padding: 0;
+}
+
 p {
   margin: 1em 0;
-  line-height: 1.5;
 }
 
 ul,
 ol {
-  line-height: 1.5;
 }
 
 ul {
@@ -173,6 +179,22 @@ ul {
 ol {
   padding-left: 1.5em;
   list-style-type: decimal;
+}
+
+dl {
+  color: #222;
+  dt {
+    font-weight: bold;
+  }
+}
+
+dd {
+  > div,
+  > dl,
+  > ul,
+  > ol {
+    margin-left: 1.5em;
+  }
 }
 
 h1 {
