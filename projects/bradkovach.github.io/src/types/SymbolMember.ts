@@ -1,4 +1,4 @@
 export type SymbolMember = {
-  symbol: Symbol;
+  symbol: symbol;
   label: string;
 };

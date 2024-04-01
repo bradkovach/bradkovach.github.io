@@ -2,17 +2,30 @@ import { Component, ContentChildren, Input, QueryList } from '@angular/core';
 import { TransitionGroupItemDirective } from './transition-group-item.directive';
 
 @Component({
+  imports: [],
   selector: '[transition-group]',
   standalone: true,
-  imports: [],
-  template: '<ng-content></ng-content>',
   styles: [],
+  template: '<ng-content></ng-content>',
 })
 export class TransitionGroupComponent {
   @Input('transition-group') class: string = 'transition-group';
 
   @ContentChildren(TransitionGroupItemDirective)
   items!: QueryList<TransitionGroupItemDirective>;
+
+  applyTranslation(item: TransitionGroupItemDirective) {
+    item.moved = false;
+    const dx = item.prevPos.left - item.newPos.left;
+    const dy = item.prevPos.top - item.newPos.top;
+    if (dx || dy) {
+      item.moved = true;
+      const style: any = item.el.style;
+      style.transform = style.WebkitTransform =
+        'translate(' + dx + 'px,' + dy + 'px)';
+      style.transitionDuration = '0s';
+    }
+  }
 
   ngAfterContentInit() {
     this.refreshPosition('prevPos');
@@ -31,6 +44,12 @@ export class TransitionGroupComponent {
     });
   }
 
+  refreshPosition(prop: keyof TransitionGroupItemDirective) {
+    this.items.forEach((item: TransitionGroupItemDirective) => {
+      item[prop] = item.el.getBoundingClientRect();
+    });
+  }
+
   runCallback(item: TransitionGroupItemDirective) {
     if (item.moveCallback) {
       item.moveCallback();
@@ -42,8 +61,8 @@ export class TransitionGroupComponent {
       return;
     }
     const cssClass = this.class + '-move';
-    let el = item.el;
-    let style: any = el.style;
+    const el = item.el;
+    const style: any = el.style;
     el.classList.add(cssClass);
     style.transform = style.WebkitTransform = style.transitionDuration = '';
     el.addEventListener(
@@ -56,24 +75,5 @@ export class TransitionGroupComponent {
         }
       }),
     );
-  }
-
-  refreshPosition(prop: keyof TransitionGroupItemDirective) {
-    this.items.forEach((item: TransitionGroupItemDirective) => {
-      item[prop] = item.el.getBoundingClientRect();
-    });
-  }
-
-  applyTranslation(item: TransitionGroupItemDirective) {
-    item.moved = false;
-    const dx = item.prevPos.left - item.newPos.left;
-    const dy = item.prevPos.top - item.newPos.top;
-    if (dx || dy) {
-      item.moved = true;
-      let style: any = item.el.style;
-      style.transform = style.WebkitTransform =
-        'translate(' + dx + 'px,' + dy + 'px)';
-      style.transitionDuration = '0s';
-    }
   }
 }

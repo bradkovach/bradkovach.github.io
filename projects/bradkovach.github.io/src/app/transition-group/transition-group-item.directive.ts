@@ -5,16 +5,16 @@ import { Directive, ElementRef } from '@angular/core';
   standalone: true,
 })
 export class TransitionGroupItemDirective {
-  prevPos: any;
-
-  newPos: any;
-
   el: HTMLElement;
+
+  moveCallback: any;
 
   // setting to false to begin
   moved: boolean = false;
 
-  moveCallback: any;
+  newPos: any;
+
+  prevPos: any;
 
   constructor(elRef: ElementRef) {
     this.el = elRef.nativeElement;

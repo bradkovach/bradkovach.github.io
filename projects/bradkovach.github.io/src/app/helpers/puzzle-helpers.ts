@@ -4,6 +4,19 @@ import { StringPuzzle } from '../../types/StringPuzzle';
 import { SymbolPuzzle } from '../../types/SymbolPuzzle';
 
 export class PuzzleHelpers {
+  static fromBase64(base64: string): StringPuzzle {
+    const json = atob(base64);
+    const puzzle = JSON.parse(json);
+    return puzzle as StringPuzzle;
+  }
+
+  static toBase64(subject: object): string {
+    const json = JSON.stringify(subject).replace(/[\u007F-\uFFFF]/g, (chr) => {
+      return '\\u' + ('0000' + chr.charCodeAt(0).toString(16)).slice(-4);
+    });
+    return btoa(json);
+  }
+
   static toStringPuzzle(puzzle: SymbolPuzzle): StringPuzzle {
     const groups = Object.entries(puzzle.groups).reduce(
       (acc, [category, group]) => {
@@ -21,22 +34,9 @@ export class PuzzleHelpers {
     ) as BoardOf<string>;
 
     return {
-      id: puzzle.id,
       groups,
+      id: puzzle.id,
       startingGroups,
     };
-  }
-
-  static fromBase64(base64: string): StringPuzzle {
-    const json = atob(base64);
-    const puzzle = JSON.parse(json);
-    return puzzle as StringPuzzle;
-  }
-
-  static toBase64(subject: object): string {
-    const json = JSON.stringify(subject).replace(/[\u007F-\uFFFF]/g, (chr) => {
-      return '\\u' + ('0000' + chr.charCodeAt(0).toString(16)).slice(-4);
-    });
-    return btoa(json);
   }
 }
