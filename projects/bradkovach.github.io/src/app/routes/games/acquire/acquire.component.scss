@@ -34,3 +34,48 @@ th {
 tr:nth-child(odd) {
   background-color: #dfdfdf;
 }
+
+.board.--as-excel {
+}
+
+$tileSize: 3em;
+
+.board {
+  // letters on the side, numbers on the top
+  display: grid;
+  grid-template-columns: repeat(12, $tileSize);
+  grid-auto-flow: row;
+  gap: 1px;
+
+  .letter {
+    display: contents;
+  }
+
+  &.board--as-excel {
+    // grid-template-columns: repeat(12, $tileSize);
+    grid-template-rows: repeat(12, $tileSize);
+    grid-auto-flow: column;
+  }
+}
+
+.board .tile {
+  width: $tileSize;
+  height: $tileSize;
+  text-align: center;
+  line-height: $tileSize;
+
+  &.tile--occupied {
+    background-color: black;
+    color: white;
+    // disable text selection
+    user-select: none;
+  }
+  &.tile--occupied.tile--in-chain {
+    background-color: white;
+  }
+  &.tile--available {
+    background-color: #f0f0f0;
+    color: #c0c0c0;
+    cursor: pointer;
+  }
+}

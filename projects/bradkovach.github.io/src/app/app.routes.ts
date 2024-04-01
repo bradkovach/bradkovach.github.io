@@ -10,9 +10,9 @@ export const routes: Routes = [
       import('./routes/posts/posts.routes').then((m) => m.POSTS_ROUTES),
   },
   {
-    path: 'games',
     loadChildren: () =>
       import('./routes/games/games.routes').then((m) => m.GAMES_ROUTES),
+		path: 'games',
   },
   {
     path: 'notary',

@@ -1,168 +1,21 @@
-<h1>Acquire</h1>
-
-<h2>Game Mode</h2>
-
-<label>
-  <input
-    name="gameMode"
-    type="radio"
-    [(ngModel)]="gameMode"
-    [value]="GameMode.Classic"
-  />
-  Classic
-</label>
-<label>
-  <input
-    name="gameMode"
-    type="radio"
-    [(ngModel)]="gameMode"
-    [value]="GameMode.Tycoon"
-  />
-  Tycoon
-</label>
-
-<h2>Players</h2>
-
-<fieldset [disabled]="players.length > 5">
-  <h3>Add Player</h3>
-  <input type="text" #name />
-  <button (click)="addPlayer(name.value)">Add Player</button>
-</fieldset>
-
-<h2>Properties</h2>
-
-<label>
-  <input
-    name="screen"
-    type="radio"
-    [(ngModel)]="screen"
-    [value]="Screen.Balances"
-  />
-  Buy/Sell</label
->
-<label>
-  <input
-    name="screen"
-    type="radio"
-    [(ngModel)]="screen"
-    [value]="Screen.NetWorth"
-  />
-  Net Worth
-</label>
-
-<table [class.tabulate]>
-  <thead>
-    <tr>
-      <th>Chain</th>
-      <th>Size</th>
-      <th>Price</th>
-      @if (gameMode === GameMode.Classic) {
-        <th>Maj $</th>
-        <th>Min $</th>
-      } @else {
-        <th>B1</th>
-        <th>B2</th>
-        <th>B3</th>
-      }
-      @for (player of players; track $index) {
-        <th>{{ player.name }}</th>
-      }
-    </tr>
-  </thead>
-  <tr>
-    <th>Cash</th>
-    @if (gameMode === GameMode.Classic) {
-      <th colspan="4">&nbsp;</th>
-    } @else {
-      <th colspan="5">&nbsp;</th>
-    }
-    @for (player of players; track $index) {
-      <td class="numeric">
-        @if (screen === Screen.Balances) {
-          <app-integer
-            [(value)]="player.cash"
-            [min]="0"
-            [step]="100"
-            [shift]="10"
-            [ctrl]="5"
-          ></app-integer>
-        } @else {
-          ${{ player.cash | number }}
-        }
-      </td>
-    }
-  </tr>
-
-  @for (chain of Chains; track chain) {
-    <tr>
-      <th [style.color]="colors[chain]">{{ Chain[chain] }}</th>
-      <td class="numeric">
-        @if (screen === Screen.Balances) {
-          <app-integer
-            [(value)]="sizes[chain]"
-            [min]="0"
-            [max]="41"
-            [step]="1"
-            [ctrl]="2"
-            [shift]="3"
-          ></app-integer>
-        } @else {
-          {{ sizes[chain] }}
-        }
-      </td>
-      <td class="numeric"></td>
-      <td class="numeric"></td>
-      <td class="numeric"></td>
-      @if (gameMode === GameMode.Tycoon) {
-        <td class="numeric"></td>
-      }
-      @for (player of players; track playerIdx; let playerIdx = $index) {
-        <td class="numeric">
-          @switch (screen) {
-            @case (Screen.NetWorth) {
-              ${{
-                player[chain] *
-                  (sizes[chain]
-                    | priceBySchedule
-                      : chainToSchedule[chain]
-                      : scheduleByGameMode[gameMode]) | number
-              }}
-            }
-            @case (Screen.Balances) {
-              <app-integer
-                [(value)]="player[chain]"
-                [min]="0"
-                [max]="41"
-                [step]="1"
-                [ctrl]="3"
-              ></app-integer>
-            }
-          }
-        </td>
-      }
-    </tr>
-  }
-  @if (screen === Screen.NetWorth) {
-    <tfoot>
-      <tr>
-        @if (gameMode === GameMode.Tycoon) {
-          <th colspan="6">&nbsp;</th>
-        } @else {
-          <th colspan="5">&nbsp;</th>
-        }
-        @for (player of players; track playerIdx; let playerIdx = $index) {
-          <td class="numeric">
-            ${{
-              player
-                | netWorth
-                  : sizes
-                  : chainToSchedule
-                  : scheduleByGameMode[gameMode]
-                | number
-            }}
-          </td>
-        }
-      </tr>
-    </tfoot>
-  }
-</table>
+<input
+	type="checkbox"
+	name="useExcelLayout"
+	id="useExcelLayout"
+	[(ngModel)]="useExcelLayout"
+/>
+Excel Layout
+<div class="board" [class.board--as-excel]="useExcelLayout">
+	@for (tile of engine.getBoard(); track $index) {
+		<div
+			class="tile"
+			[class.tile--occupied]="tile.occupied"
+			[class.tile--available]="tile.occupied === false"
+			[class.tile--in-chain]="tile.chain"
+			[style.background-color]="getTileColor(tile.chain)"
+			(click)="placeTileRaster($index)"
+		>
+			{{ getTileLabel($index) }}
+		</div>
+	}
+</div>
