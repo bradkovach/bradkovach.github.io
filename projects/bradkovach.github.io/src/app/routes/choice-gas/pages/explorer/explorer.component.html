@@ -109,16 +109,16 @@
                     >Edit Rate</a
                   >
                 } @else {
-                  ${{ o.offer.rate | number: "1.2-2" }}/month
+                  ${{ o.offer.rate | number: "1.2-4" }}/month
                 }
               } @else if (o.offer.type === "fpt") {
-                ${{ o.offer.rate | number: "1.2-2" }}/therm
+                ${{ o.offer.rate | number: "1.2-4" }}/therm
               } @else if (o.offer.type === "market") {
-                {{ marketLabels[o.offer.market] }}&nbsp;
+                {{ marketLabels[o.offer.market] }}
                 @if (o.offer.rate > 0) {
-                  + ${{ o.offer.rate | number: "1.2-2" }}
+                  + ${{ o.offer.rate | number: "1.2-4" }}
                 } @else if (o.offer.rate < 0) {
-                  - ${{ o.offer.rate * -1 | number: "1.2-2" }}
+                  - ${{ o.offer.rate * -1 | number: "1.2-4" }}
                 }
               } @else if (o.offer.type === "blended") {
                 Blended
@@ -130,7 +130,7 @@
             <td class="text-center">
               {{ o.offer.confirmationCode ?? "- - -" }}
             </td>
-            <td class="text-end">{{ o.average | number: "1.2-2" }}</td>
+            <td class="text-end">${{ o.average | number: "1.2-2" }}</td>
             @for (month of MonthKeys; track month) {
               <td class="text-end rank-{{ o.bills[month].rank }}">
                 <a
