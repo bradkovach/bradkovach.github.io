@@ -1,15 +1,18 @@
-// get all the *.md files in /projects/connections/src/assets/posts/**/*.ts
+// get all the *.md files in /projects/bradkovach.github.io/src/assets/posts/**/*.ts
 
 import { globSync } from "glob";
 import path from "path";
 
-const assets = path.join(process.cwd(), "projects/connections/src/assets");
+const assets = path.join(
+  process.cwd(),
+  "projects/bradkovach.github.io/src/assets",
+);
 const postsDir = path.join(assets, "posts");
 const pagesDir = path.join(assets, "pages");
 
 const posts = globSync(path.join(postsDir, "**/*.md"));
 
-// get all the *.md files in /projects/connections/src/app/pages/**/*.md
+// get all the *.md files in /projects/bradkovach.github.io/src/app/pages/**/*.md
 
 const pages = globSync(path.join(pagesDir, "**/*.md"));
 

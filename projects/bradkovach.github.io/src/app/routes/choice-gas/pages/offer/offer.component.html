@@ -1,0 +1,99 @@
+@if (
+  {
+    offerId: offerId(),
+    vendorId: vendorId(),
+    offer: offer(),
+    vendor: vendor()
+  };
+  as v
+) {
+  @if (data$ | async; as d) {
+    @if (v.vendor) {
+      <h1>{{ v.vendor.name }}</h1>
+      <p>
+        <a href="{{ v.vendor.website }}">{{ v.vendor.website }}</a> &bull;
+        {{ v.vendor.phone | phone }}
+      </p>
+    }
+
+    @if (v.offer) {
+      <h2>{{ v.offer.name }} &mdash; {{ v.offer.term }} year</h2>
+
+      @switch (v.offer.type) {
+        @case ("fpt") {
+          <p>
+            This offer is a fixed per-therm rate. The commodity charge will be
+            ${{ v.offer.rate | number: "1.2-2" }} per therm.
+          </p>
+        }
+        @case ("fpm") {
+          <p>
+            This offer is a fixed monthly rate. The commodity charge will be ${{
+              v.offer.rate | number: "1.2-2"
+            }}
+            every month. Per-therm fees (like delivery charges) and taxes will
+            cause every bill's total to fluctuate.
+          </p>
+        }
+        @case ("market") {
+          <p>
+            This offer is a market-indexed rate. The commodity charge will be
+            the month's {{ MarketLabels[v.offer.market] }} rate +/- the offer
+            rate, ${{ v.offer.rate | number: "1.2-2" }}
+          </p>
+        }
+        @case ("blended") {
+          <p>
+            This offer is a blend of multiple offers. The commodity charge will
+            be the weighted average of the offers.
+          </p>
+        }
+        @case ("best") {
+          <p>
+            This offer is a best-of rate. The commodity charge will be selected
+            from the lowest calculated rate from several offers.
+          </p>
+        }
+        @case ("custom") {
+          <p>
+            This offer is a custom rate. The commodity charge will be calculated
+            based on the formula provided.
+          </p>
+        }
+      }
+
+      <hr />
+
+      <h3>Share This Offer</h3>
+      <p>Let others import this rate by sharing this link with them.</p>
+      <div class="input-group">
+        <input
+          type="text"
+          class="form-control"
+          readonly
+          value="{{ getShareLink(v.vendor, v.offer) }}"
+        />
+        <button
+          class="btn btn-primary"
+          (click)="copy(getShareLink(v.vendor, v.offer))"
+        >
+          Copy Link
+        </button>
+      </div>
+      <hr />
+
+      <h3>Your Usage</h3>
+      @for (month of MonthKeys; track month) {
+        <section class="month">
+          <h4 id="{{ MonthLabels[month] }}">
+            {{ MonthLabels[month] }}
+            <small class="text-muted">{{ d.usage[month] }} therms</small>
+          </h4>
+          <app-bill
+            [bill]="v.offer | bill: month : d.usage : d.charges : d.rates"
+          ></app-bill>
+        </section>
+      }
+    }
+  }
+}

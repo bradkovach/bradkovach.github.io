@@ -17,7 +17,14 @@ export const routes: Routes = [
   {
     path: 'notary',
     loadChildren: () =>
-      import('./routes/notary/notary.module').then((m) => m.NotaryModule),
+      import('./routes/notary/notary.routes').then((m) => m.NOTARY_ROUTES),
+  },
+  {
+    path: 'choice-gas',
+    loadChildren: () =>
+      import('./routes/choice-gas/choice-gas.routes').then(
+        (m) => m.CHOICE_GAS_ROUTES,
+      ),
   },
   {
     path: 'connections',

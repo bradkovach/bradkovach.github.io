@@ -1,0 +1,152 @@
+@if (vm$ | async; as vm) {
+  @if ((vm.usage | average) === 0) {
+    <div class="alert alert-warning" role="alert">
+      You haven't entered any usage data. Go to the
+      <a [routerLink]="['..', 'data-editor']">Data Editor</a> to enter your
+      usage.
+    </div>
+  }
+
+  <h3>Price Explorer</h3>
+  <p>
+    The following table shows the estimated cost of each offer, based on the
+    usage and rates you've entered. Hover over each value to see a summary of
+    charges. Click on the cost to see more details about the offer.
+  </p>
+
+  <!--
+  <div class="row">
+    <div class="col-3">
+      <label for="show" class="form-label">Show Value</label>
+      <select
+        id="show"
+        class="form-select"
+        [ngModel]="vm.show"
+        (ngModelChange)="setShow($event)"
+      >
+        <option value="total">Total ($/month)</option>
+        <option value="dollarsPerTherm">By Therm ($/therm)</option>
+        <option value="thermsPerDollar">By Dollar (therm/$)</option>
+      </select>
+    </div>
+  </div>
+  -->
+
+  <table class="table table-striped">
+    <thead style="position: sticky; top: 0">
+      <tr>
+        <td scope="table">
+          <em>Offer data as of {{ lastUpdated | date: "medium" }}</em>
+        </td>
+        <th scope="col">Term</th>
+        <th scope="col">Conf. Code</th>
+        <th scope="col" class="text-end">Average</th>
+        @for (month of MonthKeys; track $index) {
+          <th scope="col" class="text-end">{{ monthLabelsAbbr[month] }}</th>
+        }
+      </tr>
+      <tr class="rule-bottom">
+        <th scope="col">Usage (therms)</th>
+        <th>&nbsp;</th>
+        <td>&nbsp;</td>
+        <td scope="col" class="text-end">
+          {{ vm.usage | average | number: "1.0-0" }}
+        </td>
+        @for (month of MonthKeys; track $index) {
+          <td scope="col" class="text-end">{{ vm.usage[month] }}</td>
+        }
+      </tr>
+    </thead>
+    @for (g of vm.vendors; track $index) {
+      <tbody>
+        <tr>
+          <th>
+            {{ g.vendor.name }}
+          </th>
+          <td colspan="5" class="text-center">
+            <a
+              href="{{ g.vendor.website }}"
+              target="_blank"
+              title="Open {{ g.vendor.name }} website in a new tab/window"
+              >Launch Website</a
+            >
+          </td>
+          <td colspan="5" class="text-center">
+            {{ g.vendor.phone | phone }}
+          </td>
+          <td colspan="5" class="text-center">&nbsp;</td>
+        </tr>
+        @for (o of g.offers; track offerIndex; let offerIndex = $index) {
+          <tr>
+            <td>
+              <a
+                [routerLink]="[
+                  '/choice-gas',
+                  'vendors',
+                  g.vendor.id,
+                  'offers',
+                  o.offer.id
+                ]"
+              >
+                {{ o.offer.name }}
+              </a>
+            </td>
+            <td>{{ o.offer.term }} yr</td>
+            <td class="text-center">
+              {{ o.offer.confirmationCode ?? "- - -" }}
+            </td>
+            <td class="text-end">{{ o.average | number: "1.2-2" }}</td>
+            @for (month of MonthKeys; track month) {
+              <td class="text-end rank-{{ o.bills[month].rank }}">
+                <a
+                  [routerLink]="[
+                    '/choice-gas',
+                    'vendors',
+                    g.vendor.id,
+                    'offers',
+                    o.offer.id
+                  ]"
+                  [fragment]="MonthLabels[month]"
+                  title="{{
+                    o.bills[month].bill.subtotals[ChargeType.PerMonth]
+                      | number: '1.2-2'
+                  }} monthly + {{
+                    o.bills[month].bill.subtotals[ChargeType.PerTherm]
+                      | number: '1.2-2'
+                  }} per therm + {{
+                    o.bills[month].bill.subtotals[ChargeType.Tax]
+                      | number: '1.2-2'
+                  }} tax"
+                >
+                  @switch (vm.show) {
+                    @case ("dollarsPerTherm") {
+                      {{
+                        o.bills[month].bill.total / o.bills[month].bill.therms
+                          | number: "1.2-2"
+                      }}
+                    }
+                    @case ("thermsPerDollar") {
+                      {{
+                        o.bills[month].bill.therms / o.bills[month].bill.total
+                          | number: "1.2-2"
+                      }}
+                    }
+                    @default {
+                      {{ o.bills[month].bill.total | number: "1.2-2" }}
+                    }
+                  }
+                </a>
+              </td>
+            }
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="16">
+              No offers available at this time. Check back soon.
+            </td>
+          </tr>
+        }
+      </tbody>
+    }
+  </table>
+}

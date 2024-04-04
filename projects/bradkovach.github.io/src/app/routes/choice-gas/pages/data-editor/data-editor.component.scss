@@ -1,0 +1,16 @@
+.actions {
+  display: flex;
+  // justify-content: flex-start;
+  * + * {
+    margin-left: 0.75rem;
+  }
+}
+
+.actions__item {
+  &.-start {
+    justify-self: flex-start;
+  }
+  &.--end {
+    justify-self: flex-end !important;
+  }
+}

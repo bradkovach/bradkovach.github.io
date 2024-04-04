@@ -1,7 +1,7 @@
 import { AsyncPipe, DatePipe, JsonPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, Injectable, inject } from '@angular/core';
-import { SafeHtml } from '@angular/platform-browser';
+import { SafeHtml, Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import fm from 'front-matter';
 import { Observable, catchError, map, of, startWith, switchMap } from 'rxjs';
@@ -74,6 +74,7 @@ export class PageService {
 export class PageComponent {
   private pageService = inject(PageService);
   private md = inject(MarkdownService);
+  private title = inject(Title);
 
   private route = inject(ActivatedRoute);
   slug$ = this.route.paramMap.pipe(
@@ -91,7 +92,8 @@ export class PageComponent {
     }),
     map((page): Page => {
       const pageJson = fm<PageJson>(page);
-      console.log({ pageJson });
+
+      this.title.setTitle(pageJson.attributes.title);
 
       return {
         title: pageJson.attributes.title,
