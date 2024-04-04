@@ -42,12 +42,12 @@ export const woodRiverEnergy = new Vendor(
     name: 'Secure Fixed Price',
     type: 'fpm',
     term: 1,
-    rate: 91.2,
+    rate: 0,
   })
   .addOffer({
     id: 'fpm-2',
     name: 'Secure Fixed Price',
     type: 'fpm',
     term: 2,
-    rate: 93.9,
+    rate: 0,
   });

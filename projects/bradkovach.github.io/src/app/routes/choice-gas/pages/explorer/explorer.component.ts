@@ -23,7 +23,6 @@ import { AppComponent } from '../../../../app.component';
 import { BillComponent } from '../../components/bill/bill.component';
 import { Market, marketLabels } from '../../data/data.current';
 import { lastUpdated } from '../../data/last-updated';
-import { vendors } from '../../data/vendors';
 import { ChargeType } from '../../entity/ChargeType';
 import { AveragePipe } from '../../pipes/average/average.pipe';
 import { BillPipe, createBill } from '../../pipes/bill/bill.pipe';
@@ -114,6 +113,7 @@ export class ExplorerComponent {
   >(1);
 
   vm$ = combineLatest({
+    vendors: this.dataService.vendors$,
     usage: this.dataService.usage$,
     charges: this.dataService.charges$,
     rates: this.dataService.rates$,
@@ -122,7 +122,7 @@ export class ExplorerComponent {
     map((vm) => {
       return {
         ...vm,
-        vendors: this.vendors.map((vendor) => {
+        vendors: vm.vendors.map((vendor) => {
           const offers = [...vendor.offers.values()]
             .map((offer) => ({
               offer,
@@ -183,8 +183,6 @@ export class ExplorerComponent {
     this.appComponent.setContainerMode('fluid');
     this.showSubject.next('total');
   }
-
-  vendors = vendors;
 
   setShow(show: 'total' | 'dollarsPerTherm' | 'thermsPerDollar') {
     this.showSubject.next(show);
