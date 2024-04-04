@@ -4,13 +4,14 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "prebuild": "rimraf dist && npm run generate-routes",
+    "prebuild": "rimraf dist && npm run generate-routes && npm run update-last-updated",
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "new-page": "ts-node --esm --project ./scripts/tsconfig.json ./scripts/new-page.mts --",
     "new-post": "ts-node --esm --project ./scripts/tsconfig.json ./scripts/new-post.mts --",
     "generate-routes": "ts-node --esm --project ./scripts/tsconfig.json ./scripts/generate-routes.mts",
+    "update-last-updated": "ts-node --esm --project ./scripts/tsconfig.json ./scripts/update-last-updated.mts",
     "serve:ssr:connections": "node dist/connections/server/server.mjs"
   },
   "private": true,
