@@ -40,6 +40,7 @@
     <thead style="position: sticky; top: 0">
       <tr>
         <td scope="table"></td>
+        <th scope="table">Comm. Chg.</th>
         <th scope="col">Term</th>
         <th scope="col">Conf. Code</th>
         <th scope="col" class="text-end">Average</th>
@@ -48,7 +49,8 @@
         }
       </tr>
       <tr class="rule-bottom">
-        <th scope="col">Usage (therms)</th>
+        <th scope="row">Usage (therms)</th>
+        <td>&nbsp;</td>
         <th>&nbsp;</th>
         <td>&nbsp;</td>
         <td scope="col" class="text-end">
@@ -65,18 +67,17 @@
           <th>
             {{ g.vendor.name }}
           </th>
-          <td colspan="5" class="text-center">
+          <td>
+            {{ g.vendor.phone | phone }}
+          </td>
+          <td colspan="15">
             <a
               href="{{ g.vendor.website }}"
               target="_blank"
               title="Open {{ g.vendor.name }} website in a new tab/window"
-              >Launch Website</a
+              >{{ g.vendor.website }}</a
             >
           </td>
-          <td colspan="5" class="text-center">
-            {{ g.vendor.phone | phone }}
-          </td>
-          <td colspan="5" class="text-center">&nbsp;</td>
         </tr>
         @for (o of g.offers; track offerIndex; let offerIndex = $index) {
           <tr>
@@ -92,6 +93,38 @@
               >
                 {{ o.offer.name }}
               </a>
+            </td>
+            <td>
+              @if (o.offer.type === "fpm") {
+                @if (o.offer.rate === 0) {
+                  <a
+                    [routerLink]="[
+                      '/choice-gas',
+                      'vendors',
+                      g.vendor.id,
+                      'offers',
+                      o.offer.id
+                    ]"
+                    class="link-danger"
+                    >Edit Rate</a
+                  >
+                } @else {
+                  ${{ o.offer.rate | number: "1.2-2" }}/month
+                }
+              } @else if (o.offer.type === "fpt") {
+                ${{ o.offer.rate | number: "1.2-2" }}/therm
+              } @else if (o.offer.type === "market") {
+                {{ marketLabels[o.offer.market] }}&nbsp;
+                @if (o.offer.rate > 0) {
+                  + ${{ o.offer.rate | number: "1.2-2" }}
+                } @else if (o.offer.rate < 0) {
+                  - ${{ o.offer.rate * -1 | number: "1.2-2" }}
+                }
+              } @else if (o.offer.type === "blended") {
+                Blended
+              } @else if (o.offer.type === "best") {
+                Best
+              }
             </td>
             <td>{{ o.offer.term }} yr</td>
             <td class="text-center">
@@ -143,7 +176,7 @@
           </tr>
         } @empty {
           <tr>
-            <td colspan="16">
+            <td colspan="17">
               No offers available at this time. Check back soon.
             </td>
           </tr>

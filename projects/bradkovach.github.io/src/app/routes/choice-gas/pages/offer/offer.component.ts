@@ -1,15 +1,15 @@
 import { AsyncPipe, DecimalPipe, JsonPipe } from '@angular/common';
-import { Component, computed, effect, inject, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
-import { combineLatest } from 'rxjs';
+import { combineLatest, map } from 'rxjs';
 import { AppComponent } from '../../../../app.component';
 import { BillComponent } from '../../components/bill/bill.component';
 import { marketLabels } from '../../data/data.current';
-import { vendors } from '../../data/vendors';
 
 import { Offer } from '../../entity/Offer';
 import { Vendor } from '../../entity/Vendor';
 
+import { FormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { BillPipe } from '../../pipes/bill/bill.pipe';
 import { PhonePipe } from '../../pipes/phone/phone.pipe';
@@ -26,6 +26,7 @@ import { Month, monthLabels } from '../explorer/explorer.component';
     DecimalPipe,
     BillComponent,
     BillPipe,
+    FormsModule,
   ],
   templateUrl: './offer.component.html',
   styleUrl: './offer.component.scss',
@@ -51,23 +52,33 @@ export class OfferComponent {
     rates: this.rates$,
   });
 
-  vendor = computed(() => vendors.find((v) => v.id === this.vendorId()));
+  vendor$ = this.dataService.vendors$.pipe(
+    map((vendors) => vendors.find((vendor) => vendor.id === this.vendorId())),
+  );
 
-  offer = computed(() => this.vendor()!.offers.get(this.offerId()));
+  offer$ = this.vendor$.pipe(
+    map((vendor) => vendor?.offers.get(this.offerId())),
+  );
 
   constructor(title: Title) {
     this.appComponent.setContainerMode('fixed');
 
-    effect(() => {
-      title.setTitle(
-        `Choice Gas - ${this.vendor()?.name} - ${this.offer()?.name}`,
-      );
+    combineLatest({
+      vendor: this.vendor$,
+      offer: this.offer$,
+    }).subscribe(({ vendor, offer }) => {
+      if (vendor && offer) {
+        title.setTitle(`Choice Gas - ${vendor.name} - ${offer.name}`);
+      }
     });
   }
 
   readonly router = inject(Router);
 
-  getShareLink(vendor: Vendor | undefined, offer: Offer | undefined) {
+  getShareLink(
+    vendor: Vendor | undefined | null,
+    offer: Offer | undefined | null,
+  ) {
     return (
       'https://bradkovach.github.io' +
       this.router.serializeUrl(
@@ -85,6 +96,23 @@ export class OfferComponent {
   copy(text: string) {
     navigator.clipboard.writeText(text).then(() => {
       alert('Copied to clipboard!');
+    });
+  }
+
+  setOverride(
+    vendor: Vendor | undefined | null,
+    offer: Offer | undefined | null,
+    value: string,
+  ) {
+    if (!vendor) {
+      return;
+    }
+    if (!offer) {
+      return;
+    }
+
+    this.dataService.setRateOverrides({
+      [`@${vendor.id}/${offer.id}`]: Number(value),
     });
   }
 }

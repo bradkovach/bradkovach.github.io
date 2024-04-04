@@ -1,9 +1,7 @@
 @if (
   {
-    offerId: offerId(),
-    vendorId: vendorId(),
-    offer: offer(),
-    vendor: vendor()
+    offer: offer$ | async,
+    vendor: vendor$ | async
   };
   as v
 ) {
@@ -34,6 +32,19 @@
             every month. Per-therm fees (like delivery charges) and taxes will
             cause every bill's total to fluctuate.
           </p>
+
+          <h3>Rate Override</h3>
+          <p>You can override the rate for this fixed monthly rate.</p>
+          <div class="form-group">
+            <label for="rate">Rate</label>
+            <input
+              type="number"
+              class="form-control"
+              id="rate"
+              [ngModel]="v.offer.rate"
+              (ngModelChange)="setOverride($any(v.vendor), v.offer, $event)"
+            />
+          </div>
         }
         @case ("market") {
           <p>
@@ -64,7 +75,7 @@
 
       <hr />
 
-      <h3>Share This Offer</h3>
+      <!-- <h3>Share This Offer</h3>
       <p>Let others import this rate by sharing this link with them.</p>
       <div class="input-group">
         <input
@@ -80,7 +91,7 @@
           Copy Link
         </button>
       </div>
-      <hr />
+      <hr /> -->
 
       <h3>Your Usage</h3>
       @for (month of MonthKeys; track month) {

@@ -22,5 +22,3 @@ export const vendors: Vendor[] = [
   legacyNaturalGas,
   blackHillsWyomingGas,
 ];
-
-export default vendors;

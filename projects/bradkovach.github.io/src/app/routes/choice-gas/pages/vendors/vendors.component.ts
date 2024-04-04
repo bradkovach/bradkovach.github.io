@@ -1,8 +1,7 @@
 import { AsyncPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { of } from 'rxjs';
-import { vendors } from '../../data/vendors';
+import { DataService } from '../../services/data/data.service';
 
 @Component({
   selector: 'app-vendors',
@@ -12,5 +11,7 @@ import { vendors } from '../../data/vendors';
   styleUrl: './vendors.component.scss',
 })
 export class VendorsComponent {
-  vendors$ = of(vendors);
+  private readonly dataService = inject(DataService);
+
+  vendors$ = this.dataService.vendors$;
 }
