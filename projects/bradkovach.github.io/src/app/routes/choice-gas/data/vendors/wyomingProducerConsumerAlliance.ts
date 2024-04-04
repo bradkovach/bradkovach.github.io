@@ -1,6 +1,6 @@
-import { Market } from '../../data.current';
 import { MarketOffer } from '../../entity/Offer';
 import { Vendor } from '../../entity/Vendor';
+import { Market } from '../data.current';
 
 export const wyomingProducerConsumerAlliance = new Vendor(
   'com.wp-ca',

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -8,4 +9,8 @@ import { RouterLink } from '@angular/router';
   templateUrl: './main.component.html',
   styleUrl: './main.component.scss',
 })
-export class MainComponent {}
+export class MainComponent {
+  constructor(title: Title) {
+    title.setTitle('Choice Gas');
+  }
+}

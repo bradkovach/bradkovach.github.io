@@ -17,7 +17,7 @@ export const routes: Routes = [
   {
     path: 'notary',
     loadChildren: () =>
-      import('./routes/notary/notary.module').then((m) => m.NotaryModule),
+      import('./routes/notary/notary.routes').then((m) => m.NOTARY_ROUTES),
   },
   {
     path: 'choice-gas',

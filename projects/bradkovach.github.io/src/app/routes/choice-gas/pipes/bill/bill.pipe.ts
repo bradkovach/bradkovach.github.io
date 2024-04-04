@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Market, marketLabels } from '../../data.current';
+import { Market, marketLabels } from '../../data/data.current';
 import { Bill, line } from '../../entity/Bill';
 import { Charge } from '../../entity/Charge';
 import { ChargeType } from '../../entity/ChargeType';
