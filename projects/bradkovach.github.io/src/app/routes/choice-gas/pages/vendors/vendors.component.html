@@ -1,0 +1,13 @@
+<p>vendors works!</p>
+<h2>Vendor Manager</h2>
+
+@if (vendors$ | async; as vendors) {
+  @for (item of vendors; track $index) {
+    <dl>
+      <dt>{{ item.name }}</dt>
+      <dd>
+        <a [routerLink]="['/vendors', item.id]">View Vendor</a>
+      </dd>
+    </dl>
+  }
+}
