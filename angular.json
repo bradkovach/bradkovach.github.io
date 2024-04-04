@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "connections": {
+    "site": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/connections",
+            "outputPath": "dist/bradkovach.github.io",
             "index": "projects/bradkovach.github.io/src/index.html",
             "browser": "projects/bradkovach.github.io/src/main.ts",
             "polyfills": [
@@ -32,6 +32,7 @@
             "styles": [
               "projects/bradkovach.github.io/src/styles.scss",
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/highlight.js/styles/github.css"
             ],
             "scripts": [],
             "server": "projects/bradkovach.github.io/src/main.server.ts",
@@ -68,10 +69,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "connections:build:production"
+              "buildTarget": "site:build:production"
             },
             "development": {
-              "buildTarget": "connections:build:development"
+              "buildTarget": "site:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -79,7 +80,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "connections:build"
+            "buildTarget": "site:build"
           }
         },
         "test": {

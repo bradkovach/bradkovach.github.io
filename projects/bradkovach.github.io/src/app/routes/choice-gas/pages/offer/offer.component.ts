@@ -1,15 +1,16 @@
 import { AsyncPipe, DecimalPipe, JsonPipe } from '@angular/common';
-import { Component, computed, inject, input } from '@angular/core';
+import { Component, computed, effect, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { combineLatest } from 'rxjs';
 import { AppComponent } from '../../../../app.component';
 import { BillComponent } from '../../components/bill/bill.component';
-import { marketLabels } from '../../data.current';
+import { marketLabels } from '../../data/data.current';
 import { vendors } from '../../data/vendors';
 
 import { Offer } from '../../entity/Offer';
 import { Vendor } from '../../entity/Vendor';
 
+import { Title } from '@angular/platform-browser';
 import { BillPipe } from '../../pipes/bill/bill.pipe';
 import { PhonePipe } from '../../pipes/phone/phone.pipe';
 import { DataService } from '../../services/data/data.service';
@@ -54,8 +55,14 @@ export class OfferComponent {
 
   offer = computed(() => this.vendor()!.offers.get(this.offerId()));
 
-  constructor() {
+  constructor(title: Title) {
     this.appComponent.setContainerMode('fixed');
+
+    effect(() => {
+      title.setTitle(
+        `Choice Gas - ${this.vendor()?.name} - ${this.offer()?.name}`,
+      );
+    });
   }
 
   readonly router = inject(Router);

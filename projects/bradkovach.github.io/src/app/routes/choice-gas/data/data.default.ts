@@ -1,7 +1,7 @@
+import { Charge } from '../entity/Charge';
+import { ChargeType } from '../entity/ChargeType';
+import { FixedArray } from '../entity/FixedArray';
 import { Market, currentCigRate, currentGcaRate } from './data.current';
-import { Charge } from './entity/Charge';
-import { ChargeType } from './entity/ChargeType';
-import { FixedArray } from './entity/FixedArray';
 
 export const defaultRates: Record<Market, FixedArray<number, 12>> = {
   [Market.CIG]: Array(12).fill(currentCigRate) as FixedArray<number, 12>,

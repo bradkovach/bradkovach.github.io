@@ -16,14 +16,15 @@ import {
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { ReplaySubject, combineLatest, map, tap } from 'rxjs';
 import { AppComponent } from '../../../../app.component';
 import { BillComponent } from '../../components/bill/bill.component';
-import { Market, marketLabels } from '../../data.current';
+import { Market, marketLabels } from '../../data/data.current';
+import { lastUpdated } from '../../data/last-updated';
 import { vendors } from '../../data/vendors';
 import { ChargeType } from '../../entity/ChargeType';
-import { lastUpdated } from '../../last-updated';
 import { AveragePipe } from '../../pipes/average/average.pipe';
 import { BillPipe, createBill } from '../../pipes/bill/bill.pipe';
 import { PhonePipe } from '../../pipes/phone/phone.pipe';
@@ -177,7 +178,8 @@ export class ExplorerComponent {
 
   readonly appComponent = inject(AppComponent);
 
-  constructor() {
+  constructor(title: Title) {
+    title.setTitle('Choice Gas - Price Explorer');
     this.appComponent.setContainerMode('fluid');
     this.showSubject.next('total');
   }

@@ -1,7 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { Market } from '../../data.current';
-import { defaultCharges, defaultRates, defaultUsage } from '../../data.default';
+import { ReplaySubject } from 'rxjs';
+import { Market } from '../../data/data.current';
+import {
+  defaultCharges,
+  defaultRates,
+  defaultUsage,
+} from '../../data/data.default';
 import { Charge } from '../../entity/Charge';
 import { FixedArray } from '../../entity/FixedArray';
 
@@ -9,15 +13,30 @@ import { FixedArray } from '../../entity/FixedArray';
   providedIn: 'root',
 })
 export class DataService {
-  constructor() {}
+  constructor() {
+    this.setUsage(
+      window && window.localStorage && localStorage.getItem('usage') !== null
+        ? (JSON.parse(localStorage.getItem('usage')!) as FixedArray<number, 12>)
+        : defaultUsage,
+    );
 
-  // _usage: FixedArray<number, 12> = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    this.setCharges(
+      window && window.localStorage && localStorage.getItem('charges') !== null
+        ? (JSON.parse(localStorage.getItem('charges')!) as Charge[])
+        : defaultCharges,
+    );
 
-  private usageSubject = new BehaviorSubject<FixedArray<number, 12>>(
-    localStorage.getItem('usage') === null
-      ? defaultUsage
-      : (JSON.parse(localStorage.getItem('usage')!) as FixedArray<number, 12>),
-  );
+    this.setRates(
+      window && window.localStorage && localStorage.getItem('rates') !== null
+        ? (JSON.parse(localStorage.getItem('rates')!) as Record<
+            Market,
+            FixedArray<number, 12>
+          >)
+        : defaultRates,
+    );
+  }
+
+  private usageSubject = new ReplaySubject<FixedArray<number, 12>>(1);
 
   usage$ = this.usageSubject.asObservable();
 
@@ -26,11 +45,7 @@ export class DataService {
     this.usageSubject.next(value);
   }
 
-  private chargesSubject = new BehaviorSubject<Charge[]>(
-    localStorage.getItem('charges') === null
-      ? defaultCharges
-      : (JSON.parse(localStorage.getItem('charges')!) as Charge[]),
-  );
+  private chargesSubject = new ReplaySubject<Charge[]>(1);
 
   charges$ = this.chargesSubject.asObservable();
 
@@ -39,16 +54,9 @@ export class DataService {
     this.chargesSubject.next(charges);
   }
 
-  private ratesSubject = new BehaviorSubject<
+  private ratesSubject = new ReplaySubject<
     Record<Market, FixedArray<number, 12>>
-  >(
-    localStorage.getItem('rates') === null
-      ? defaultRates
-      : (JSON.parse(localStorage.getItem('rates')!) as Record<
-          Market,
-          FixedArray<number, 12>
-        >),
-  );
+  >(1);
 
   rates$ = this.ratesSubject.asObservable();
 

@@ -1,5 +1,5 @@
-import { Market } from '../../data.current';
 import { Vendor } from '../../entity/Vendor';
+import { Market } from '../data.current';
 
 export const blackHillsWyomingGas = new Vendor(
   'com.choicegas',

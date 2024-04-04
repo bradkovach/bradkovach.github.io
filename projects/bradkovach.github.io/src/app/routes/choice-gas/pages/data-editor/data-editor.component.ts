@@ -4,9 +4,10 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { Subject, combineLatest, map, merge } from 'rxjs';
 
+import { Title } from '@angular/platform-browser';
 import { AppComponent } from '../../../../app.component';
-import { Market, marketLabels } from '../../data.current';
-import { defaultCharges, defaultRates } from '../../data.default';
+import { Market, marketLabels } from '../../data/data.current';
+import { defaultCharges, defaultRates } from '../../data/data.default';
 import { Charge } from '../../entity/Charge';
 import { ChargeType } from '../../entity/ChargeType';
 import { FixedArray } from '../../entity/FixedArray';
@@ -52,7 +53,8 @@ export class DataEditorComponent {
     ),
   });
 
-  constructor() {
+  constructor(title: Title) {
+    title.setTitle('Choice Gas - Data Editor');
     this.appComponent.setContainerMode('fluid');
   }
 

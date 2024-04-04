@@ -6,10 +6,10 @@
 // 	| BlendedOffer
 // 	| BestOfOffer;
 
-import { Market } from '../data.current';
+import { Market } from '../data/data.current';
 
 import z from 'zod';
-import { marketLabels } from '../data.current';
+import { marketLabels } from '../data/data.current';
 import { line } from './Bill';
 import { ChargeType } from './ChargeType';
 import { FixedArray } from './FixedArray';

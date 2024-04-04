@@ -6,10 +6,11 @@ import {
 } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
 import { combineLatest, map } from 'rxjs';
 import z from 'zod';
-import { Market } from '../../data.current';
+import { Market } from '../../data/data.current';
 import {
   BestOffer,
   BlendedOffer,
@@ -69,7 +70,8 @@ export class ImportComponent {
     }),
   );
 
-  constructor() {
+  constructor(title: Title) {
+    title.setTitle('Choice Gas - Import Data');
     const query = new URLSearchParams();
     const fpmOffer: OfferBase & FixedPerMonthOffer = {
       id: '185',
