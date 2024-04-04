@@ -1,0 +1,32 @@
+summary {
+  cursor: pointer;
+}
+
+details > details {
+  margin-left: 1em;
+}
+
+.as-inline-flex {
+  width: calc(100% - 1em);
+  display: inline-flex;
+  justify-content: space-between;
+}
+
+.at-end {
+  align-self: flex-end;
+  text-align: end;
+}
+
+tr.rule-bottom {
+  box-shadow: 0 1px 0 0 var(--bs-table-border-color);
+}
+
+.rank-1 {
+  background-color: #aaffaaaa;
+}
+.rank-6 {
+  background-color: #ffffaaaa;
+}
+.rank-12 {
+  background-color: #ffaaaaaa;
+}

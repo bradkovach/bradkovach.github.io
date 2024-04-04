@@ -20,6 +20,13 @@ export const routes: Routes = [
       import('./routes/notary/notary.module').then((m) => m.NotaryModule),
   },
   {
+    path: 'choice-gas',
+    loadChildren: () =>
+      import('./routes/choice-gas/choice-gas.routes').then(
+        (m) => m.CHOICE_GAS_ROUTES,
+      ),
+  },
+  {
     path: 'connections',
     children: [
       // {

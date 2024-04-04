@@ -30,7 +30,8 @@
               "projects/bradkovach.github.io/src/assets"
             ],
             "styles": [
-              "projects/bradkovach.github.io/src/styles.scss"
+              "projects/bradkovach.github.io/src/styles.scss",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
             ],
             "scripts": [],
             "server": "projects/bradkovach.github.io/src/main.server.ts",

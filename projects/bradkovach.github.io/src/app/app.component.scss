@@ -4,6 +4,11 @@
   margin: 0 auto;
 }
 
+.container.container--fluid {
+  width: 95%;
+  max-width: 95%;
+}
+
 // small screens, 90%
 @media (max-width: 600px) {
   .container {

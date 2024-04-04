@@ -1,0 +1,29 @@
+<h1>Choice Gas</h1>
+<nav>
+  <dl>
+    <dt><a [routerLink]="['./']">Choice Gas Home</a></dt>
+    <dd>
+      Learn about the tools and learn how to understand the Choice Gas program.
+    </dd>
+
+    <dt><a [routerLink]="['explorer']">Price Explorer</a></dt>
+    <dd>
+      Explore competitive natural gas offers and simulate your bill based on
+      your past usage.
+    </dd>
+
+    <dt><a [routerLink]="['data-editor']">Data Editor</a></dt>
+    <dd>Edit your therm usage data, market rate data and extra charges.</dd>
+
+    <!--
+    <dt><a [routerLink]="['developers']">Developer Information</a></dt>
+    <dd>
+      Learn how to provide competitive real-time data to this tool and win
+      customers with less effort.
+    </dd>
+  --></dl>
+</nav>
+<hr />
+<main>
+  <router-outlet></router-outlet>
+</main>

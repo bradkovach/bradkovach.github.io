@@ -1,0 +1,215 @@
+<h2>Data Editor</h2>
+
+<p>
+  Use a copy of your most-recent gas bill to find usage and charges. Accurate
+  data will give you the best-possible estimates. Once you've entered data, and
+  copied any calculated charges, return to the
+  <a [routerLink]="['..', 'matrix']">Choice Gas Calculator</a> to see how your
+  offers compare.
+</p>
+
+@if (vm$ | async; as vm) {
+  <div class="row">
+    <div class="col-6">
+      <h3>Usage</h3>
+      <p>
+        How many therms do you use each month? You can copy this from your
+        choice gas ballot. This information will be saved in your browser, so
+        you can come back to it as needed.
+      </p>
+
+      <h3>Market Rates</h3>
+      <p>
+        These values correspond to rates set by other entities. The CIG market
+        rate, for example, is calculated based Natural Gas futures prices. Some
+        offers may be presented as "lower than Gas Cost Adjustment" or "lower
+        than CIG market rate". These values are used when calculating the
+        Commodity Charge for market-rate-based offers.
+      </p>
+
+      <p>
+        If you use the same rate for all months, you can lock the rate by
+        checking the box in the "Same?" column. If you want to use different
+        rates for each month, uncheck the box and enter the rates for each
+        month.
+      </p>
+
+      <table class="table table-striped table-sm">
+        <thead>
+          <tr>
+            <th scope="col">Month</th>
+            <th scope="col">Usage (therms)</th>
+            @for (market of MarketKeys; track $index) {
+              <th scope="col">{{ MarketLabels[market] }} Rate</th>
+            }
+          </tr>
+          <tr>
+            <th scope="row">Same?</th>
+            <th>&nbsp;</th>
+            @for (market of MarketKeys; track $index) {
+              <th scope="col" class="text-center">
+                <input
+                  type="checkbox"
+                  [ngModel]="vm.locks[market]"
+                  (ngModelChange)="setLock(market, $event, vm.locks)"
+                />
+              </th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (idx of MonthKeys; track monthIdx; let monthIdx = $index) {
+            <tr>
+              <th>{{ MonthLabels[idx] }}</th>
+              <td>
+                <input
+                  class="form-control form-control-sm"
+                  type="number"
+                  [ngModel]="vm.usage[idx]"
+                  (ngModelChange)="setUsage($event, monthIdx, vm.usage)"
+                  [tabIndex]="monthIdx + 1"
+                />
+              </td>
+              @for (
+                market of MarketKeys;
+                track marketIdx;
+                let marketIdx = $index
+              ) {
+                <td>
+                  <input
+                    class="form-control form-control-sm"
+                    type="number"
+                    step="0.01"
+                    [ngModel]="
+                      vm.rates[market][vm.locks[market] ? 0 : monthIdx]
+                    "
+                    (ngModelChange)="
+                      setRate(
+                        $event,
+                        market,
+                        monthIdx,
+                        vm.rates,
+                        vm.locks[market]
+                      )
+                    "
+                    [tabIndex]="monthIdx + (marketIdx + 1) * 12 + 1"
+                    [disabled]="vm.locks[market] && monthIdx > 0"
+                  />
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+      <p>
+        <button
+          type="button"
+          (click)="resetUsage()"
+          class="btn btn-sm btn-outline-danger"
+        >
+          Reset Usage</button
+        >&nbsp;<button
+          (click)="resetRates()"
+          class="btn btn-sm btn-outline-danger"
+        >
+          Reset Rates
+        </button>
+      </p>
+    </div>
+
+    <div class="col-6">
+      <h3>Other Calculated Charges</h3>
+      <p>
+        These charges will be calculated in addition to the commodity charge.
+        These are optional, but can help you get a more accurate picture of your
+        costs. For taxes, enter as a decimal value. For example, 4% should be
+        entered as 0.04. By default, this includes the volumetric/delivery
+        charge, the customer charge and sales tax.
+      </p>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">Name</th>
+            <th scope="col">Rate</th>
+            <th scope="col">Type</th>
+            <th scope="col"></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (charge of vm.charges; track $index) {
+            <tr>
+              <td>
+                <input
+                  class="form-control form-control-sm"
+                  type="text"
+                  #name
+                  [ngModel]="charge.name"
+                  (ngModelChange)="
+                    setCharge({ name: name.value }, $index, vm.charges)
+                  "
+                />
+              </td>
+              <td>
+                <input
+                  class="form-control form-control-sm"
+                  type="number"
+                  #rate
+                  [ngModel]="charge.rate"
+                  (ngModelChange)="
+                    setCharge({ rate: +rate.value }, $index, vm.charges)
+                  "
+                />
+              </td>
+              <td>
+                <select
+                  class="form-select form-select-sm"
+                  [ngModel]="charge.type"
+                  (ngModelChange)="
+                    setCharge({ type: $event }, $index, vm.charges)
+                  "
+                >
+                  <option [ngValue]="ChargeType.PerTherm">Per Therm</option>
+                  <option [ngValue]="ChargeType.PerMonth">Per Month</option>
+                  <option [ngValue]="ChargeType.Tax">Tax</option>
+                </select>
+              </td>
+              <td class="text-end">
+                <button
+                  type="button"
+                  class="btn btn-link btn-sm"
+                  (click)="removeCharge($index, vm.charges)"
+                >
+                  Remove Charge
+                </button>
+              </td>
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="3">No charges added</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      <div class="actions">
+        <button class="btn btn-primary" (click)="addCharge(vm.charges)">
+          Add a Charge
+        </button>
+        <button
+          class="btn btn-outline-primary"
+          type="button"
+          (click)="sortCharges(vm.charges)"
+        >
+          Sort Charges
+        </button>
+        <button
+          class="btn btn-outline-danger actions__item --end"
+          type="button"
+          (click)="resetCharges()"
+        >
+          Reset Charges
+        </button>
+      </div>
+    </div>
+  </div>
+}
