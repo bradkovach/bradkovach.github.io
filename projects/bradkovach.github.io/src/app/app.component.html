@@ -1,33 +1,17 @@
 <div
-	class="container"
-	[class.container--fixed]="containerMode === 'fixed'"
-	[class.container--fluid]="containerMode === 'fluid'"
+  class="container"
+  [class.container--fixed]="containerMode === 'fixed'"
+  [class.container--fluid]="containerMode === 'fluid'"
 >
-	<router-outlet></router-outlet>
-	<hr />
-	&copy; 2024 Brad Kovach &mdash; All rights reserved
-	<nav>
-		<ul>
-			<li>
-				<a [routerLink]="['/blog']">Blog</a>
-			</li>
-			<li>
-				<a [routerLink]="['/notary']">Notary Tools</a>
-			</li>
-			<li><a [routerLink]="['/choice-gas']">Choice Gas</a></li>
-			<li>
-				Games
-				<ul>
-					<li>
-						<a [routerLink]="['/connections', 'solve']"
-							>NYT Connections</a
-						>
-					</li>
-					<li>
-						<a [routerLink]="['/games', 'acquire']">Acquire</a>
-					</li>
-				</ul>
-			</li>
-		</ul>
-	</nav>
+  <router-outlet></router-outlet>
+  <hr />
+  &copy; 2024 Brad Kovach &mdash; All rights reserved
+  <nav>
+    <ul>
+      <li>
+        <a [routerLink]="['/connections', 'solve']">Connections</a>
+      </li>
+      <li><a [routerLink]="['/choice-gas']">Choice Gas</a></li>
+    </ul>
+  </nav>
 </div>
