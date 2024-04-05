@@ -1,27 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
-	imports: [RouterOutlet, RouterLink],
-	selector: 'app-root',
-	standalone: true,
-	styleUrl: './app.component.scss',
-	templateUrl: './app.component.html',
+  imports: [RouterOutlet, RouterLink],
+  selector: 'app-root',
+  standalone: true,
+  styleUrl: './app.component.scss',
+  templateUrl: './app.component.html',
 })
 export class AppComponent {
-	
-  private _containerMode: 'fixed' | 'fluid' = 'fixed';
+  private _containerMode = signal<'fixed' | 'fluid'>('fixed');
 
-  get containerMode(): 'fixed' | 'fluid' {
-    return this._containerMode;
-  }
-
-  set containerMode(value: 'fixed' | 'fluid') {
-    this._containerMode = value;
-  }
+  containerMode = this._containerMode.asReadonly();
 
   setContainerMode(mode: 'fixed' | 'fluid') {
-    this.containerMode = mode;
-  }  
-
+    this._containerMode.set(mode);
+  }
 }

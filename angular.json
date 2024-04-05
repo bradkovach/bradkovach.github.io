@@ -39,7 +39,14 @@
             "prerender": {
               "discoverRoutes": true,
               "routesFile": "routes.txt"
-            }
+            },
+            "allowedCommonJsDependencies": [
+              "highlight.js",
+              "chroma-js",
+              "markdown-it-replace-link",
+              "front-matter"
+            ],
+            "namedChunks": true
           },
           "configurations": {
             "production": {

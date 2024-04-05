@@ -1,7 +1,7 @@
 <div
   class="container"
-  [class.container--fixed]="containerMode === 'fixed'"
-  [class.container--fluid]="containerMode === 'fluid'"
+  [class.container--fixed]="containerMode() === 'fixed'"
+  [class.container--fluid]="containerMode() === 'fluid'"
 >
   <router-outlet></router-outlet>
   <hr />

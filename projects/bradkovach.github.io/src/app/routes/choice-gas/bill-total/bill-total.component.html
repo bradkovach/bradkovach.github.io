@@ -1,0 +1,43 @@
+@if (
+  {
+    offer: offer(),
+    bill: bill(),
+    show: show()
+  };
+  as v
+) {
+  @if (v.offer.type === "fpm" && v.offer.rate === 0) {
+    <span>- - -</span>
+  } @else {
+    <a
+      [routerLink]="[
+        '/choice-gas',
+        'vendors',
+        v.offer.vendor_id,
+        'offers',
+        v.offer.id
+      ]"
+      class="bill__link"
+      [fragment]="MonthLabels[v.bill.month]"
+      title="{{
+        v.bill.subtotals[ChargeType.PerMonth] | number: '1.2-2'
+      }} monthly + {{
+        v.bill.subtotals[ChargeType.PerTherm] | number: '1.2-2'
+      }} per therm + {{
+        v.bill.subtotals[ChargeType.Tax] | number: '1.2-2'
+      }} tax"
+    >
+      @switch (v.show) {
+        @case ("dollarsPerTherm") {
+          {{ v.bill.total / v.bill.therms | number: "1.2-2" }}
+        }
+        @case ("thermsPerDollar") {
+          {{ v.bill.therms / v.bill.total | number: "1.2-2" }}
+        }
+        @default {
+          {{ v.bill.total | number: "1.2-2" }}
+        }
+      }
+    </a>
+  }
+}

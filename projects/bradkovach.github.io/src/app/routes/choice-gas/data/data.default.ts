@@ -24,10 +24,10 @@ export const defaultCharges: Charge[] = [
     type: ChargeType.PerMonth,
   },
 
-  { name: 'WY State Sales Tax', rate: 0.06, type: ChargeType.Tax },
-  { name: 'Albany County Sales Tax', rate: 0.01, type: ChargeType.Tax },
+  { name: 'State Sales Tax', rate: 0.04, type: ChargeType.Tax },
+  { name: 'County Sales Tax', rate: 0.01, type: ChargeType.Tax },
 ]; // [144,118,77,107,56,30,15,6,31,64,78,116] // my fr usage
 
 export const defaultUsage: FixedArray<number, 12> = [
-  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  120, 130, 120, 100, 80, 60, 50, 40, 50, 60, 80, 110,
 ];
