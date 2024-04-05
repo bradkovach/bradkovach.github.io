@@ -13,9 +13,9 @@ export const wyomingProducerConsumerAlliance = new Vendor(
     term: 1,
     type: 'market',
     market: Market.CIG,
-    rate: 0.155,
+    rate: 0.145,
     id: '1-index',
-    confirmationCode: '94005',
+    confirmationCode: '94025',
   })
   .addOffer({
     name: 'Fixed',
@@ -23,7 +23,7 @@ export const wyomingProducerConsumerAlliance = new Vendor(
     type: 'fpt',
     rate: 0.549,
     id: '1-fpt',
-    confirmationCode: '94000',
+    confirmationCode: '94024',
   })
   .addOffer({
     name: 'Blended',
@@ -31,10 +31,10 @@ export const wyomingProducerConsumerAlliance = new Vendor(
     type: 'blended',
     id: '1-blended',
     offers: [
-      [0.5, { type: 'fpt', rate: 0.549 }],
-      [0.5, { type: 'market', rate: 0.155, market: Market.CIG } as MarketOffer],
+      [0.5, { type: 'fpt', rate: 0.515 }],
+      [0.5, { type: 'market', rate: 0.145, market: Market.CIG } as MarketOffer],
     ],
-    confirmationCode: '94015',
+    confirmationCode: '94057',
   })
   .addOffer({
     name: 'Index With A Cap',
@@ -42,10 +42,10 @@ export const wyomingProducerConsumerAlliance = new Vendor(
     type: 'best',
     id: '1-best',
     offers: [
-      { type: 'fpt', rate: 0.589 },
-      { type: 'market', rate: 0.185, market: Market.CIG } as MarketOffer,
+      { type: 'fpt', rate: 0.545 },
+      { type: 'market', rate: 0.145, market: Market.CIG } as MarketOffer,
     ],
-    confirmationCode: '94010',
+    confirmationCode: '94034',
   })
 
   .addOffer({
@@ -53,17 +53,17 @@ export const wyomingProducerConsumerAlliance = new Vendor(
     term: 2,
     type: 'market',
     market: Market.CIG,
-    rate: 0.155,
+    rate: 0.145,
     id: '2-index',
-    confirmationCode: '94025',
+    confirmationCode: '94094',
   })
   .addOffer({
     name: 'Fixed',
     term: 2,
     type: 'fpt',
-    rate: 0.589,
+    rate: 0.525,
     id: '2-fpt',
-    confirmationCode: '94020',
+    confirmationCode: '94040',
   })
   .addOffer({
     name: 'Blended',
@@ -71,10 +71,10 @@ export const wyomingProducerConsumerAlliance = new Vendor(
     type: 'blended',
     id: '2-blended',
     offers: [
-      [0.5, { type: 'fpt', rate: 0.629 }],
-      [0.5, { type: 'market', rate: 0.175, market: Market.CIG } as MarketOffer],
+      [0.5, { type: 'fpt', rate: 0.545 }],
+      [0.5, { type: 'market', rate: 0.145, market: Market.CIG } as MarketOffer],
     ],
-    confirmationCode: '94035',
+    confirmationCode: '94103',
   })
   .addOffer({
     name: 'Index With A Cap',
@@ -82,8 +82,8 @@ export const wyomingProducerConsumerAlliance = new Vendor(
     type: 'best',
     id: '2-best',
     offers: [
-      { type: 'fpt', rate: 0.619 },
-      { type: 'market', rate: 0.185, market: Market.CIG } as MarketOffer,
+      { type: 'fpt', rate: 0.575 },
+      { type: 'market', rate: 0.145, market: Market.CIG } as MarketOffer,
     ],
-    confirmationCode: '94030',
+    confirmationCode: '94050',
   });
