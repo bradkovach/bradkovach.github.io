@@ -5,9 +5,12 @@ import { RouterLink } from '@angular/router';
 import { Subject, combineLatest, map, merge } from 'rxjs';
 
 import { Title } from '@angular/platform-browser';
-import { AppComponent } from '../../../../app.component';
 import { Market, marketLabels } from '../../data/data.current';
-import { defaultCharges, defaultRates } from '../../data/data.default';
+import {
+  defaultCharges,
+  defaultRates,
+  defaultUsage,
+} from '../../data/data.default';
 import { Charge } from '../../entity/Charge';
 import { ChargeType } from '../../entity/ChargeType';
 import { FixedArray } from '../../entity/FixedArray';
@@ -23,7 +26,6 @@ import { Month, monthLabels } from '../explorer/explorer.component';
 })
 export class DataEditorComponent {
   private dataService = inject(DataService);
-  private appComponent = inject(AppComponent);
 
   readonly ChargeType = ChargeType;
   readonly MonthKeys = Object.keys(monthLabels) as unknown as Month[];
@@ -55,7 +57,6 @@ export class DataEditorComponent {
 
   constructor(title: Title) {
     title.setTitle('Choice Gas - Data Editor');
-    this.appComponent.setContainerMode('fluid');
   }
 
   addCharge(charges: Charge[]) {
@@ -104,7 +105,7 @@ export class DataEditorComponent {
   }
 
   resetUsage() {
-    this.dataService.setUsage([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    this.dataService.setUsage(defaultUsage);
   }
 
   setRate(

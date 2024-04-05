@@ -50,7 +50,6 @@ export class ImportComponent {
     map((p) => {
       const vendor = p.getAll('vendor');
       if (!vendor) return [];
-      console.log(vendor);
 
       return vendor.map((vendor) => {
         return { import: true, vendor: VendorSchema.parse(JSON.parse(vendor)) };
@@ -62,7 +61,6 @@ export class ImportComponent {
     map((p) => {
       const offers = p.getAll('offer');
       if (!offers) return [];
-      console.log(offers);
 
       return offers.map((offer) => {
         return { import: true, offer: OfferSchema.parse(JSON.parse(offer)) };
@@ -133,7 +131,5 @@ export class ImportComponent {
       offers: [fptOffer, fpmOffer, indexOffer, gcaOffer],
     };
     query.append('offer', JSON.stringify(bestOffer));
-
-    console.log({ q: query.toString() });
   }
 }

@@ -2,7 +2,6 @@ import { AsyncPipe, DecimalPipe, JsonPipe } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
 import { combineLatest, map } from 'rxjs';
-import { AppComponent } from '../../../../app.component';
 import { BillComponent } from '../../components/bill/bill.component';
 import { marketLabels } from '../../data/data.current';
 
@@ -35,7 +34,6 @@ export class OfferComponent {
   readonly MonthKeys = Object.keys(monthLabels) as unknown as Month[];
   readonly MonthLabels = monthLabels;
   readonly MarketLabels = marketLabels;
-  readonly appComponent = inject(AppComponent);
 
   vendorId = input.required<string>();
   offerId = input.required<string>();
@@ -61,8 +59,6 @@ export class OfferComponent {
   );
 
   constructor(title: Title) {
-    this.appComponent.setContainerMode('fixed');
-
     combineLatest({
       vendor: this.vendor$,
       offer: this.offer$,
