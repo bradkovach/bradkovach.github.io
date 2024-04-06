@@ -209,7 +209,6 @@ export class ExplorerComponent {
   }
 
   resetRefiners() {
-    this.scheme.set(HeatmapScheme.GreenWhiteRed);
     this.enabledOfferTypes.set({
       fpt: true,
       fpm: true,
