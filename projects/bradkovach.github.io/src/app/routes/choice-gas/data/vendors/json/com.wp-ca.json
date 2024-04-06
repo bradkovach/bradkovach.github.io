@@ -1,0 +1,122 @@
+[
+  {
+    "type": "market",
+    "id": "market-1",
+    "name": "Market Index",
+    "term": 1,
+    "market": 0,
+    "rate": 0.145,
+    "confirmationCode": "94025"
+  },
+  {
+    "type": "fpt",
+    "id": "fixed-1",
+    "name": "Fixed",
+    "term": 1,
+    "rate": 0.495,
+    "confirmationCode": "94024"
+  },
+  {
+    "type": "blended",
+    "id": "blended-1",
+    "name": "Blended",
+    "term": 1,
+    "offers": [
+      [
+        1,
+        {
+          "type": "fpt",
+          "rate": 0.515,
+          "confirmationCode": "94057"
+        }
+      ],
+      [
+        1,
+        {
+          "type": "market",
+          "market": 0,
+          "rate": 0.145,
+          "confirmationCode": "94057"
+        }
+      ]
+    ]
+  },
+  {
+    "type": "best",
+    "id": "best-1",
+    "name": "Index With A Cap",
+    "term": 1,
+    "offers": [
+      {
+        "type": "fpt",
+        "rate": 0.545
+      },
+      {
+        "type": "market",
+        "market": 0,
+        "rate": 0.145
+      }
+    ],
+    "confirmationCode": "94034"
+  },
+  {
+    "type": "market",
+    "id": "market-2",
+    "name": "Market Index",
+    "term": 2,
+    "market": 0,
+    "rate": 0.145,
+    "confirmationCode": "94094"
+  },
+  {
+    "type": "fpt",
+    "id": "fixed-2",
+    "name": "Fixed",
+    "term": 2,
+    "rate": 0.525,
+    "confirmationCode": "94040"
+  },
+  {
+    "type": "blended",
+    "id": "blended-2",
+    "name": "Blended",
+    "term": 2,
+    "offers": [
+      [
+        1,
+        {
+          "type": "fpt",
+          "rate": 0.545,
+          "confirmationCode": "94103"
+        }
+      ],
+      [
+        1,
+        {
+          "type": "market",
+          "market": 0,
+          "rate": 0.145,
+          "confirmationCode": "94103"
+        }
+      ]
+    ]
+  },
+  {
+    "type": "best",
+    "id": "best-2",
+    "name": "Index With A Cap",
+    "term": 2,
+    "offers": [
+      {
+        "type": "fpt",
+        "rate": 0.575
+      },
+      {
+        "type": "market",
+        "market": 0,
+        "rate": 0.145
+      }
+    ],
+    "confirmationCode": "94050"
+  }
+]
