@@ -1,0 +1,29 @@
+[
+  {
+    "type": "market",
+    "id": "market-1",
+    "name": "Gas Cost Adjustment - Casper Division",
+    "term": 1,
+    "market": 0,
+    "rate": 0.3645,
+    "confirmationCode": "99001"
+  },
+  {
+    "type": "market",
+    "id": "market-1",
+    "name": "Gas Cost Adjustment - Gillette Division",
+    "term": 1,
+    "market": 0,
+    "rate": 0.3645,
+    "confirmationCode": "99004"
+  },
+  {
+    "type": "market",
+    "id": "market-1",
+    "name": "Gas Cost Adjustment - Torrington Division",
+    "term": 1,
+    "market": 0,
+    "rate": 0.3645,
+    "confirmationCode": "99003"
+  }
+]
