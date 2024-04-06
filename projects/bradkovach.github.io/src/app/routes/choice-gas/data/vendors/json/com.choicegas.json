@@ -1,7 +1,7 @@
 [
   {
     "type": "market",
-    "id": "market-1",
+    "id": "gca-Casper-1",
     "name": "Gas Cost Adjustment - Casper Division",
     "term": 1,
     "market": 0,
@@ -10,7 +10,7 @@
   },
   {
     "type": "market",
-    "id": "market-1",
+    "id": "gca-Gillette-1",
     "name": "Gas Cost Adjustment - Gillette Division",
     "term": 1,
     "market": 0,
@@ -19,7 +19,7 @@
   },
   {
     "type": "market",
-    "id": "market-1",
+    "id": "gca-Torrington-1",
     "name": "Gas Cost Adjustment - Torrington Division",
     "term": 1,
     "market": 0,

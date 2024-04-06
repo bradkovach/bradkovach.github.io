@@ -88,6 +88,7 @@ function run() {
 				id: `blended-${term}`,
 				name,
 				term,
+				confirmationCode,
 				offers: [
 					[
 						1,

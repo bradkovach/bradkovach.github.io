@@ -7,6 +7,7 @@ export const blackHillsWyomingGas = new Vendor(
 	'Black Hills Wyoming Gas, LLC',
 	'https://choicegas.com',
 	'8772453506',
+	true,
 );
 
 offers.forEach((offer) => {

@@ -1,20 +1,20 @@
 @if (vm$ | async; as vm) {
-  @if ((vm.usage | average) === 0) {
-    <div class="alert alert-warning" role="alert">
-      You haven't entered any usage data. Go to the
-      <a [routerLink]="['..', 'data-editor']">Data Editor</a> to enter your
-      usage.
-    </div>
-  }
+	@if ((vm.usage | average) === 0) {
+		<div class="alert alert-warning" role="alert">
+			You haven't entered any usage data. Go to the
+			<a [routerLink]="['..', 'data-editor']">Data Editor</a> to enter
+			your usage.
+		</div>
+	}
 
-  <h3>Price Explorer</h3>
-  <p>
-    The following table shows the estimated cost of each offer, based on the
-    usage and rates you've entered. Hover over each value to see a summary of
-    charges. Click on the cost to see more details about the offer.
-  </p>
+	<h3>Price Explorer</h3>
+	<p>
+		The following table shows the estimated cost of each offer, based on the
+		usage and rates you've entered. Hover over each value to see a summary
+		of charges. Click on the cost to see more details about the offer.
+	</p>
 
-  <!--
+	<!--
   <div class="row">
     <div class="col-3">
       <label for="show" class="form-label">Show Value</label>
@@ -32,227 +32,253 @@
   </div>
   -->
 
-  <p>
-    <em>Offer data as of {{ lastUpdated | date: "medium" }}</em>
-  </p>
+	<p>
+		<em>Offer data as of {{ lastUpdated | date: 'medium' }}</em>
+	</p>
 
-  <div class="row justify-content-between align-items-center">
-    <div class="col-md-auto col-sm-12">
-      <div class="row align-items-baseline justify-content-sm-between">
-        <div class="col-md-auto">
-          <label for="palette" class="h5 my-0">Heatmap Colors</label>
-        </div>
-        <div class="col-md-auto">
-          <select id="palette" class="form-select my-0" [(ngModel)]="scheme">
-            @for (s of HeatmapSchemes; track s) {
-              <option [value]="s">{{ HeatmapSchemeLabels[s] }}</option>
-            }
-          </select>
-        </div>
-      </div>
-    </div>
-    <div class="col-md-auto col-sm-12">
-      <div class="row align-items-baseline justify-content-sm-between">
-        <div class="col-md-auto col-sm-12">
-          <h5 class="my-0">Heatmaps</h5>
-        </div>
-        <div class="col-md-auto">
-          @for (hm of Heatmaps; track $index) {
-            <label class="">
-              <input
-                type="checkbox"
-                id="heatmap-{{ $index }}"
-                [ngModel]="heatmapsEnabled()[hm]"
-                (ngModelChange)="setHeatmap(hm, $event)"
-              />&nbsp;{{ HeatmapLabels[hm] }}</label
-            >&nbsp;
-          }
-        </div>
-      </div>
-    </div>
+	<div class="row justify-content-between align-items-center">
+		<div class="col-md-auto col-sm-12">
+			<div class="row align-items-baseline justify-content-sm-between">
+				<div class="col-md-auto">
+					<label for="palette" class="h5 my-0">Heatmap Colors</label>
+				</div>
+				<div class="col-md-auto">
+					<select
+						id="palette"
+						class="form-select my-0"
+						[(ngModel)]="scheme">
+						@for (s of HeatmapSchemes; track s) {
+							<option [value]="s">
+								{{ HeatmapSchemeLabels[s] }}
+							</option>
+						}
+					</select>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-auto col-sm-12">
+			<div class="row align-items-baseline justify-content-sm-between">
+				<div class="col-md-auto col-sm-12">
+					<h5 class="my-0">Heatmaps</h5>
+				</div>
+				<div class="col-md-auto">
+					@for (hm of Heatmaps; track $index) {
+						<label class="">
+							<input
+								type="checkbox"
+								id="heatmap-{{ $index }}"
+								[ngModel]="heatmapsEnabled()[hm]"
+								(ngModelChange)="
+									setHeatmap(hm, $event)
+								" />&nbsp;{{ HeatmapLabels[hm] }}</label
+						>&nbsp;
+					}
+				</div>
+			</div>
+		</div>
 
-    <div class="col-md-auto">
-      <div class="row align-items-baseline">
-        <div class="col-md-auto col-sm-12">
-          <h5 class="my-0">Offer Types</h5>
-        </div>
-        <div class="col-md-auto">
-          @for (ot of OfferTypes; track $index) {
-            <label class="">
-              <input
-                type="checkbox"
-                id="offerType-{{ $index }}"
-                [ngModel]="enabledOfferTypes()[ot]"
-                (ngModelChange)="setOfferType(ot, $event)"
-              />&nbsp;{{ OfferTypeLabels[ot] }} </label
-            >&nbsp;
-          }
-        </div>
-      </div>
-    </div>
+		<div class="col-md-auto">
+			<div class="row align-items-baseline">
+				<div class="col-md-auto col-sm-12">
+					<h5 class="my-0">Offer Types</h5>
+				</div>
+				<div class="col-md-auto">
+					@for (ot of OfferTypes; track $index) {
+						<label class="">
+							<input
+								type="checkbox"
+								id="offerType-{{ $index }}"
+								[ngModel]="enabledOfferTypes()[ot]"
+								(ngModelChange)="
+									setOfferType(ot, $event)
+								" />&nbsp;{{ OfferTypeLabels[ot] }} </label
+						>&nbsp;
+					}
+				</div>
+			</div>
+		</div>
 
-    <div class="col-auto">
-      <div class="row align-items-baseline">
-        <button class="btn btn-outline-primary" (click)="resetRefiners()">
-          Reset
-        </button>
-      </div>
-    </div>
-  </div>
+		<div class="col-auto">
+			<div class="row align-items-baseline">
+				<button
+					class="btn btn-outline-primary"
+					(click)="resetRefiners()">
+					Reset
+				</button>
+			</div>
+		</div>
+	</div>
 
-  <table class="table table-striped">
-    <thead style="position: sticky; top: 0">
-      <tr>
-        <td scope="table"></td>
-        <th scope="table">Comm. Chg.</th>
-        <th scope="col">Term</th>
-        <th scope="col">Conf. Code</th>
-        <th scope="col" class="text-end">Average</th>
-        @for (month of Months; track $index) {
-          <th scope="col" class="text-end">{{ monthLabelsAbbr[month] }}</th>
-        }
-      </tr>
-      <tr class="rule-bottom">
-        <th scope="row">Usage (therms)</th>
-        <td>&nbsp;</td>
-        <th>&nbsp;</th>
-        <td>&nbsp;</td>
-        <td scope="col" class="text-end">
-          {{ vm.usage | average | number: "1.0-0" }}
-        </td>
-        @for (month of Months; track $index) {
-          <td
-            scope="col"
-            class="text-end"
-            [class.heat--enabled]="heatmapsEnabled()[Heatmap.Usage]"
-            [style]="
-              heatmapsEnabled()[Heatmap.Usage]
-                ? (vm.usage[month] | heat: (vm.usage | sort) : palette())
-                : undefined
-            "
-          >
-            {{ vm.usage[month] }}
-          </td>
-        }
-      </tr>
-    </thead>
-    @for (g of vm.vendors; track $index) {
-      <tbody>
-        <tr>
-          <th>
-            {{ g.vendor.name }}
-          </th>
-          <td>
-            {{ g.vendor.phone | phone }}
-          </td>
-          <td colspan="15">
-            <a
-              href="{{ g.vendor.website }}"
-              target="_blank"
-              title="Open {{ g.vendor.name }} website in a new tab/window"
-              >{{ g.vendor.website }}</a
-            >
-          </td>
-        </tr>
-        @for (o of g.offers; track offerIndex; let offerIndex = $index) {
-          <tr>
-            <td>
-              <a
-                [routerLink]="[
-                  '/choice-gas',
-                  'vendors',
-                  g.vendor.id,
-                  'offers',
-                  o.offer.id
-                ]"
-              >
-                {{ o.offer.name }}
-              </a>
-            </td>
-            <td>
-              @if (o.offer.type === "fpm") {
-                @if (o.offer.rate === 0) {
-                  <a
-                    [routerLink]="[
-                      '/choice-gas',
-                      'vendors',
-                      g.vendor.id,
-                      'offers',
-                      o.offer.id
-                    ]"
-                    class="link-danger"
-                    >Edit Rate</a
-                  >
-                } @else {
-                  ${{ o.offer.rate | number: "1.2-4" }}/month
-                }
-              } @else if (o.offer.type === "fpt") {
-                ${{ o.offer.rate | number: "1.2-4" }}/therm
-              } @else if (o.offer.type === "market") {
-                {{ MarketLabels[o.offer.market] }}
-                @if (o.offer.rate > 0) {
-                  + ${{ o.offer.rate | number: "1.2-4" }}
-                } @else if (o.offer.rate < 0) {
-                  - ${{ o.offer.rate * -1 | number: "1.2-4" }}
-                }
-              } @else if (o.offer.type === "blended") {
-                Blended
-              } @else if (o.offer.type === "best") {
-                Best
-              }
-            </td>
-            <td>{{ o.offer.term }} yr</td>
-            <td class="text-center">
-              {{ o.offer.confirmationCode ?? "- - -" }}
-            </td>
-            @if (o.offer.type === "fpm" && o.offer.rate === 0) {
-              <td class="text-end">- - -</td>
-            } @else {
-              <td
-                class="text-end"
-                [class.highest]="o.average === highest()"
-                [class.lowest]="o.average === lowest()"
-                [class.heat--enabled]="heatmapsEnabled()[Heatmap.Averages]"
-                [style]="
-                  heatmapsEnabled()[Heatmap.Averages]
-                    ? (o.average | heat: averages() : palette())
-                    : undefined
-                "
-              >
-                ${{ o.average | number: "1.2-2" }}
-              </td>
-            }
-            @for (month of Months; track month) {
-              <td
-                class="text-end bill__total"
-                [class.heat--enabled]="heatmapsEnabled()[Heatmap.Totals]"
-                [style]="
-                  heatmapsEnabled()[Heatmap.Totals]
-                    ? (o.bills[month].bill.total
-                      | heat: (totals() | sort) : palette())
-                    : undefined
-                "
-              >
-                <app-bill-total
-                  [bill]="o.bills[month].bill"
-                  [offer]="o.offer"
-                ></app-bill-total>
-              </td>
-            }
-          </tr>
-        } @empty {
-          <tr>
-            <td colspan="17">
-              No offers available at this time. Check back soon.
-            </td>
-          </tr>
-        }
-      </tbody>
-    }
-  </table>
+	<table class="table table-striped">
+		<thead style="position: sticky; top: 0">
+			<tr>
+				<td scope="table"></td>
+				<th scope="table">Comm. Chg.</th>
+				<th scope="col">Term</th>
+				<th scope="col">Conf. Code</th>
+				<th scope="col" class="text-end">Average</th>
+				@for (month of Months; track $index) {
+					<th scope="col" class="text-end">
+						{{ monthLabelsAbbr[month] }}
+					</th>
+				}
+			</tr>
+			<tr class="rule-bottom">
+				<th scope="row">Usage (therms)</th>
+				<td>&nbsp;</td>
+				<th>&nbsp;</th>
+				<td>&nbsp;</td>
+				<td scope="col" class="text-end">
+					{{ vm.usage | average | number: '1.0-0' }}
+				</td>
+				@for (month of Months; track $index) {
+					<td
+						scope="col"
+						class="text-end"
+						[class.heat--enabled]="heatmapsEnabled()[Heatmap.Usage]"
+						[style]="
+							heatmapsEnabled()[Heatmap.Usage]
+								? (vm.usage[month]
+									| heat: (vm.usage | sort) : palette())
+								: undefined
+						">
+						{{ vm.usage[month] }}
+					</td>
+				}
+			</tr>
+		</thead>
+		@for (g of vm.vendors; track $index) {
+			<tbody>
+				<tr>
+					<th>
+						{{ g.vendor.name }}
+						@if (g.vendor.automated) {
+							<!-- Gear Emoji-->
+							<span title="This data is updated automatically."
+								>&#x2699;&#xFE0F;</span
+							>
+						}
+					</th>
+					<td>
+						{{ g.vendor.phone | phone }}
+					</td>
+					<td colspan="15">
+						<a
+							href="{{ g.vendor.website }}"
+							target="_blank"
+							title="Open {{
+								g.vendor.name
+							}} website in a new tab/window"
+							>{{ g.vendor.website }}</a
+						>
+					</td>
+				</tr>
+				@for (
+					o of g.offers;
+					track offerIndex;
+					let offerIndex = $index
+				) {
+					<tr>
+						<td>
+							<a
+								[routerLink]="[
+									'/choice-gas',
+									'vendors',
+									g.vendor.id,
+									'offers',
+									o.offer.id
+								]">
+								{{ o.offer.name }}
+							</a>
+						</td>
+						<td>
+							@if (o.offer.type === 'fpm') {
+								@if (o.offer.rate === 0) {
+									<a
+										[routerLink]="[
+											'/choice-gas',
+											'vendors',
+											g.vendor.id,
+											'offers',
+											o.offer.id
+										]"
+										class="link-danger"
+										>Edit Rate</a
+									>
+								} @else {
+									${{ o.offer.rate | number: '1.2-4' }}/month
+								}
+							} @else if (o.offer.type === 'fpt') {
+								${{ o.offer.rate | number: '1.2-4' }}/therm
+							} @else if (o.offer.type === 'market') {
+								{{ MarketLabels[o.offer.market] }}
+								@if (o.offer.rate > 0) {
+									+ ${{ o.offer.rate | number: '1.2-4' }}
+								} @else if (o.offer.rate < 0) {
+									- ${{ o.offer.rate * -1 | number: '1.2-4' }}
+								}
+							} @else if (o.offer.type === 'blended') {
+								Blended
+							} @else if (o.offer.type === 'best') {
+								Best
+							}
+						</td>
+						<td>{{ o.offer.term }} yr</td>
+						<td class="text-center">
+							{{ o.offer.confirmationCode ?? '- - -' }}
+						</td>
+						@if (o.offer.type === 'fpm' && o.offer.rate === 0) {
+							<td class="text-end">- - -</td>
+						} @else {
+							<td
+								class="text-end"
+								[class.highest]="o.average === highest()"
+								[class.lowest]="o.average === lowest()"
+								[class.heat--enabled]="
+									heatmapsEnabled()[Heatmap.Averages]
+								"
+								[style]="
+									heatmapsEnabled()[Heatmap.Averages]
+										? (o.average
+											| heat: averages() : palette())
+										: undefined
+								">
+								${{ o.average | number: '1.2-2' }}
+							</td>
+						}
+						@for (month of Months; track month) {
+							<td
+								class="text-end bill__total"
+								[class.heat--enabled]="
+									heatmapsEnabled()[Heatmap.Totals]
+								"
+								[style]="
+									heatmapsEnabled()[Heatmap.Totals]
+										? (o.bills[month].bill.total
+											| heat
+												: (totals() | sort)
+												: palette())
+										: undefined
+								">
+								<app-bill-total
+									[bill]="o.bills[month].bill"
+									[offer]="o.offer"></app-bill-total>
+							</td>
+						}
+					</tr>
+				} @empty {
+					<tr>
+						<td colspan="17">
+							No offers available at this time. Check back soon.
+						</td>
+					</tr>
+				}
+			</tbody>
+		}
+	</table>
 } @else {
-  <div class="row">
-    <h2>Loading...</h2>
-    <p>The price explorer is calculating your prices.</p>
-  </div>
+	<div class="row">
+		<h2>Loading...</h2>
+		<p>The price explorer is calculating your prices.</p>
+	</div>
 }
