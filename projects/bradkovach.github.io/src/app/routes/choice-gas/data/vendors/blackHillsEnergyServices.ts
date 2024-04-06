@@ -16,6 +16,7 @@ export const blackHillsEnergyServices = new Vendor(
 	'Black Hills Energy Services',
 	'https://www.choosebhes.com',
 	'8662313241',
+	true,
 );
 
 for (let offer of offers as Offer[]) {
