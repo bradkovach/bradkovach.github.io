@@ -169,7 +169,7 @@ function run() {
 
 				const offer: OfferBase & MarketOffer = {
 					type: 'market',
-					id: `market-${term}`,
+					id: `gca-${division}-${term}`,
 					name: 'Gas Cost Adjustment - ' + division + ' Division',
 					term,
 					market: Market.CIG,
