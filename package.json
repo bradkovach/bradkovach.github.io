@@ -10,8 +10,9 @@
 		"test": "ng test",
 		"new-page": "tsx ./scripts/new-page.ts --",
 		"new-post": "tsx ./scripts/new-post.ts --",
-		"run-extractors": "npm run choice-gas-wpca",
+		"run-extractors": "npm run choice-gas-wpca && npm run choice-gas-com.choicegas",
 		"choice-gas-wpca": "tsx ./scripts/choice-gas/wpca.ts --",
+		"choice-gas-com.choicegas": "tsx ./scripts/choice-gas/com.choicegas.ts --",
 		"generate-routes": "tsx ./scripts/generate-routes.ts --",
 		"update-last-updated": "tsx ./scripts/update-last-updated.ts --",
 		"serve:ssr:connections": "node dist/connections/server/server.mjs"

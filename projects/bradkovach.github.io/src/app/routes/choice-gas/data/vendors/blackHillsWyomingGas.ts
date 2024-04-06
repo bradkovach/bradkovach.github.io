@@ -1,17 +1,14 @@
+import { Offer } from '../../entity/Offer';
 import { Vendor } from '../../entity/Vendor';
-import { Market } from '../data.current';
+import offers from './json/com.choicegas.json';
 
 export const blackHillsWyomingGas = new Vendor(
-  'com.choicegas',
-  'Black Hills Wyoming Gas, LLC',
-  'https://choicegas.com',
-  '8772453506',
-).addOffer({
-  name: 'Gas Cost Adjustment (GCA) Regulated Rate',
-  term: 1,
-  type: 'market',
-  market: Market.GCA,
-  id: 'gca',
-  rate: 0,
-  confirmationCode: '99001',
+	'com.choicegas',
+	'Black Hills Wyoming Gas, LLC',
+	'https://choicegas.com',
+	'8772453506',
+);
+
+offers.forEach((offer) => {
+	blackHillsWyomingGas.addOffer(offer as Offer);
 });
