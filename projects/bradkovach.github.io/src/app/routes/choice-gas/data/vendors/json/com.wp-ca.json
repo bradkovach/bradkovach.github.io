@@ -21,6 +21,7 @@
     "id": "blended-1",
     "name": "Blended",
     "term": 1,
+    "confirmationCode": "94057",
     "offers": [
       [
         1,
@@ -81,6 +82,7 @@
     "id": "blended-2",
     "name": "Blended",
     "term": 2,
+    "confirmationCode": "94103",
     "offers": [
       [
         1,

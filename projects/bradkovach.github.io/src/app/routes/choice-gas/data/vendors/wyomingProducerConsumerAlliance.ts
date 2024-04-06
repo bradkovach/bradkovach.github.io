@@ -7,6 +7,7 @@ export const wyomingProducerConsumerAlliance = new Vendor(
 	'Wyoming Producer-Consumer Alliance',
 	'https://www.wp-ca.com/pricing',
 	'8774389722',
+	true,
 );
 
 for (const offer of offers as Offer[]) {
