@@ -37,58 +37,32 @@ export class DataService {
 		SettingsKey.Charges,
 		defaultCharges,
 		JSON.stringify,
-		(str) => {
-			try {
-				return ChargesSchema.parse(JSON.parse(str));
-			} catch {
-				return defaultCharges;
-			}
-		},
+		(str) => ChargesSchema.parse(JSON.parse(str)),
 	);
 
 	private rateOverridesSignal = storageSignal<Record<string, number>>(
 		SettingsKey.RateOverrides,
 		{},
 		JSON.stringify,
-		(str) => {
-			try {
-				return OverridesSchema.parse(JSON.parse(str));
-			} catch {
-				return {};
-			}
-		},
+		(str) => OverridesSchema.parse(JSON.parse(str)),
 	);
 
 	private ratesSignal = storageSignal<Record<Market, FixedArray<number, 12>>>(
 		SettingsKey.Rates,
 		defaultRates,
 		JSON.stringify,
-		(str) => {
-			try {
-				return RatesSchema.parse(JSON.parse(str)) as Record<
-					Market,
-					FixedArray<number, 12>
-				>;
-			} catch {
-				return defaultRates;
-			}
-		},
+		(str) =>
+			RatesSchema.parse(JSON.parse(str)) as Record<
+				Market,
+				FixedArray<number, 12>
+			>,
 	);
 
 	private usageSignal = storageSignal<FixedArray<number, 12>>(
 		SettingsKey.Usage,
 		defaultUsage,
 		JSON.stringify,
-		(str) => {
-			try {
-				return UsageSchema.parse(JSON.parse(str)) as FixedArray<
-					number,
-					12
-				>;
-			} catch {
-				return defaultUsage;
-			}
-		},
+		(str) => UsageSchema.parse(JSON.parse(str)) as FixedArray<number, 12>,
 	);
 
 	private vendorsSignal = computed(() =>
