@@ -6,18 +6,26 @@ export type Serializer<T> = (i: T) => string;
 export const STORAGE = new InjectionToken<Storage>('storage');
 
 export const storageSignal = <T, K extends string = string>(
-  key: K,
-  defaultValue: T,
-  serialize: Serializer<T> = JSON.stringify,
-  parse: Parser<T> = JSON.parse,
+	key: K,
+	defaultValue: T,
+	serialize: Serializer<T> = JSON.stringify,
+	parse: Parser<T> = JSON.parse,
 ) => {
-  const storage = inject(STORAGE);
-  const value = storage.getItem(key);
-  const s = value !== null ? signal(parse(value) as T) : signal(defaultValue);
+	const storage = inject(STORAGE);
+	const s = signal<T>(defaultValue);
 
-  effect(() => {
-    storage.setItem(key, serialize(s()));
-  });
+	effect(() => {
+		storage.setItem(key, serialize(s()));
+	});
 
-  return s;
+	try {
+		const value = storage.getItem(key);
+		if (value !== null) {
+			s.set(parse(value));
+		}
+	} catch {
+		s.set(defaultValue);
+	}
+
+	return s;
 };
