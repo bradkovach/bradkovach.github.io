@@ -38,8 +38,8 @@ function run() {
 					id: `gca-${division}-${term}`,
 					name: 'Gas Cost Adjustment - ' + division + ' Division',
 					term,
-					market: Market.CIG,
-					rate: parseFloat(priceText),
+					market: Market.GCA,
+					rate: 0,
 					confirmationCode,
 				};
 
