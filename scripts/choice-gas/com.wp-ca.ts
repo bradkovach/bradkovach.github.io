@@ -1,5 +1,4 @@
 import cheerio from 'cheerio';
-import fs from 'node:fs';
 import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/data.current';
 import {
 	BestOffer,
@@ -16,7 +15,7 @@ type ExtractFn<T extends Offer> = (
 	priceText: string,
 	confirmationCode: string,
 ) => T;
-function run() {
+export function run(): Promise<(OfferBase & Offer)[]> {
 	const url = 'https://www.wp-ca.com/pricing/';
 	const extractors: Record<string, ExtractFn<Offer>> = {
 		Fixed: (
@@ -150,34 +149,27 @@ function run() {
 			return offer;
 		},
 	};
-	fetch(url)
+	return fetch(url)
 		.then((response) => response.text())
 		.then((text) => {
 			const $ = cheerio.load(text);
 			return $;
 		})
 		.then(($) =>
-			$('#casper-section tbody tr').map((rowIdx, tr) => {
-				const tds = $(tr).find('td:not(colspan)');
-				const term = Math.floor(rowIdx / 4) + 1;
-				const [name, priceText, code] = tds
-					.toArray()
-					.slice(-3)
-					.map((td) => $(td).text().trim());
+			$('#casper-section tbody tr')
+				.map((rowIdx, tr) => {
+					const tds = $(tr).find('td:not(colspan)');
+					const term = Math.floor(rowIdx / 4) + 1;
+					const [name, priceText, code] = tds
+						.toArray()
+						.slice(-3)
+						.map((td) => $(td).text().trim());
 
-				const extractor = extractors[name];
-				if (extractor) {
-					return extractor(term, name, priceText, code);
-				}
-			}),
-		)
-		.then((offers) => {
-			// write to json file at path
-			const path =
-				'projects/bradkovach.github.io/src/app/routes/choice-gas/data/vendors/json/com.wp-ca.json';
-			const json = JSON.stringify(offers.toArray(), null, 2);
-			fs.writeFileSync(path, json, 'utf-8');
-		});
+					const extractor = extractors[name];
+					if (extractor) {
+						return extractor(term, name, priceText, code);
+					}
+				})
+				.toArray(),
+		);
 }
-
-run();

@@ -10,11 +10,7 @@
 		"test": "ng test",
 		"new-page": "tsx ./scripts/new-page.ts --",
 		"new-post": "tsx ./scripts/new-post.ts --",
-		"choice-gas": "npm run choice-gas-com.wp-ca && npm run choice-gas-com.choicegas && npm run choice-gas-com.archerenergy & npm run choice-gas-com.choosebhes",
-		"choice-gas-com.wp-ca": "tsx ./scripts/choice-gas/com.wp-ca.ts --",
-		"choice-gas-com.choicegas": "tsx ./scripts/choice-gas/com.choicegas.ts --",
-		"choice-gas-com.archerenergy": "tsx ./scripts/choice-gas/com.archerenergy.ts --",
-		"choice-gas-com.choosebhes": "tsx ./scripts/choice-gas/com.choosebhes.ts --",
+		"choice-gas": "tsx ./scripts/choice-gas.ts",
 		"generate-routes": "tsx ./scripts/generate-routes.ts --",
 		"update-last-updated": "tsx ./scripts/update-last-updated.ts --",
 		"serve:ssr:connections": "node dist/connections/server/server.mjs"

@@ -1,5 +1,4 @@
 import cheerio from 'cheerio';
-import fs from 'node:fs';
 import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/data.current';
 import {
 	BlendedOffer,
@@ -10,30 +9,21 @@ import {
 	OfferBase,
 } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
 
-type ExtractFn<T extends Offer> = (
-	term: number,
-	name: string,
-	priceText: string,
-	confirmationCode: string,
-) => T;
-function run() {
-	const url =
-		'https://www.blackhillsenergy.com/services/choice-gas-program/wyoming-choice-gas-customers/black-hills-wyoming-gas-llc-utility-gas';
-	// fetch(url)
-	const accountNumber = process.env.BHES_ACCOUNT_NUMBER;
+const accountNumber = process.env.BHES_ACCOUNT_NUMBER;
+
+export function run(): Promise<Offer[]> {
 	let cookie = '';
-	fetch('https://www.blackhillsenergyservices.com')
+	return fetch('https://www.blackhillsenergyservices.com')
 		.then((response) => {
 			cookie = response.headers.get('set-cookie') || cookie;
 			return response.text();
 		})
-
 		.then((text) => {
 			const $ = cheerio.load(text);
 			return $('input[type=hidden][name=form_build_id]').val();
 		})
-		.then((form_build_id) => {
-			return fetch('https://www.blackhillsenergyservices.com/', {
+		.then((form_build_id) =>
+			fetch('https://www.blackhillsenergyservices.com/', {
 				// credentials: 'include',
 				// redirect: 'follow',
 				headers: {
@@ -61,8 +51,8 @@ function run() {
 				method: 'POST',
 				// mode: 'cors',
 				// credentials: 'include',
-			});
-		})
+			}),
+		)
 		.then((postResponse) => {
 			cookie = postResponse.headers.get('set-cookie') || cookie;
 			return postResponse.text();
@@ -92,16 +82,15 @@ function run() {
 				},
 			);
 		})
-
 		.then((response) => response.text())
-		.then((accountPropertiesText) => {
-			return cheerio.load(accountPropertiesText, {
+		.then((accountPropertiesText) =>
+			cheerio.load(accountPropertiesText, {
 				quirksMode: true,
 				recognizeSelfClosing: true,
 				scriptingEnabled: true,
 				recognizeCDATA: true,
-			});
-		})
+			}),
+		)
 		.then(($) =>
 			$('#edit-premises .fieldset-wrapper details')
 				.map((rowIdx, details) => {
@@ -206,19 +195,9 @@ function run() {
 							market: Market.CIG,
 							rate: cig,
 						};
+					} else {
+						throw new Error('Unknown offer type, ' + o.name);
 					}
 				}),
-		)
-		.then((offers) => {
-			// write to json file at path
-			const path =
-				'projects/bradkovach.github.io/src/app/routes/choice-gas/data/vendors/json/com.choosebhes.json';
-			const json = JSON.stringify(offers, null, 2);
-			fs.writeFileSync(path, json, 'utf-8');
-		})
-		.catch((err) => {
-			console.error(err);
-		});
+		);
 }
-
-run();
