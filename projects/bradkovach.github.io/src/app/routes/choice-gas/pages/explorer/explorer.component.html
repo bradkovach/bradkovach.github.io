@@ -212,11 +212,15 @@
 								${{ o.offer.rate | number: '1.2-4' }}/therm
 							} @else if (o.offer.type === 'market') {
 								{{ MarketLabels[o.offer.market] }}
+								${{
+									vm.rates[o.offer.market][Month.January]
+										| number: '1.2-4'
+								}}
 								@if (o.offer.rate > 0) {
 									+ ${{ o.offer.rate | number: '1.2-4' }}
 								} @else if (o.offer.rate < 0) {
 									- ${{ o.offer.rate * -1 | number: '1.2-4' }}
-								}
+								} @else {}
 							} @else if (o.offer.type === 'blended') {
 								Blended
 							} @else if (o.offer.type === 'best') {

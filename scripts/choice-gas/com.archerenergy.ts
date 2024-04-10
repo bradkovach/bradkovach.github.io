@@ -1,5 +1,4 @@
 import cheerio from 'cheerio';
-import fs from 'node:fs';
 import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/data.current';
 import {
 	BlendedOffer,
@@ -9,15 +8,10 @@ import {
 	OfferBase,
 } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
 
-type ExtractFn<T extends Offer> = (
-	term: number,
-	name: string,
-	priceText: string,
-	confirmationCode: string,
-) => T;
-function run() {
-	const url = 'https://www.archerenergy.com/black-hills-casper.php';
-	fetch(url)
+const url = 'https://www.archerenergy.com/black-hills-casper.php';
+
+export function run(): Promise<(OfferBase & Offer)[]> {
+	return fetch(url)
 		.then((response) => response.text())
 		.then((text) => {
 			const $ = cheerio.load(text);
@@ -117,14 +111,8 @@ function run() {
 						default:
 							throw new Error(`Unknown plan: ${plan}`);
 					}
-				});
-		})
-		.then((offers) => {
-			// write to json file at path
-			const path =
-				'projects/bradkovach.github.io/src/app/routes/choice-gas/data/vendors/json/com.archerenergy.json';
-			const json = JSON.stringify(offers.toArray(), null, 2);
-			fs.writeFileSync(path, json, 'utf-8');
+				})
+				.toArray();
 		});
 }
 
