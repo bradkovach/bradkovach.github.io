@@ -156,7 +156,10 @@ export function run(): Promise<Offer[]> {
 							id: `blended-${o.term}`,
 							name: 'Blended',
 							term: Number(o.term),
-							confirmationCode: o.confirmationCode,
+							confirmationCode:
+								o.confirmationCode.length === 5
+									? o.confirmationCode
+									: undefined,
 							type: 'blended',
 							offers: [
 								[
