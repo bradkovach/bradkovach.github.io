@@ -1,13 +1,15 @@
 export const currentCigRate = 0.15;
 
-export const currentGcaRate = 0.3692;
+import gasCostAdjustment from './vendors/json/gas-cost-adjustment.json';
+
+export const currentGcaRate = gasCostAdjustment as number;
 
 export enum Market {
-  CIG,
-  GCA,
+	CIG,
+	GCA,
 }
 
 export const marketLabels: Record<Market, string> = {
-  [Market.CIG]: 'CIG',
-  [Market.GCA]: 'GCA',
+	[Market.CIG]: 'CIG',
+	[Market.GCA]: 'GCA',
 };

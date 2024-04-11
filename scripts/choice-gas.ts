@@ -1,5 +1,4 @@
 import { writeFile } from 'fs/promises';
-import { Offer } from '../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
 
 const drivers = [
 	'com.vistaenergymarketing',
@@ -12,9 +11,11 @@ const drivers = [
 	'org.wyomingcommunitygas',
 	'com.legacynaturalgas.www',
 	'com.choicegas',
+
+	'gas-cost-adjustment',
 ];
 
-type OfferDriver = { run: () => Promise<Offer[]> };
+type OfferDriver = { run: () => Promise<{}> };
 
 function run() {
 	const overallStart = Date.now();
