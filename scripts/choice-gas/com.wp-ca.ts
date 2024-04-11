@@ -15,7 +15,7 @@ type ExtractFn<T extends Offer> = (
 	priceText: string,
 	confirmationCode: string,
 ) => T;
-export function run(): Promise<(OfferBase & Offer)[]> {
+export function run(): Promise<Offer[]> {
 	const url = 'https://www.wp-ca.com/pricing/';
 	const extractors: Record<string, ExtractFn<Offer>> = {
 		Fixed: (
@@ -157,7 +157,8 @@ export function run(): Promise<(OfferBase & Offer)[]> {
 		})
 		.then(($) =>
 			$('#casper-section tbody tr')
-				.map((rowIdx, tr) => {
+				.toArray()
+				.map((tr, rowIdx) => {
 					const tds = $(tr).find('td:not(colspan)');
 					const term = Math.floor(rowIdx / 4) + 1;
 					const [name, priceText, code] = tds
@@ -168,8 +169,9 @@ export function run(): Promise<(OfferBase & Offer)[]> {
 					const extractor = extractors[name];
 					if (extractor) {
 						return extractor(term, name, priceText, code);
+					} else {
+						throw new Error(`Unknown offer type: ${name}`);
 					}
-				})
-				.toArray(),
+				}),
 		);
 }

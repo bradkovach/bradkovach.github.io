@@ -1,0 +1,61 @@
+[
+  {
+    "id": "fpm-1",
+    "name": "Go Pokes Fixed Bill",
+    "type": "fpm",
+    "rate": 0,
+    "term": 1,
+    "confirmationCode": "76515"
+  },
+  {
+    "id": "fpm-2",
+    "name": "Go Pokes Fixed Bill",
+    "type": "fpm",
+    "rate": 0,
+    "term": 2,
+    "confirmationCode": "76517"
+  },
+  {
+    "id": "fpt-1",
+    "name": "Go Pokes Fixed Price",
+    "type": "fpt",
+    "rate": 0.427,
+    "term": 1,
+    "confirmationCode": "76046"
+  },
+  {
+    "id": "fpt-2",
+    "name": "Go Pokes Fixed Price",
+    "type": "fpt",
+    "rate": 0.459,
+    "term": 2,
+    "confirmationCode": "76197"
+  },
+  {
+    "id": "index-1",
+    "name": "Go Pokes Index Price",
+    "type": "market",
+    "term": 1,
+    "market": 0,
+    "rate": 0.09,
+    "confirmationCode": "76320"
+  },
+  {
+    "id": "index-2",
+    "name": "Go Pokes Index Price",
+    "type": "market",
+    "term": 2,
+    "market": 0,
+    "rate": 0.085,
+    "confirmationCode": "76513"
+  },
+  {
+    "id": "gltgca-1",
+    "name": "GLTGCA",
+    "type": "market",
+    "term": 1,
+    "market": 1,
+    "rate": -0.01,
+    "confirmationCode": "76519"
+  }
+]

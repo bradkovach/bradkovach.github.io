@@ -44,6 +44,7 @@ jobs:
                   && cp dist/bradkovach.github.io/browser/index.html dist/bradkovach.github.io/browser/404.html
               env:
                   BHES_ACCOUNT_NUMBER: ${{ secrets.BHES_ACCOUNT_NUMBER }}
+                  BHE_PREMISE_ID: ${{ secrets.BHE_PREMISE_ID }}
             - name: Upload artifact
               uses: actions/upload-pages-artifact@v3
               with:

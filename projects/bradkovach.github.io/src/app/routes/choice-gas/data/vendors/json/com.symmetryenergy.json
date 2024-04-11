@@ -1,0 +1,44 @@
+[
+  {
+    "id": "WYCAS-FD2505RS-21537-43358",
+    "name": "Fixed Rate (1 Year) - Residential",
+    "term": 1,
+    "confirmationCode": "43358",
+    "rate": 0.439,
+    "type": "fpt"
+  },
+  {
+    "id": "WYCAS-FD2605RS-21538-43359",
+    "name": "Fixed Rate (2 Year) - Residential",
+    "term": 2,
+    "confirmationCode": "43359",
+    "rate": 0.475,
+    "type": "fpt"
+  },
+  {
+    "id": "WYCAS-ND2505RS-21539-43360",
+    "name": "CIG Market Index Rate (1 Year) - Residential",
+    "term": 1,
+    "confirmationCode": "43360",
+    "market": 0,
+    "rate": 0.059,
+    "type": "market"
+  },
+  {
+    "id": "WYCAS-ND2605RS-21540-43361",
+    "name": "CIG Market Index Rate (2 Year) - Residential",
+    "term": 2,
+    "confirmationCode": "43361",
+    "market": 0,
+    "rate": 0.059,
+    "type": "market"
+  },
+  {
+    "id": "WYCAS-MD2505RS-21567-43362",
+    "name": "Managed Rate (1 Year) - Residential",
+    "term": 1,
+    "confirmationCode": "43362",
+    "rate": 0.355,
+    "type": "fpt"
+  }
+]

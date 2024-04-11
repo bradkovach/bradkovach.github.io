@@ -1,53 +1,15 @@
+import { Offer } from '../../entity/Offer';
 import { Vendor } from '../../entity/Vendor';
-import { Market } from '../data.current';
+import offers from './json/com.woodriverenergy.json';
 
 export const woodRiverEnergy = new Vendor(
-  'com.woodriverenergy',
-  'WoodRiver Energy, LLC',
-  'https://www.woodriverenergy.com',
-  '8777904990',
-)
-  .addOffer({
-    id: 'fpt-1',
-    name: 'Guaranteed Fixed Price',
-    rate: 0.442,
-    type: 'fpt',
-    term: 1,
-  })
-  .addOffer({
-    id: 'fpt-2',
-    name: 'Guaranteed Fixed Price',
-    rate: 0.471,
-    type: 'fpt',
-    term: 2,
-  })
-  .addOffer({
-    id: 'index-1',
-    name: 'Guaranteed Index',
-    type: 'market',
-    market: Market.CIG,
-    term: 1,
-    rate: 0.078,
-  })
-  .addOffer({
-    id: 'index-2',
-    name: 'Guaranteed Index',
-    type: 'market',
-    market: Market.CIG,
-    term: 2,
-    rate: 0.078,
-  })
-  .addOffer({
-    id: 'fpm-1',
-    name: 'Secure Fixed Price',
-    type: 'fpm',
-    term: 1,
-    rate: 0,
-  })
-  .addOffer({
-    id: 'fpm-2',
-    name: 'Secure Fixed Price',
-    type: 'fpm',
-    term: 2,
-    rate: 0,
-  });
+	'com.woodriverenergy',
+	'WoodRiver Energy, LLC',
+	'https://www.woodriverenergy.com',
+	'8777904990',
+	true,
+);
+
+for (const offer of offers as Offer[]) {
+	woodRiverEnergy.addOffer(offer);
+}

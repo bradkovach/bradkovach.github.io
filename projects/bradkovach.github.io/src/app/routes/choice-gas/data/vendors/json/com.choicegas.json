@@ -2,28 +2,10 @@
   {
     "type": "market",
     "id": "gca-Casper-1",
-    "name": "Gas Cost Adjustment - Casper Division",
+    "name": "Gas Cost Adjustment - $0.3703 - Casper Division",
     "term": 1,
-    "market": 0,
-    "rate": 0.3645,
+    "market": 1,
+    "rate": 0,
     "confirmationCode": "99001"
-  },
-  {
-    "type": "market",
-    "id": "gca-Gillette-1",
-    "name": "Gas Cost Adjustment - Gillette Division",
-    "term": 1,
-    "market": 0,
-    "rate": 0.3645,
-    "confirmationCode": "99004"
-  },
-  {
-    "type": "market",
-    "id": "gca-Torrington-1",
-    "name": "Gas Cost Adjustment - Torrington Division",
-    "term": 1,
-    "market": 0,
-    "rate": 0.3645,
-    "confirmationCode": "99003"
   }
 ]
