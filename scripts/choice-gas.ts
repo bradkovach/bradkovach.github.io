@@ -2,16 +2,16 @@ import { writeFile } from 'fs/promises';
 import { Offer } from '../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
 
 const drivers = [
-	// 'com.vistaenergymarketing',
-	// 'com.symmetryenergy',
-	// 'com.choosebhes',
-	// 'com.woodriverenergy',
-	// 'com.archerenergy',
-	// // 'com.unclefrankenergy',
-	// 'com.wp-ca',
+	'com.vistaenergymarketing',
+	'com.symmetryenergy',
+	'com.choosebhes',
+	'com.woodriverenergy',
+	'com.archerenergy',
+	// 'com.unclefrankenergy',
+	'com.wp-ca',
 	'org.wyomingcommunitygas',
-	// 'com.legacynaturalgas.www',
-	// 'com.choicegas',
+	'com.legacynaturalgas.www',
+	'com.choicegas',
 ];
 
 type OfferDriver = { run: () => Promise<Offer[]> };
