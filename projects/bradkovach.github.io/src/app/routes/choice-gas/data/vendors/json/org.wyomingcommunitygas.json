@@ -1,0 +1,52 @@
+[
+  {
+    "type": "fpt",
+    "id": "fpt-1",
+    "name": "Fixed Price",
+    "term": 1,
+    "rate": 0.424,
+    "confirmationCode": "19219"
+  },
+  {
+    "type": "fpt",
+    "id": "fpt-2",
+    "name": "Fixed Price",
+    "term": 2,
+    "rate": 0.457,
+    "confirmationCode": "19029"
+  },
+  {
+    "type": "fpm",
+    "id": "fpm-1",
+    "name": "Fixed Monthly Bill",
+    "term": 1,
+    "rate": 0,
+    "confirmationCode": "25800"
+  },
+  {
+    "type": "fpm",
+    "id": "fpm-2",
+    "name": "Fixed Monthly Bill",
+    "term": 2,
+    "rate": 0,
+    "confirmationCode": "25830"
+  },
+  {
+    "type": "market",
+    "id": "market-1",
+    "name": "Market Index",
+    "term": 1,
+    "market": 0,
+    "rate": 0.081,
+    "confirmationCode": "28742"
+  },
+  {
+    "type": "market",
+    "id": "market-2",
+    "name": "Market Index",
+    "term": 2,
+    "market": 0,
+    "rate": 0.083,
+    "confirmationCode": "28532"
+  }
+]

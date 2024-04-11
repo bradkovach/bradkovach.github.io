@@ -23,15 +23,23 @@ interface GetQuotePricesResponse {
 }
 
 const checkIPUrl = 'https://ifconfig.io/ip';
-const CheckAccountNumberUrl = `https://enrollment.legacynaturalgas.com/api/Signup/CheckAccountNumber?custOrAcctNumber=${process.env.BHES_ACCOUNT_NUMBER}`;
+
+const CheckAccountNumberUrl = (custOrAcctNumber: string) =>
+	`https://enrollment.legacynaturalgas.com/api/Signup/CheckAccountNumber?custOrAcctNumber=${custOrAcctNumber}`;
+
 const GetQuotePricesUrl = (addressOrMeter: string, clientIP: string) =>
 	`https://enrollment.legacynaturalgas.com/api/Signup/GetQuotePrices?addressOrMeter=${addressOrMeter}&clientIP=${clientIP}`;
+
 export function run(): Promise<Offer[]> {
+	const accountNumber = process.env.BHES_ACCOUNT_NUMBER;
+	if (!accountNumber) {
+		throw new Error('BHES_ACCOUNT_NUMBER not set');
+	}
 	return Promise.all([
 		fetch(checkIPUrl)
 			.then((response) => response.text())
 			.then((ip) => ip.trim()),
-		fetch(CheckAccountNumberUrl, {
+		fetch(CheckAccountNumberUrl(accountNumber), {
 			credentials: 'omit',
 			headers: {
 				'User-Agent':
