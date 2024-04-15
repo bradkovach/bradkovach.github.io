@@ -2,7 +2,7 @@ export enum Setting {
 	Scheme = 'scheme',
 	EnabledOfferTypes = 'enabledOfferTypes',
 	Charges = 'charges',
-	OfferRateOverrides = 'offerRateOverrides',
+	OfferRateOverrides = 'rateOverrides',
 	EnabledHeatmaps = 'enabledHeatmaps',
 	SeriesOverrides = 'seriesOverrides',
 	ShowSeries = 'showSeries',
