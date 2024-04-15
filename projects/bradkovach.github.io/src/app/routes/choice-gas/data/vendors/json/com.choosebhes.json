@@ -3,8 +3,8 @@
     "id": "ratelock-1",
     "name": "Rate Lock",
     "term": 1,
-    "confirmationCode": "12066",
-    "rate": 0.426,
+    "confirmationCode": "12088",
+    "rate": 0.424,
     "type": "fpt"
   },
   {
@@ -44,7 +44,6 @@
     "id": "market-2",
     "name": "Market Index",
     "term": 2,
-    "confirmationCode": "12693",
     "type": "market",
     "market": 0,
     "rate": 0.088
@@ -53,14 +52,13 @@
     "id": "blended-1",
     "name": "Blended",
     "term": 1,
-    "confirmationCode": "12267",
     "type": "blended",
     "offers": [
       [
         0.5,
         {
           "type": "fpt",
-          "rate": 0.426
+          "rate": 0.424
         }
       ],
       [
@@ -77,7 +75,6 @@
     "id": "blended-2",
     "name": "Blended",
     "term": 2,
-    "confirmationCode": "12567",
     "type": "blended",
     "offers": [
       [

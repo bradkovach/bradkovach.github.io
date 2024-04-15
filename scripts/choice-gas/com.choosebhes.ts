@@ -93,12 +93,14 @@ export function run(): Promise<Offer[]> {
 		)
 		.then(($) =>
 			$('#edit-premises .fieldset-wrapper details')
-				.map((rowIdx, details) => {
+				.toArray()
+				.flatMap((details) => {
 					const name = $(details).find('summary div span').text();
 
 					return $(details)
 						.find('table tbody tr')
-						.map((rowIdx, tr) => {
+						.toArray()
+						.map((tr) => {
 							// term at td:nth-of-type(1) > div > label as 'n Year' or 'n Years'
 							// price at td:nth-of-type(2)
 							// confirmation code at td:nth-of-type(3)
@@ -112,11 +114,13 @@ export function run(): Promise<Offer[]> {
 								priceText,
 								confirmationCode,
 							};
-						})
-						.toArray();
+						});
 				})
-				.toArray()
 				.map((o) => {
+					const confirmationCode =
+						o.confirmationCode && o.confirmationCode.length === 5
+							? o.confirmationCode
+							: undefined;
 					if (o.name === 'Fixed Rates') {
 						// $xxx.xx/month
 						//  ~~~~~~
@@ -125,7 +129,7 @@ export function run(): Promise<Offer[]> {
 							id: `ratelock-${o.term}`,
 							name: 'Rate Lock',
 							term: Number(o.term),
-							confirmationCode: o.confirmationCode,
+							confirmationCode,
 							rate: Number(rate),
 							type: 'fpt',
 						};
@@ -134,7 +138,7 @@ export function run(): Promise<Offer[]> {
 							id: 'winterguard-' + o.term,
 							name: 'WinterGuard',
 							term: o.term,
-							confirmationCode: o.confirmationCode,
+							confirmationCode,
 							rate: 0,
 							type: 'fpm',
 						};
@@ -156,10 +160,7 @@ export function run(): Promise<Offer[]> {
 							id: `blended-${o.term}`,
 							name: 'Blended',
 							term: Number(o.term),
-							confirmationCode:
-								o.confirmationCode.length === 5
-									? o.confirmationCode
-									: undefined,
+							confirmationCode,
 							type: 'blended',
 							offers: [
 								[
@@ -193,7 +194,7 @@ export function run(): Promise<Offer[]> {
 							id: `market-${o.term}`,
 							name: 'Market Index',
 							term: Number(o.term),
-							confirmationCode: o.confirmationCode,
+							confirmationCode,
 							type: 'market',
 							market: Market.CIG,
 							rate: cig,
