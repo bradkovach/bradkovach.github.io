@@ -13,3 +13,5 @@ export const marketLabels: Record<Market, string> = {
 	[Market.CIG]: 'CIG',
 	[Market.GCA]: 'GCA',
 };
+
+export const Markets = Object.keys(marketLabels) as unknown as Market[];

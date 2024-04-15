@@ -3,16 +3,16 @@
     "id": "ratelock-1",
     "name": "Rate Lock",
     "term": 1,
-    "confirmationCode": "12009",
-    "rate": 0.436,
+    "confirmationCode": "12066",
+    "rate": 0.426,
     "type": "fpt"
   },
   {
     "id": "ratelock-2",
     "name": "Rate Lock",
     "term": 2,
-    "confirmationCode": "12238",
-    "rate": 0.466,
+    "confirmationCode": "12241",
+    "rate": 0.458,
     "type": "fpt"
   },
   {
@@ -35,38 +35,39 @@
     "id": "market-1",
     "name": "Market Index",
     "term": 1,
-    "confirmationCode": "12196",
+    "confirmationCode": "12197",
     "type": "market",
     "market": 0,
-    "rate": 0.092
+    "rate": 0.087
   },
   {
     "id": "market-2",
     "name": "Market Index",
     "term": 2,
-    "confirmationCode": "12692",
+    "confirmationCode": "12693",
     "type": "market",
     "market": 0,
-    "rate": 0.093
+    "rate": 0.088
   },
   {
     "id": "blended-1",
     "name": "Blended",
     "term": 1,
+    "confirmationCode": "12267",
     "type": "blended",
     "offers": [
       [
         0.5,
         {
           "type": "fpt",
-          "rate": 0.436
+          "rate": 0.426
         }
       ],
       [
         0.5,
         {
           "type": "market",
-          "rate": 0.092,
+          "rate": 0.087,
           "market": 0
         }
       ]
@@ -76,20 +77,21 @@
     "id": "blended-2",
     "name": "Blended",
     "term": 2,
+    "confirmationCode": "12567",
     "type": "blended",
     "offers": [
       [
         0.5,
         {
           "type": "fpt",
-          "rate": 0.466
+          "rate": 0.458
         }
       ],
       [
         0.5,
         {
           "type": "market",
-          "rate": 0.093,
+          "rate": 0.088,
           "market": 0
         }
       ]

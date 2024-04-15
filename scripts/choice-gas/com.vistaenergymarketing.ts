@@ -112,7 +112,7 @@ export function run(): Promise<Offer[]> {
 						// the GLTGCA is a market rate of the GCA mkt - 0.01
 						return {
 							id: `gltgca-${term}`,
-							name: 'GLTGCA',
+							name: 'Guaranteed Lower Than Gas Cost Adjustment',
 							type: 'market',
 							term,
 							market: Market.GCA,

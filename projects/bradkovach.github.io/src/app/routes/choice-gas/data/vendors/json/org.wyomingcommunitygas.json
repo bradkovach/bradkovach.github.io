@@ -48,5 +48,14 @@
     "market": 0,
     "rate": 0.083,
     "confirmationCode": "28532"
+  },
+  {
+    "type": "fpt",
+    "id": "fpt-2-UWYO",
+    "name": "Fixed Price - Promo Code UWYO",
+    "term": 2,
+    "rate": 0.392,
+    "confirmationCode": "19410",
+    "isSpecial": true
   }
 ]

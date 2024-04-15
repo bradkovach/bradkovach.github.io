@@ -1,139 +1,180 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { Subject, combineLatest, map, merge } from 'rxjs';
+import { combineLatest, map, take, tap } from 'rxjs';
 
 import { Title } from '@angular/platform-browser';
 import { Market, marketLabels } from '../../data/data.current';
 import {
-  defaultCharges,
-  defaultRates,
-  defaultUsage,
+	Series,
+	SeriesKeys,
+	SeriesLabels,
+	defaultCharges,
+	seriesDefaults,
 } from '../../data/data.default';
+import { Month, monthLabels } from '../../data/enum/month.enum';
 import { Charge } from '../../entity/Charge';
 import { ChargeType } from '../../entity/ChargeType';
 import { FixedArray } from '../../entity/FixedArray';
 import { DataService } from '../../services/data/data.service';
-import { Month, monthLabels } from '../explorer/explorer.component';
 
 @Component({
-  selector: 'app-data-editor',
-  standalone: true,
-  imports: [FormsModule, AsyncPipe, RouterLink],
-  templateUrl: './data-editor.component.html',
-  styleUrl: './data-editor.component.scss',
+	selector: 'app-data-editor',
+	standalone: true,
+	imports: [FormsModule, AsyncPipe, RouterLink],
+	templateUrl: './data-editor.component.html',
+	styleUrl: './data-editor.component.scss',
 })
 export class DataEditorComponent {
-  private dataService = inject(DataService);
+	private dataService = inject(DataService);
 
-  readonly ChargeType = ChargeType;
-  readonly MonthKeys = Object.keys(monthLabels) as unknown as Month[];
-  readonly MonthLabels = monthLabels;
-  readonly MarketKeys = Object.keys(marketLabels) as unknown as Market[];
-  readonly MarketLabels = marketLabels;
+	readonly ChargeType = ChargeType;
+	readonly MonthKeys = Object.keys(monthLabels) as unknown as Month[];
+	readonly MonthLabels = monthLabels;
+	readonly MarketKeys = Object.keys(marketLabels) as unknown as Market[];
+	readonly MarketLabels = marketLabels;
 
-  private lockSubject = new Subject<Record<Market, boolean>>();
+	readonly SeriesKeys = SeriesKeys;
+	readonly SeriesLabels = SeriesLabels;
 
-  vm$ = combineLatest({
-    usage: this.dataService.usage$,
-    charges: this.dataService.charges$,
-    rates: this.dataService.rates$,
-    locks: merge(
-      this.dataService.rates$.pipe(
-        map((rates) => {
-          const locks = {} as Record<Market, boolean>;
-          for (const market of this.MarketKeys) {
-            locks[market] = rates[market].every(
-              (rate, i, arr) => rate === arr[0],
-            );
-          }
-          return locks;
-        }),
-      ),
-      this.lockSubject.asObservable(),
-    ),
-  });
+	readonly locks = signal<Record<Series, boolean>>({
+		[Series.CIG]: true,
+		[Series.GCA]: true,
+		[Series.Usage]: false,
+		[Series.TemperatureHigh]: false,
+		[Series.TemperatureLow]: false,
+	});
 
-  constructor(title: Title) {
-    title.setTitle('Choice Gas - Data Editor');
-  }
+	readonly steps: Record<Series, number> = {
+		[Series.CIG]: 0.01,
+		[Series.GCA]: 0.01,
+		[Series.Usage]: 1,
+		[Series.TemperatureHigh]: 1,
+		[Series.TemperatureLow]: 1,
+	};
 
-  addCharge(charges: Charge[]) {
-    const update = [...charges];
-    update.push({ name: '', rate: 0, type: ChargeType.PerTherm });
-    this.dataService.setCharges(update);
-  }
+	vm$ = combineLatest({
+		charges: this.dataService.charges$,
+		series: this.dataService.series$,
+		vendors: this.dataService.vendors$.pipe(
+			// only vendors that have offers with type === 'fpm'
+			map((vendors) =>
+				vendors.filter((vendor) =>
+					[...vendor.offers].some(
+						([offerId, offer]) => offer.type === 'fpm',
+					),
+				),
+			),
+		),
+		locksEffect: this.dataService.series$.pipe(
+			take(1),
+			tap((values) => {
+				const locks = {} as Record<Series, boolean>;
+				for (const seriesKey of SeriesKeys) {
+					values[seriesKey].every(
+						(value, i, arr) => value === arr[0],
+					) &&
+						this.locks.update((current) => {
+							locks[seriesKey] = true;
+							return locks;
+						});
+				}
+			}),
+		),
+	});
 
-  removeCharge(index: number, charges: Charge[]) {
-    const newCharges = [...charges] as Charge[];
-    newCharges.splice(index, 1);
-    this.dataService.setCharges(newCharges);
-  }
+	constructor(title: Title) {
+		title.setTitle('Choice Gas - Data Editor');
+	}
 
-  setCharge(partialCharge: Partial<Charge>, index: number, charges: Charge[]) {
-    const oldCharge = charges[index];
-    const newCharges = [...charges] as Charge[];
-    newCharges[index] = { ...oldCharge, ...partialCharge };
+	addCharge(charges: Charge[]) {
+		const update = [...charges];
+		update.push({ name: '', rate: 0, type: ChargeType.PerTherm });
+		this.dataService.setCharges(update);
+	}
 
-    const type = newCharges[index].type;
-    if (typeof type === 'string' && type in ChargeType) {
-      newCharges[index].type = ChargeType[type] as unknown as ChargeType;
-    }
+	removeCharge(index: number, charges: Charge[]) {
+		const newCharges = [...charges] as Charge[];
+		newCharges.splice(index, 1);
+		this.dataService.setCharges(newCharges);
+	}
 
-    this.dataService.setCharges(newCharges);
-  }
+	setCharge(
+		partialCharge: Partial<Charge>,
+		index: number,
+		charges: Charge[],
+	) {
+		const oldCharge = charges[index];
+		const newCharges = [...charges] as Charge[];
+		newCharges[index] = { ...oldCharge, ...partialCharge };
 
-  resetCharges() {
-    this.dataService.setCharges(defaultCharges);
-  }
+		const type = newCharges[index].type;
+		if (typeof type === 'string' && type in ChargeType) {
+			newCharges[index].type = ChargeType[type] as unknown as ChargeType;
+		}
 
-  sortCharges(charges: Charge[]) {
-    const newCharges = [...charges] as Charge[];
-    newCharges.sort((a, b) => a.type - b.type);
-    this.dataService.setCharges(newCharges);
-  }
+		this.dataService.setCharges(newCharges);
+	}
 
-  setUsage(
-    value: string | number,
-    index: number,
-    usage: FixedArray<number, 12>,
-  ): void {
-    const newUsage = [...usage] as FixedArray<number, 12>;
-    newUsage[index] = Number(value);
-    this.dataService.setUsage(newUsage);
-  }
+	resetCharges() {
+		this.dataService.setCharges(defaultCharges);
+	}
 
-  resetUsage() {
-    this.dataService.setUsage(defaultUsage);
-  }
+	sortCharges(charges: Charge[]) {
+		const newCharges = [...charges] as Charge[];
+		newCharges.sort((a, b) => a.type - b.type);
+		this.dataService.setCharges(newCharges);
+	}
 
-  setRate(
-    rate: string | number,
-    market: Market,
-    rateIdx: number,
-    rates: Record<Market, FixedArray<number, 12>>,
-    lock: boolean,
-  ): void {
-    const newRates = { ...rates } as Record<Market, FixedArray<number, 12>>;
-    // if locked, all the values are the same
-    if (lock) {
-      for (let i = 0; i < 12; i++) {
-        newRates[market][i] = Number(rate);
-      }
-    } else {
-      newRates[market][rateIdx] = Number(rate);
-    }
-    this.dataService.setRates(newRates);
-  }
+	setSeries(
+		value: string | number,
+		key: Series,
+		rateIdx: number,
+		allSeries: Record<Series, FixedArray<number, 12>>,
+		lock: boolean,
+	): void {
+		const currentSeries = [...allSeries[key]];
 
-  resetRates() {
-    this.dataService.setRates(defaultRates);
-  }
+		currentSeries[rateIdx] = Number(value);
+		this.dataService.setSeries({
+			[key]: lock ? Array(12).fill(Number(value)) : currentSeries,
+		});
+	}
 
-  setLock(market: Market, lock: boolean, locks: Record<Market, boolean>) {
-    const newLocks = { ...locks } as Record<Market, boolean>;
-    newLocks[market] = lock;
-    this.lockSubject.next(newLocks);
-  }
+	resetSeries(series?: Series) {
+		if (series !== undefined) {
+			this.dataService.setSeries({
+				[series]: seriesDefaults[series],
+			});
+			this.locks.update((current) => ({
+				...current,
+				[series]: seriesDefaults[series].every(
+					(value, i, arr) => value === arr[0],
+				),
+			}));
+		} else {
+			SeriesKeys.forEach((key) => {
+				this.resetSeries(key as Series);
+			});
+		}
+	}
+
+	setLock(locked: boolean, value: number, series: Series) {
+		if (locked) {
+			this.dataService.setSeries({
+				[series]: Array(12).fill(value),
+			});
+		}
+		this.locks.update((current) => ({
+			...current,
+			[series]: locked,
+		}));
+	}
+
+	setRateOverride(vendorId: string, offerId: string, rate: number) {
+		this.dataService.setRateOverrides({
+			[`@${vendorId}/${offerId}`]: rate,
+		});
+	}
 }

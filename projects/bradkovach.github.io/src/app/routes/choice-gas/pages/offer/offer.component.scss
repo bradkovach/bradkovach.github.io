@@ -1,3 +1,45 @@
-.month + .month {
-  margin-top: 3em;
+.bills {
+	details {
+		article {
+			padding: 0.5em;
+		}
+		summary {
+			cursor: pointer;
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+			padding: 0.5em;
+			border-radius: 0.5em;
+			.disclosure-triangle {
+				margin-right: 0.5em;
+				flex: 0;
+			}
+			.title {
+				flex: 1;
+				font-weight: bold;
+			}
+			.figures {
+				display: flex;
+				text-align: end;
+				.col + .col {
+					margin-left: 0.5em;
+				}
+				span {
+					padding: 0.5em;
+					border-radius: 0.5em;
+					display: block;
+				}
+			}
+		}
+		&:nth-child(odd) {
+			summary {
+				background-color: #f2f2f2;
+			}
+		}
+		&[open] {
+			.disclosure-triangle {
+				transform: rotate(90deg);
+			}
+		}
+	}
 }

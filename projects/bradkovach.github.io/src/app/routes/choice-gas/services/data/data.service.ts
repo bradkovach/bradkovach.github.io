@@ -1,18 +1,18 @@
 import { Injectable, computed } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { z } from 'zod';
-import { Market } from '../../data/data.current';
 import {
+	Series,
+	SeriesKeys,
 	defaultCharges,
-	defaultRates,
-	defaultUsage,
+	seriesDefaults,
 } from '../../data/data.default';
+import { Setting } from '../../data/enum/settings.enum';
 import { vendors } from '../../data/vendors';
 import { Charge } from '../../entity/Charge';
 import { ChargeType } from '../../entity/ChargeType';
 import { FixedArray } from '../../entity/FixedArray';
 import { Offer } from '../../entity/Offer';
-import { SettingsKey } from '../../pages/explorer/explorer.component';
 import { storageSignal } from '../../pages/explorer/localStorageSignal';
 
 const ChargeSchema = z.object({
@@ -25,45 +25,84 @@ const ChargesSchema = z.array(ChargeSchema);
 
 const OverridesSchema = z.record(z.number());
 
-const RatesSchema = z.record(z.array(z.number()).length(12));
+const SeriesSchema = z.record(z.array(z.number()).length(12));
 
 const UsageSchema = z.array(z.number());
+
+export enum EnrollmentField {
+	AccountNumber,
+	ControlNumber,
+	Notes,
+}
+
+const enrollmentFieldLabel: Record<EnrollmentField, string> = {
+	[EnrollmentField.AccountNumber]: 'Account Number',
+	[EnrollmentField.ControlNumber]: 'Control Number',
+	[EnrollmentField.Notes]: 'Notes',
+};
+
+const enrollmentFieldDefaults: Record<EnrollmentField, string> = {
+	[EnrollmentField.AccountNumber]: '',
+	[EnrollmentField.ControlNumber]: '',
+	[EnrollmentField.Notes]: '',
+};
 
 @Injectable({
 	providedIn: 'root',
 })
 export class DataService {
 	private chargesSignal = storageSignal<Charge[]>(
-		SettingsKey.Charges,
+		Setting.Charges,
 		defaultCharges,
 		JSON.stringify,
 		(str) => ChargesSchema.parse(JSON.parse(str)),
 	);
 
 	private rateOverridesSignal = storageSignal<Record<string, number>>(
-		SettingsKey.RateOverrides,
+		Setting.OfferRateOverrides,
 		{},
 		JSON.stringify,
 		(str) => OverridesSchema.parse(JSON.parse(str)),
 	);
 
-	private ratesSignal = storageSignal<Record<Market, FixedArray<number, 12>>>(
-		SettingsKey.Rates,
-		defaultRates,
+	private seriesOverridesSignal = storageSignal<
+		Record<string, FixedArray<number, 12>>
+	>(
+		Setting.SeriesOverrides,
+		{},
 		JSON.stringify,
 		(str) =>
-			RatesSchema.parse(JSON.parse(str)) as Record<
-				Market,
+			SeriesSchema.parse(JSON.parse(str)) as Record<
+				string,
 				FixedArray<number, 12>
 			>,
 	);
 
-	private usageSignal = storageSignal<FixedArray<number, 12>>(
-		SettingsKey.Usage,
-		defaultUsage,
+	private enrollmentFieldSignal = storageSignal<
+		Record<EnrollmentField, string>
+	>(
+		Setting.EnrollmentFields,
+		enrollmentFieldDefaults,
 		JSON.stringify,
-		(str) => UsageSchema.parse(JSON.parse(str)) as FixedArray<number, 12>,
+		(str) =>
+			z.record(z.string()).parse(JSON.parse(str)) as Record<
+				EnrollmentField,
+				string
+			>,
 	);
+
+	enrollmentFields = this.enrollmentFieldSignal.asReadonly();
+
+	setEnrollmentField(field: EnrollmentField, value: string) {
+		this.enrollmentFieldSignal.update((current) => ({
+			...current,
+			[field]: value,
+		}));
+	}
+
+	series = computed(() => {
+		return Object.assign({}, seriesDefaults, this.seriesOverridesSignal());
+	});
 
 	private vendorsSignal = computed(() =>
 		vendors.map((vendor) => {
@@ -86,32 +125,46 @@ export class DataService {
 
 	charges$ = toObservable(this.chargesSignal);
 	rateOverrides$ = toObservable(this.rateOverridesSignal);
-	rates$ = toObservable(this.ratesSignal);
-	usage$ = toObservable(this.usageSignal);
 	vendors$ = toObservable(this.vendorsSignal);
+	series$ = toObservable(this.series);
 
 	setCharges(charges: Charge[]) {
 		this.chargesSignal.set(charges);
 	}
 
 	setRateOverrides(rateOverrides: Record<string, number>) {
-		this.rateOverridesSignal.set({
-			...this.rateOverridesSignal(),
+		this.rateOverridesSignal.update((current) => ({
+			...current,
 			...rateOverrides,
+		}));
+	}
+
+	setSeries(
+		seriesOverrides: Partial<Record<Series, FixedArray<number, 12>>>,
+	) {
+		this.seriesOverridesSignal.update((current) => {
+			const merged: Record<Series, FixedArray<number, 12>> = {
+				...seriesDefaults,
+				...current,
+				...seriesOverrides,
+			};
+			// only what isn't default
+			SeriesKeys.forEach((key) => {
+				if (
+					merged[key]?.every(
+						(value, i) => value === seriesDefaults[key][i],
+					)
+				) {
+					delete merged[key];
+				}
+			});
+
+			return merged;
 		});
 	}
 
-	setRates(rates: Record<Market, FixedArray<number, 12>>) {
-		this.ratesSignal.set(rates);
-	}
-
-	setUsage(value: FixedArray<number, 12>) {
-		this.usageSignal.set(value);
-	}
-
 	resetSettings() {
-		this.ratesSignal.set(defaultRates);
-		this.usageSignal.set(defaultUsage);
+		this.seriesOverridesSignal.set({});
 		this.rateOverridesSignal.set({});
 		this.chargesSignal.set(defaultCharges);
 	}

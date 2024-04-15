@@ -19,17 +19,17 @@
     "id": "fpt-1",
     "name": "Go Pokes Fixed Price",
     "type": "fpt",
-    "rate": 0.427,
+    "rate": 0.455,
     "term": 1,
-    "confirmationCode": "76046"
+    "confirmationCode": "76024"
   },
   {
     "id": "fpt-2",
     "name": "Go Pokes Fixed Price",
     "type": "fpt",
-    "rate": 0.459,
+    "rate": 0.49,
     "term": 2,
-    "confirmationCode": "76197"
+    "confirmationCode": "76179"
   },
   {
     "id": "index-1",
@@ -51,7 +51,7 @@
   },
   {
     "id": "gltgca-1",
-    "name": "GLTGCA",
+    "name": "Guaranteed Lower Than Gas Cost Adjustment",
     "type": "market",
     "term": 1,
     "market": 1,
