@@ -1,122 +1,249 @@
-<h2>Black Hills Energy Choice Gas</h2>
-<p>
-  Every year, Black Hills Energy sends their customers a ballot in the mail.
-  This ballot allows customers the opportunity to choose their wholesale
-  provider. Black Hills Energy will then make energy purchases on your behalf,
-  using rates that you are allowed to negotiate. If you pick a good rate, you
-  can save a tremendous amount of money on your Natural Gas bill.
-</p>
+<div class="col-md-6 mx-auto">
+	<h2>Welcome to the 2024 Choice Gas Guide</h2>
+	<p>
+		Every year, Black Hills Energy sends its customers a Choice Gas Supplier
+		Selection Form in the mail. This form allows customers the opportunity
+		to choose their wholesale natural gas provider. Black Hills Energy will
+		then make energy purchases on your behalf, that you choose. If you pick
+		a good rate, you can save a tremendous amount of money on your Natural
+		Gas bill.
+	</p>
 
-<p>
-  This site is designed to help you crunch the numbers using your own usage
-  information, so you can make an excellent decision.
-</p>
+	<p>
+		This site is designed to help you understand the Choice Gas program, and
+		allow you to visualize how different rate offers will affect your
+		natural gas bill.
+	</p>
 
-<p>
-  <a [routerLink]="['explorer']" class="btn btn-xl btn-primary"
-    >Open The Price Explorer</a
-  >
-</p>
+	<p>
+		Use the <strong>Notes</strong> tool to keep important information about
+		the Choice Gas program handy. Information entered here will be saved
+		between visits
+		<em>and it never leaves your device.</em>
+	</p>
 
-<hr />
+	<p>
+		<a
+			[routerLink]="['/choice-gas', 'explorer']"
+			class="btn btn-xl btn-primary"
+			>Open The Price Explorer</a
+		>
+	</p>
 
-<h2>Definitions</h2>
+	<hr />
 
-<dl>
-  <dt>Control Number</dt>
-  <dd>
-    Your Control Number is used to authorize a Vendor/Supplier and a Offer/Rate.
-    If you give your Control Number to a Supplier over the phone, they will be
-    able to make selections on your behalf. Keep your Control Number private,
-    and do not share it until you are ready to make a rate selection.
-  </dd>
+	<h2>Definitions</h2>
 
-  <dt>Confirmation Code</dt>
-  <dd>
-    A Confirmation Code is a unique identifier for a rate. If a Supplier offers
-    a Confirmation Code, you can use that code to lock in a rate. Suppliers will
-    often avoid giving you a Confirmation Code.
-  </dd>
+	<dl>
+		<dt>Control Number</dt>
+		<dd>
+			Your Control Number is used to authorize a Vendor/Supplier and a
+			Offer/Rate. If you give your Control Number to a Supplier over the
+			phone, they will be able to make selections on your behalf. Keep
+			your Control Number private, and do not share it until you are ready
+			to make a rate selection.
+			<em>Think of the Control Number as a password.</em>
+		</dd>
 
-  <dt>Commodity Charge</dt>
-  <dd>
-    The Commodity Charge is the cost of the natural gas you use. This is the
-    part of your bill subject to the Choice Gas program. The Commodity Charge is
-    only one part of your overall bill. Additional usage-base charges, taxes,
-    and fees will also appear on your bill.
-  </dd>
+		<dt>Confirmation Code</dt>
+		<dd>
+			A Confirmation Code is a unique identifier for a rate. If a Supplier
+			offers a Confirmation Code, you can use that code to lock in a rate.
+			Suppliers will often avoid giving you a Confirmation Code.
+		</dd>
 
-  <dt>Therm</dt>
-  <dd>
-    A therm is a unit of heat energy. One therm is equal to about 100,000
-    British Thermal Units (BTU). Natural Gas is measured and billed in therms. 1
-    MMBTU ~= 10 therms. To convert $/MMBTU price to $/therm, divide by 10.
-  </dd>
-</dl>
+		<dt>Commodity Charge</dt>
+		<dd>
+			The Commodity Charge is the cost of the natural gas you use. This is
+			the part of your bill subject to the Choice Gas program. The
+			Commodity Charge is only one part of your overall bill. Additional
+			usage-base charges, taxes, and fees will also appear on your bill.
+		</dd>
 
-<hr />
+		<dt>Therm</dt>
+		<dd>
+			A therm is a unit of heat energy. One therm is equal to about
+			100,000 British Thermal Units (BTU). Natural Gas is measured and
+			billed in therms. 1 MMBTU ~= 10 therms. To convert $/MMBTU price to
+			$/therm, divide by 10.
+		</dd>
+	</dl>
 
-<h2>Frequently Asked Questions</h2>
+	<hr />
 
-<h3>What is an Offer?</h3>
-<p>
-  An offer is a rate that a supplier is willing to sell you gas at. The offer
-  includes a commodity charge rate and a term (1 or 2 years). The commodity
-  charge is but one part of your overall bill. On your bill these are broken up
-  into four categories:
-</p>
-<dl>
-  <dt>Delivery and distribution</dt>
-  <dd>
-    These costs are a per-therm charge. The more you use, the more you pay.
-  </dd>
-  <dt>Energy Supply</dt>
-  <dd>
-    These costs are the subject of Choice Gas negotiation. You can see an Index
-    rate, Fixed/Therm, Fixed/Month, or a combination of these.
-  </dd>
-  <dt>Other Costs</dt>
-  <dd>
-    There are some administration fees here. If you have balanced billing,
-    adjustments will appear in this section.
-  </dd>
-  <dt>Taxes and Fees</dt>
-  <dd>
-    State/County taxes appear here. Some per-therm charges may also appear in
-    this section.
-  </dd>
-</dl>
+	<h2>Frequently Asked Questions</h2>
 
-<h3>Types of Rates</h3>
-<h4>Index or CIG-adder</h4>
-<p>
-  These rates track the current market price, known as CIG. If the current
-  natural gas prices are low and stable, these rates can be a good choice.
-</p>
-<h4>Fixed/Therm</h4>
-<p>
-  These rates are a fixed price per therm. If you use 100 therms at 50
-  cents/therm, the commodity charge will be $50. If you use 200 therms at 50
-  cents/therm, the commodity charge will be $100. The rate will not change for
-  the duration of your Offer term.
-</p>
-<h4>Fixed/Month (commonly called Winter rates or Budget assist rates)</h4>
-<p>
-  These rates are a fixed price per month. If you are offered a Fixed/Month rate
-  of $50, you will pay a $50 commodity charge every month, regardless of how
-  much gas you use. However, be mindful of other per-therm charges (Volumetric
-  Charge and Taxes) on your bill. Just because your commodity charge is fixed,
-  it doesn't mean your bill will also be.
-</p>
-<h4>Gas Cost Adjustment Regulated Rate (formerly known as the Pass-On Rate)</h4>
-<p>
-  This rate is a fixed price per therm, but it can change every month. The rate
-  is regulated by the Wyoming Public Service Commission, and is usually quite
-  competitive. In some ways, it is an index rate, but in other ways it can be
-  considered a fixed/therm rate, which is why it is in a category of its own.
-</p>
-<h4>Blended Rate</h4>
-<p>
-  These rates are a combination of the Fixed/Therm and Fixed/Month rates. You
-  will typically pay the lower of an index/cig rate, or a fixed/therm rate.
-</p>
+	<h3>What is an Offer?</h3>
+	<p>
+		An offer is a rate that a supplier is willing to sell you gas at. The
+		offer includes a commodity charge rate and a term (1 or 2 years). The
+		commodity charge is but one part of your overall bill. On your bill
+		these are broken up into four categories:
+	</p>
+	<dl>
+		<dt>Delivery and distribution</dt>
+		<dd>
+			These costs are a per-therm charge. The more you use, the more you
+			pay.
+		</dd>
+		<dt>Energy Supply</dt>
+		<dd>
+			These costs are the subject of Choice Gas negotiation. You can see
+			an Index rate, Fixed/Therm, Fixed/Month, or a combination of these.
+		</dd>
+		<dt>Other Costs</dt>
+		<dd>
+			There are some administration fees here. If you have balanced
+			billing, adjustments will appear in this section.
+		</dd>
+		<dt>Taxes and Fees</dt>
+		<dd>
+			State/County taxes appear here. Some per-therm charges may also
+			appear in this section.
+		</dd>
+	</dl>
+
+	<p>
+		The Price Explorer will use provided data to simulate your natural gas
+		bill for every offer and show you how your energy bill would be
+		affected. Other charges, like taxes and connection fees are also
+		simulated, and can be configured in the <strong>Data Editor</strong>.
+	</p>
+
+	<h3>What are the different rates and how are they different?</h3>
+	<dl>
+		<dt>
+			GCA/Gas Cost Adjustment Regulated Rate (formerly known as the
+			Pass-On Rate)
+		</dt>
+		<dd>
+			This rate is a fixed price per therm, but it can change every month.
+			The rate is regulated by the Wyoming Public Service Commission, and
+			is usually quite competitive. In some ways, it is an index rate, but
+			in other ways it can be considered a fixed/therm rate, which is why
+			it is in a category of its own.
+		</dd>
+
+		<dt>Market/Index/CIG-adder</dt>
+		<dd>
+			These rates track the current regional market price, known as CIG.
+			If the current natural gas prices are low and stable, these rates
+			can be a good choice.
+		</dd>
+
+		<dt>Blended Rate</dt>
+		<dd>
+			These rates are a combination of the Fixed/Therm and Fixed/Month
+			rates. Commonly, a supplier will offer more-volatile rates (like
+			Market/Index) when consumption is low, and more-stable rates (like
+			Fixed/Therm) when consumption is high.
+		</dd>
+
+		<dt>Fixed per Therm</dt>
+		<dd>
+			These rates are a fixed price per therm. If you use 100 therms at 50
+			cents/therm, the commodity charge will be $50. If you use 200 therms
+			at 50 cents/therm, the commodity charge will be $100. The rate will
+			not change for the duration of your Offer term.
+		</dd>
+
+		<dt>
+			Fixed per Month (commonly called Winter rates or Budget assist
+			rates)
+		</dt>
+		<dd>
+			These rates are a fixed price per month. If you are offered a
+			Fixed/Month rate of $50, you will pay a $50 commodity charge every
+			month, regardless of how much gas you use. However, be mindful of
+			other per-therm charges (Volumetric Charge and Taxes) on your bill.
+			Just because your commodity charge is fixed, it doesn't mean your
+			entire bill will be.
+			<strong>Generally, fixed/month offers are more costly.</strong>
+		</dd>
+	</dl>
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Type</th>
+				<th>Rate Can Change?</th>
+				<th>Regulated</th>
+				<th>Volatility</th>
+				<th>Best When&hellip;</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th>GCA/Gas Cost Adjustment</th>
+				<td>Yes, every month</td>
+				<td>Yes</td>
+				<td>Low-Medium</td>
+				<td>
+					You can tolerate a few swings in the market rate, but want
+					the security of a regulatory agency managing prices.
+				</td>
+			</tr>
+			<tr>
+				<th>Market/Index/CIG-adder</th>
+				<td>Yes, every month</td>
+				<td>No</td>
+				<td>High</td>
+				<td>
+					You can tolerate swings in the market rate, and want to take
+					advantage of low prices.
+				</td>
+			</tr>
+			<tr>
+				<th>Blended Rate</th>
+				<td>Yes, depending on how the rate is blended</td>
+				<td>No</td>
+				<td>Medium</td>
+				<td>
+					You want to take advantage of low prices when you use less
+					gas, and want to avoid potentially-high variable prices when
+					you use more gas.
+				</td>
+			</tr>
+			<tr>
+				<th>Fixed per Therm</th>
+				<td>No</td>
+				<td>No</td>
+				<td>&mdash;</td>
+				<td>
+					You want to know that your usage is the only variable
+					affecting your bill total.
+				</td>
+			</tr>
+			<tr>
+				<th>Fixed per Month</th>
+				<td>No</td>
+				<td>No</td>
+				<td>&mdash;</td>
+				<td>
+					You want to be able to use as much gas as you want without
+					causing your bill to spike.
+					<em>
+						Note: Fixed/Month rates are generally substantially
+						higher on average than other rates, and only represent
+						one charge on your bill. Other per-therm charges and
+						taxes will still fluctuate based on usage.
+					</em>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h3>How do I get my bill to be the same every month?</h3>
+	<p>
+		Enroll in
+		<a
+			href="https://www.blackhillsenergy.com/billing-and-payments/billing-options/budget-billing"
+			target="_blank"
+			>Budget Billing</a
+		>
+		from Black Hills Energy. Budget Billing uses your average bill over the
+		last 12 months to determine your monthly payment. Budget Billing makes
+		more-volatile commodity charge plans (Fixed/Therm, Index) easier to
+		budget for.
+	</p>
+</div>

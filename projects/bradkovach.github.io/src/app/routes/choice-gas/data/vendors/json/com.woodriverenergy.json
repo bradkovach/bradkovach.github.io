@@ -25,7 +25,7 @@
     "id": "fpt-2",
     "name": "Guaranteed Fixed Price",
     "term": 2,
-    "rate": 0.458
+    "rate": 0.462
   },
   {
     "type": "market",

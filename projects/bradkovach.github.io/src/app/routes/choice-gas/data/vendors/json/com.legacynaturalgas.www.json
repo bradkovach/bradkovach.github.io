@@ -4,8 +4,8 @@
     "id": "fixed-1",
     "name": "Fixed Price",
     "term": 1,
-    "rate": 0.41,
-    "confirmationCode": "20053"
+    "rate": 0.405,
+    "confirmationCode": "20052"
   },
   {
     "type": "market",

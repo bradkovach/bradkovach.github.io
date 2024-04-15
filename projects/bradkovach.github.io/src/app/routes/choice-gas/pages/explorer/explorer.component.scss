@@ -1,35 +1,51 @@
 summary {
-  cursor: pointer;
+	cursor: pointer;
 }
 
 details > details {
-  margin-left: 1em;
+	margin-left: 1em;
 }
 
 .as-inline-flex {
-  width: calc(100% - 1em);
-  display: inline-flex;
-  justify-content: space-between;
+	width: calc(100% - 1em);
+	display: inline-flex;
+	justify-content: space-between;
 }
 
 .at-end {
-  align-self: flex-end;
-  text-align: end;
+	align-self: flex-end;
+	text-align: end;
 }
 
-tr.rule-bottom {
-  box-shadow: 0 1px 0 0 var(--bs-table-border-color);
+thead.headings tr:last-of-type * {
+	box-shadow: 0 1px 0 0 var(--bs-table-border-color);
 }
 
 // .rank-12,
 .highest,
 .lowest {
-  // outline: solid 2px #aa0000;
-  // fake border with inset box-shadow
-  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.5);
-  font-weight: bold;
+	// outline: solid 2px #aa0000;
+	// fake border with inset box-shadow
+	box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.5);
+	font-weight: bold;
 }
 
 ::ng-deep .bill__total.heat--enabled a {
-  color: currentColor;
+	color: currentColor;
+}
+
+.footnotes {
+	// vertical-align: ;
+	font-size: 80%;
+	position: relative;
+	top: -0.5em;
+	z-index: 0;
+
+	a {
+		text-decoration: none;
+		color: #555;
+	}
+	.footnote + .footnote {
+		margin-left: 0.25em;
+	}
 }

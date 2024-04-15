@@ -1,30 +1,132 @@
-<h1>Choice Gas</h1>
-<hr />
-<nav>
-  <dl>
-    <dt><a [routerLink]="['./']">Choice Gas Home</a></dt>
-    <dd>
-      Learn about the tools and learn how to understand the Choice Gas program.
-    </dd>
+<nav class="navbar navbar-expand border-bottom mb-3">
+	<div class="container-fluid px-0">
+		<a class="navbar-brand" [routerLink]="['/choice-gas']"
+			>Choice Gas Guide</a
+		>
+		<button
+			class="navbar-toggler"
+			type="button"
+			data-bs-toggle="collapse"
+			data-bs-target="#navbarNav"
+			aria-controls="navbarNav"
+			aria-expanded="false"
+			aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarNav">
+			<ul class="navbar-nav">
+				<li class="nav-item">
+					<a
+						class="nav-link"
+						aria-current="page"
+						[routerLink]="['/choice-gas']"
+						>Program Information</a
+					>
+				</li>
+				<li class="nav-item">
+					<a class="nav-link" [routerLink]="['/choice-gas/explorer']"
+						>Price Explorer</a
+					>
+				</li>
+				<li class="nav-item">
+					<a
+						class="nav-link"
+						[routerLink]="['/choice-gas/data-editor']"
+						>Data Editor</a
+					>
+				</li>
+			</ul>
+			<span class="navbar-text navbar-expand flex-grow-1 text-center">
+				<em>Updated {{ updated | date: 'medium' }}</em>
+			</span>
+		</div>
 
-    <dt><a [routerLink]="['explorer']">Price Explorer</a></dt>
-    <dd>
-      Explore competitive natural gas offers and simulate your bill based on
-      your past usage.
-    </dd>
-
-    <dt><a [routerLink]="['data-editor']">Data Editor</a></dt>
-    <dd>Edit your therm usage data, market rate data and extra charges.</dd>
-
-    <!--
-    <dt><a [routerLink]="['developers']">Developer Information</a></dt>
-    <dd>
-      Learn how to provide competitive real-time data to this tool and win
-      customers with less effort.
-    </dd>
-  --></dl>
+		<ul class="navbar-nav">
+			<li class="nav-item">
+				<button
+					class="btn btn-primary"
+					type="button"
+					data-bs-toggle="offcanvas"
+					data-bs-target="#notes"
+					aria-controls="notes"
+					(click)="toggleNotes()">
+					Open My Notes
+				</button>
+			</li>
+		</ul>
+	</div>
 </nav>
-<hr />
+
+<div
+	class="offcanvas offcanvas-end"
+	[class.show]="showNotes() === true"
+	tabindex="-1"
+	id="notes"
+	aria-labelledby="notesLabel">
+	<div class="offcanvas-header">
+		<h5 class="offcanvas-title" id="notesLabel">Notes</h5>
+		<button
+			type="button"
+			class="btn-close"
+			(click)="setShowNotes(false)"
+			aria-label="Close"></button>
+	</div>
+	<div class="offcanvas-body">
+		<p>
+			Enter your account information to enable quick enrollment links in
+			the Price Explorer. Click any Confirmation Code to enroll in a few
+			clicks. Anyone with your Account Number and Confirmation Code can
+			make a supplier selection on your behalf. Treat this information as
+			confidential.
+		</p>
+
+		<p>
+			<em
+				>This data never leaves your browser and syncs between windows
+				automatically.</em
+			>
+		</p>
+
+		<div class="mb-3">
+			<label for="accountNumber" class="form-label">Account number</label>
+			<input
+				id="accountNumber"
+				type="text"
+				class="form-control"
+				[ngModel]="enrollmentFields()[EnrollmentField.AccountNumber]"
+				(ngModelChange)="
+					setEnrollmentField(EnrollmentField.AccountNumber, $event)
+				" />
+		</div>
+
+		<div class="mb-3">
+			<label for="controlNumber" class="form-label">Control Number</label>
+			<input
+				id="controlNumber"
+				type="text"
+				class="form-control"
+				[ngModel]="enrollmentFields()[EnrollmentField.ControlNumber]"
+				(ngModelChange)="
+					setEnrollmentField(EnrollmentField.ControlNumber, $event)
+				" />
+		</div>
+
+		<div class="mb-3">
+			<label for="notes" class="form-label">Notes</label>
+			<textarea
+				name="notes"
+				id="notes"
+				cols="30"
+				class="form-control"
+				[ngModel]="enrollmentFields()[EnrollmentField.Notes]"
+				(ngModelChange)="
+					setEnrollmentField(EnrollmentField.Notes, $event)
+				"
+				rows="{{ notesLines() }}"></textarea>
+		</div>
+	</div>
+</div>
+
 <main>
-  <router-outlet></router-outlet>
+	<router-outlet></router-outlet>
 </main>

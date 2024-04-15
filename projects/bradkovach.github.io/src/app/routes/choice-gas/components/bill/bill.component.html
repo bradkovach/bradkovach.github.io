@@ -1,88 +1,94 @@
 @if (bill(); as b) {
-  <table class="table table-striped">
-    <tbody>
-      <tr>
-        <th class="text-start">Per-Therm Charges</th>
-        <th class="text-end">Therms</th>
-        <th class="text-end">Rate</th>
-        <th class="text-end">Charge</th>
-      </tr>
-      @for (line of b.lines[ChargeType.PerTherm]; track $index) {
-        <tr>
-          <td>{{ line[0] }}</td>
-          <td class="text-end">{{ line[1] | number: "1.0-0" }}</td>
-          <td class="text-end">{{ line[2] | number: "1.2-4" }}</td>
-          <td class="text-end">{{ line[3] | number: "1.2-2" }}</td>
-        </tr>
-      }
-      <tr>
-        <td colspan="3"><em>Per-Therm subtotal</em></td>
-        <td class="text-end">
-          {{ b.subtotals[0] | number: "1.2-2" }}
-        </td>
-      </tr>
-    </tbody>
-    <tbody>
-      <tr>
-        <th class="text-start text-strong">Per-Month Charges</th>
-        <th class="text-end">&nbsp;</th>
-        <th class="text-end">&nbsp;</th>
-        <th class="text-end">Charge</th>
-      </tr>
-      @for (line of b.lines[ChargeType.PerMonth]; track $index) {
-        <tr>
-          <td colspan="3">{{ line[0] }}</td>
-          <td class="text-end">{{ line[3] | number: "1.2-2" }}</td>
-        </tr>
-      }
-      <tr class="subtotal">
-        <td colspan="3"><em>Per-Month subtotal</em></td>
-        <td class="text-end">
-          {{ b.subtotals[ChargeType.PerMonth] | number: "1.2-2" }}
-        </td>
-      </tr>
-    </tbody>
-    <tbody>
-      <tr>
-        <th>Taxes</th>
-        <th class="text-end">Amount</th>
-        <th class="text-end">Rate</th>
-        <th class="text-end">Charge</th>
-      </tr>
-      @for (line of b.lines[ChargeType.Tax]; track $index) {
-        <tr>
-          <td>{{ line[0] }}</td>
-          <td class="text-end">{{ line[1] | number: "1.2-2" }}</td>
-          <td class="text-end">{{ line[2] * 100 | number: "1.0-2" }}%</td>
-          <td class="text-end">{{ line[3] | number: "1.2-2" }}</td>
-        </tr>
-      }
-      <tr class="subtotal">
-        <td colspan="3"><em>Taxes subtotal</em></td>
-        <td class="text-end">
-          {{ b.subtotals[2] | number: "1.2-2" }}
-        </td>
-      </tr>
-    </tbody>
-    <tfoot>
-      <tr>
-        <td colspan="3"><strong>Total</strong></td>
-        <td class="text-end">
-          <strong>{{ b.total | number: "1.2-2" }}</strong>
-        </td>
-      </tr>
-      <tr>
-        <td colspan="3"><em>Average $/therm</em> (lower is better)</td>
-        <td class="text-end">
-          {{ b.total / b.therms | number: "1.2-2" }}
-        </td>
-      </tr>
-      <tr>
-        <td colspan="3"><em>Average therm/$</em> (higher is better)</td>
-        <td class="text-end">
-          {{ b.therms / b.total | number: "1.2-4" }}
-        </td>
-      </tr>
-    </tfoot>
-  </table>
+	<table class="table table-sm">
+		<tbody>
+			<tr>
+				<th class="text-start">Per-Therm Charges</th>
+				<th class="text-end">Therms</th>
+				<th class="text-end">Rate</th>
+				<th class="text-end">Charge</th>
+			</tr>
+			@for (line of b.lines[ChargeType.PerTherm]; track $index) {
+				<tr>
+					<td>{{ line[0] }}</td>
+					<td class="text-end">{{ line[1] | number: '1.0-0' }}</td>
+					<td class="text-end">{{ line[2] | number: '1.2-4' }}</td>
+					<td class="text-end">{{ line[3] | number: '1.2-2' }}</td>
+				</tr>
+			}
+			<tr>
+				<td colspan="3" class="text-end">
+					<em>Per-Therm subtotal</em>
+				</td>
+				<td class="text-end">
+					{{ b.subtotals[0] | number: '1.2-2' }}
+				</td>
+			</tr>
+		</tbody>
+		<tbody class="table-group-divider">
+			<tr>
+				<th class="text-start text-strong">Per-Month Charges</th>
+				<th class="text-end">&nbsp;</th>
+				<th class="text-end">&nbsp;</th>
+				<th class="text-end">Charge</th>
+			</tr>
+			@for (line of b.lines[ChargeType.PerMonth]; track $index) {
+				<tr>
+					<td colspan="3">{{ line[0] }}</td>
+					<td class="text-end">{{ line[3] | number: '1.2-2' }}</td>
+				</tr>
+			}
+			<tr class="subtotal">
+				<td colspan="3" class="text-end">
+					<em>Per-Month subtotal</em>
+				</td>
+				<td class="text-end">
+					{{ b.subtotals[ChargeType.PerMonth] | number: '1.2-2' }}
+				</td>
+			</tr>
+		</tbody>
+		<tbody class="table-group-divider">
+			<tr>
+				<th>Taxes</th>
+				<th class="text-end">Amount</th>
+				<th class="text-end">Rate</th>
+				<th class="text-end">Charge</th>
+			</tr>
+			@for (line of b.lines[ChargeType.Tax]; track $index) {
+				<tr>
+					<td>{{ line[0] }}</td>
+					<td class="text-end">{{ line[1] | number: '1.2-2' }}</td>
+					<td class="text-end">
+						{{ line[2] * 100 | number: '1.0-2' }}%
+					</td>
+					<td class="text-end">{{ line[3] | number: '1.2-2' }}</td>
+				</tr>
+			}
+			<tr class="subtotal text-end">
+				<td colspan="3"><em>Taxes subtotal</em></td>
+				<td class="text-end">
+					{{ b.subtotals[2] | number: '1.2-2' }}
+				</td>
+			</tr>
+		</tbody>
+		<tfoot class="table-group-divider text-end">
+			<tr>
+				<td colspan="3"><strong>Total</strong></td>
+				<td class="text-end">
+					<strong>{{ b.total | number: '1.2-2' }}</strong>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3"><em>Average $/therm</em> (lower is better)</td>
+				<td class="text-end">
+					{{ b.total / b.therms | number: '1.2-2' }}
+				</td>
+			</tr>
+			<tr>
+				<td colspan="3"><em>Average therm/$</em> (higher is better)</td>
+				<td class="text-end">
+					{{ b.therms / b.total | number: '1.2-4' }}
+				</td>
+			</tr>
+		</tfoot>
+	</table>
 }

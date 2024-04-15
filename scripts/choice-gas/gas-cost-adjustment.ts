@@ -28,7 +28,7 @@ export function run(): Promise<number> {
 		)
 		.then((price) => {
 			if (!price) {
-				throw new Error('Failed to parse price');
+				throw new Error('Failed to parse price: ' + price);
 			}
 			return price;
 		});
