@@ -32,11 +32,10 @@ export class MarkdownService {
 }
 
 @Component({
-  selector: 'app-post',
-  standalone: true,
-  imports: [AsyncPipe, JsonPipe, DatePipe],
-  templateUrl: './post.component.html',
-  styleUrl: './post.component.scss',
+    selector: 'app-post',
+    imports: [AsyncPipe, JsonPipe, DatePipe],
+    templateUrl: './post.component.html',
+    styleUrl: './post.component.scss'
 })
 export class PostComponent {
   private posts = inject(PostsService);

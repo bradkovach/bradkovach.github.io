@@ -20,11 +20,10 @@ import { FixedArray } from '../../entity/FixedArray';
 import { DataService } from '../../services/data/data.service';
 
 @Component({
-	selector: 'app-data-editor',
-	standalone: true,
-	imports: [FormsModule, AsyncPipe, RouterLink],
-	templateUrl: './data-editor.component.html',
-	styleUrl: './data-editor.component.scss',
+    selector: 'app-data-editor',
+    imports: [FormsModule, AsyncPipe, RouterLink],
+    templateUrl: './data-editor.component.html',
+    styleUrl: './data-editor.component.scss'
 })
 export class DataEditorComponent {
 	private dataService = inject(DataService);

@@ -27,11 +27,10 @@ export class PostsService {
 }
 
 @Component({
-  selector: 'app-posts',
-  standalone: true,
-  imports: [AsyncPipe, JsonPipe],
-  templateUrl: './posts.component.html',
-  styleUrl: './posts.component.scss',
+    selector: 'app-posts',
+    imports: [AsyncPipe, JsonPipe],
+    templateUrl: './posts.component.html',
+    styleUrl: './posts.component.scss'
 })
 export class PostsComponent {
   private postsService = inject(PostsService);

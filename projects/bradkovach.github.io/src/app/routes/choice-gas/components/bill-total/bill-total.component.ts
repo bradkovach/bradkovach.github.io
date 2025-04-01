@@ -7,11 +7,10 @@ import { ChargeType } from '../../entity/ChargeType';
 import { Offer } from '../../entity/Offer';
 
 @Component({
-	selector: 'app-bill-total',
-	standalone: true,
-	imports: [DecimalPipe, RouterLink],
-	templateUrl: './bill-total.component.html',
-	styleUrl: './bill-total.component.scss',
+    selector: 'app-bill-total',
+    imports: [DecimalPipe, RouterLink],
+    templateUrl: './bill-total.component.html',
+    styleUrl: './bill-total.component.scss'
 })
 export class BillTotalComponent {
 	readonly ChargeType = ChargeType;

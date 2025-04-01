@@ -4,11 +4,10 @@ import { FormsModule, NgModel } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-  selector: 'app-connections',
-  standalone: true,
-  imports: [RouterOutlet, FormsModule, DatePipe],
-  templateUrl: './connections.component.html',
-  styleUrl: './connections.component.scss',
+    selector: 'app-connections',
+    imports: [RouterOutlet, FormsModule, DatePipe],
+    templateUrl: './connections.component.html',
+    styleUrl: './connections.component.scss'
 })
 export class ConnectionsComponent {
   connectionsEpoch = new Date('2021-01-01T00:00:00.000Z');

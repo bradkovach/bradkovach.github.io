@@ -30,11 +30,10 @@ const VendorSchema = z.object({
 });
 
 @Component({
-	selector: 'app-cg-import',
-	standalone: true,
-	imports: [AsyncPipe, JsonPipe, NgTemplateOutlet, DecimalPipe, FormsModule],
-	templateUrl: './import.component.html',
-	styleUrl: './import.component.scss',
+    selector: 'app-cg-import',
+    imports: [AsyncPipe, JsonPipe, NgTemplateOutlet, DecimalPipe, FormsModule],
+    templateUrl: './import.component.html',
+    styleUrl: './import.component.scss'
 })
 export class ImportComponent {
 	private dataService = inject(DataService);

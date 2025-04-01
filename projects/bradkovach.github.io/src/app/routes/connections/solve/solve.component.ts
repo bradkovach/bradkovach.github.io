@@ -16,11 +16,10 @@ type SolveViewModel =
     };
 
 @Component({
-  selector: 'app-solve',
-  standalone: true,
-  imports: [AsyncPipe, PuzzleComponent, RouterLink],
-  templateUrl: './solve.component.html',
-  styleUrl: './solve.component.scss',
+    selector: 'app-solve',
+    imports: [AsyncPipe, PuzzleComponent, RouterLink],
+    templateUrl: './solve.component.html',
+    styleUrl: './solve.component.scss'
 })
 export class SolveComponent {
   private readonly route = inject(ActivatedRoute);

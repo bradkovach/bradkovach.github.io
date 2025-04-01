@@ -43,23 +43,22 @@ const mapSet = <T, U>(set: Set<T>, fn: (item: T) => U): Set<U> => {
 };
 
 @Component({
-  selector: 'app-puzzle',
-  standalone: true,
-  imports: [
-    DatePipe,
-    AsyncPipe,
-    JsonPipe,
-    NgFor,
-    NgIf,
-    TransitionGroupComponent,
-    TransitionGroupItemDirective,
-    RouterLink,
-    PrintSymbolMembersPipe,
-    ExclusiveRangePipe,
-    EpochToDatePipe,
-  ],
-  templateUrl: './puzzle.component.html',
-  styleUrls: ['./puzzle.component.scss'],
+    selector: 'app-puzzle',
+    imports: [
+        DatePipe,
+        AsyncPipe,
+        JsonPipe,
+        NgFor,
+        NgIf,
+        TransitionGroupComponent,
+        TransitionGroupItemDirective,
+        RouterLink,
+        PrintSymbolMembersPipe,
+        ExclusiveRangePipe,
+        EpochToDatePipe,
+    ],
+    templateUrl: './puzzle.component.html',
+    styleUrls: ['./puzzle.component.scss']
 })
 export class PuzzleComponent {
   private readonly groupsAll = new Map<string, SymbolLevel>();

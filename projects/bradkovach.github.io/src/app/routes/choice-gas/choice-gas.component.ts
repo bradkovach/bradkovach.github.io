@@ -7,11 +7,10 @@ import { WINDOW } from './pages/explorer/localStorageSignal';
 import { DataService, EnrollmentField } from './services/data/data.service';
 
 @Component({
-	selector: 'app-choice-gas-root',
-	standalone: true,
-	imports: [RouterOutlet, RouterLink, FormsModule, DatePipe],
-	templateUrl: './choice-gas.component.html',
-	styleUrl: './choice-gas.component.scss',
+    selector: 'app-choice-gas-root',
+    imports: [RouterOutlet, RouterLink, FormsModule, DatePipe],
+    templateUrl: './choice-gas.component.html',
+    styleUrl: './choice-gas.component.scss'
 })
 export class ChoiceGasComponent {
 	private readonly dataService = inject(DataService);

@@ -2,11 +2,10 @@ import { DecimalPipe } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
-  selector: 'app-integer',
-  standalone: true,
-  imports: [DecimalPipe],
-  templateUrl: './integer.component.html',
-  styleUrl: './integer.component.scss',
+    selector: 'app-integer',
+    imports: [DecimalPipe],
+    templateUrl: './integer.component.html',
+    styleUrl: './integer.component.scss'
 })
 export class IntegerComponent {
   private _max: number = Number.MAX_SAFE_INTEGER;

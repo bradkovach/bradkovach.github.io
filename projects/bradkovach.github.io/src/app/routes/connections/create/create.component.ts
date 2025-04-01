@@ -10,11 +10,10 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { PuzzleHelpers } from '../../../helpers/puzzle-helpers';
 
 @Component({
-  selector: 'app-create',
-  standalone: true,
-  imports: [FormsModule, JsonPipe, RouterLink],
-  templateUrl: './create.component.html',
-  styleUrl: './create.component.scss',
+    selector: 'app-create',
+    imports: [FormsModule, JsonPipe, RouterLink],
+    templateUrl: './create.component.html',
+    styleUrl: './create.component.scss'
 })
 export class CreateComponent {
   private readonly router = inject(Router);

@@ -2,11 +2,10 @@ import { Component, ContentChildren, Input, QueryList } from '@angular/core';
 import { TransitionGroupItemDirective } from './transition-group-item.directive';
 
 @Component({
-  selector: '[transition-group]',
-  standalone: true,
-  imports: [],
-  template: '<ng-content></ng-content>',
-  styles: [],
+    selector: '[transition-group]',
+    imports: [],
+    template: '<ng-content></ng-content>',
+    styles: []
 })
 export class TransitionGroupComponent {
   @Input('transition-group') class: string = 'transition-group';
