@@ -1,9 +1,11 @@
 import cheerio from 'cheerio';
+import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/data.current';
+import { MarketOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
 
 const url =
 	'https://www.blackhillsenergy.com/services/choice-gas-program/wyoming-choice-gas-customers/black-hills-wyoming-gas-llc-utility-gas';
 
-export function run(): Promise<number> {
+export function run(): Promise<MarketOffer[]> {
 	return fetch(url)
 		.then((response) => response.text())
 		.then((text) => {
@@ -30,7 +32,13 @@ export function run(): Promise<number> {
 			if (!price) {
 				throw new Error('Failed to parse price: ' + price);
 			}
-			return price;
+			return [
+				{
+					type: 'market',
+					market: Market.GCA,
+					rate: price,
+				} as MarketOffer,
+			];
 		});
 }
 

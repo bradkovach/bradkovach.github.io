@@ -1,8 +1,10 @@
 export const currentCigRate = 0.15;
 
+import { MarketOffer } from '../entity/Offer';
 import gasCostAdjustment from './vendors/json/gas-cost-adjustment.json';
 
-export const currentGcaRate = gasCostAdjustment as number;
+const [offer] = gasCostAdjustment as MarketOffer[];
+export const currentGcaRate = offer.rate ?? 0;
 
 export enum Market {
 	CIG,
