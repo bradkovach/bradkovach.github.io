@@ -43,26 +43,24 @@ import { Footnote, footnoteExplanations, footnoteSymbols } from './Footnote';
 import { storageSignal } from './localStorageSignal';
 
 @Component({
-	selector: 'app-choice-gas-calculator',
-	standalone: true,
-	imports: [
-		FormsModule,
-		BillComponent,
-		DecimalPipe,
-		AsyncPipe,
-		RouterLink,
-		AveragePipe,
-		PhonePipe,
-		DatePipe,
-		HeatPipe,
-		SortPipe,
-		BillTotalComponent,
-		EnrollmentLinkPipe,
-	],
-	templateUrl: './explorer.component.html',
-
-	styleUrls: [`./explorer.component.scss`],
-	changeDetection: ChangeDetectionStrategy.OnPush,
+    selector: 'app-choice-gas-calculator',
+    imports: [
+        FormsModule,
+        BillComponent,
+        DecimalPipe,
+        AsyncPipe,
+        RouterLink,
+        AveragePipe,
+        PhonePipe,
+        DatePipe,
+        HeatPipe,
+        SortPipe,
+        BillTotalComponent,
+        EnrollmentLinkPipe,
+    ],
+    templateUrl: './explorer.component.html',
+    styleUrls: [`./explorer.component.scss`],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ExplorerComponent {
 	private readonly dataService = inject(DataService);

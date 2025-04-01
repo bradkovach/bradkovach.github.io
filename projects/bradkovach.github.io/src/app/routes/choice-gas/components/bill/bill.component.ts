@@ -4,11 +4,10 @@ import { Bill } from '../../entity/Bill';
 import { ChargeType } from '../../entity/ChargeType';
 
 @Component({
-  selector: 'app-bill',
-  standalone: true,
-  imports: [JsonPipe, DecimalPipe],
-  templateUrl: './bill.component.html',
-  styleUrl: './bill.component.scss',
+    selector: 'app-bill',
+    imports: [JsonPipe, DecimalPipe],
+    templateUrl: './bill.component.html',
+    styleUrl: './bill.component.scss'
 })
 export class BillComponent {
   bill = input.required<Bill>();

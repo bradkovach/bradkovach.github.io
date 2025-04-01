@@ -32,15 +32,14 @@ export enum BonusTier {
 }
 
 @Component({
-  selector: 'bk-games-acquire',
-  standalone: true,
-  imports: [
-    ...[CommonModule, FormsModule],
-    ...[IntegerComponent],
-    ...[PriceBySchedulePipe, NetWorthPipe],
-  ],
-  templateUrl: './acquire.component.html',
-  styleUrls: ['./acquire.component.scss'],
+    selector: 'bk-games-acquire',
+    imports: [
+        ...[CommonModule, FormsModule],
+        ...[IntegerComponent],
+        ...[PriceBySchedulePipe, NetWorthPipe],
+    ],
+    templateUrl: './acquire.component.html',
+    styleUrls: ['./acquire.component.scss']
 })
 export class AcquireComponent {
   name = 'Angular';

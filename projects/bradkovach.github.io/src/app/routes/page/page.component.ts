@@ -65,11 +65,10 @@ export class PageService {
 }
 
 @Component({
-  selector: 'app-page',
-  standalone: true,
-  imports: [AsyncPipe, JsonPipe, DatePipe],
-  templateUrl: './page.component.html',
-  styleUrl: './page.component.scss',
+    selector: 'app-page',
+    imports: [AsyncPipe, JsonPipe, DatePipe],
+    templateUrl: './page.component.html',
+    styleUrl: './page.component.scss'
 })
 export class PageComponent {
   private pageService = inject(PageService);

@@ -25,21 +25,20 @@ import { DataService } from '../../services/data/data.service';
 import { storageSignal } from '../explorer/localStorageSignal';
 
 @Component({
-	selector: 'app-offer',
-	standalone: true,
-	imports: [
-		AsyncPipe,
-		JsonPipe,
-		PhonePipe,
-		DecimalPipe,
-		BillComponent,
-		BillPipe,
-		FormsModule,
-		HeatPipe,
-		SortPipe,
-	],
-	templateUrl: './offer.component.html',
-	styleUrl: './offer.component.scss',
+    selector: 'app-offer',
+    imports: [
+        AsyncPipe,
+        JsonPipe,
+        PhonePipe,
+        DecimalPipe,
+        BillComponent,
+        BillPipe,
+        FormsModule,
+        HeatPipe,
+        SortPipe,
+    ],
+    templateUrl: './offer.component.html',
+    styleUrl: './offer.component.scss'
 })
 export class OfferComponent {
 	readonly MonthKeys = Object.keys(monthLabels) as unknown as Month[];

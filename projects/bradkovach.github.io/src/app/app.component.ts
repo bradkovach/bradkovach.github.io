@@ -2,11 +2,10 @@ import { Component, signal } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 
 @Component({
-  imports: [RouterOutlet, RouterLink],
-  selector: 'app-root',
-  standalone: true,
-  styleUrl: './app.component.scss',
-  templateUrl: './app.component.html',
+    imports: [RouterOutlet, RouterLink],
+    selector: 'app-root',
+    styleUrl: './app.component.scss',
+    templateUrl: './app.component.html'
 })
 export class AppComponent {
   private _containerMode = signal<'fixed' | 'fluid'>('fixed');

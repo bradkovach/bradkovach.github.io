@@ -5,11 +5,10 @@ import { PhonePipe } from '../../pipes/phone/phone.pipe';
 import { DataService } from '../../services/data/data.service';
 
 @Component({
-  selector: 'app-vendor',
-  standalone: true,
-  imports: [PhonePipe, AsyncPipe],
-  templateUrl: './vendor.component.html',
-  styleUrl: './vendor.component.scss',
+    selector: 'app-vendor',
+    imports: [PhonePipe, AsyncPipe],
+    templateUrl: './vendor.component.html',
+    styleUrl: './vendor.component.scss'
 })
 export class VendorComponent {
   vendorId = input.required<string>();
