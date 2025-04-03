@@ -1,15 +1,12 @@
-export const currentCigRate = 0.15;
+export const currentCigRate = 0.37;
 
-import { MarketOffer } from '../entity/Offer';
-import gasCostAdjustment from './vendors/json/gas-cost-adjustment.json';
+import type { FixedPerThermOffer } from '../entity/Offer';
 
-const [offer] = gasCostAdjustment as MarketOffer[];
-export const currentGcaRate = offer.rate ?? 0;
+import { Market } from './Market';
+import gasCostAdjustment from './vendors/json/com.choicegas.json';
 
-export enum Market {
-	CIG,
-	GCA,
-}
+const [offer] = gasCostAdjustment as FixedPerThermOffer[];
+export const currentGcaRate = offer?.rate ?? 0;
 
 export const marketLabels: Record<Market, string> = {
 	[Market.CIG]: 'CIG',

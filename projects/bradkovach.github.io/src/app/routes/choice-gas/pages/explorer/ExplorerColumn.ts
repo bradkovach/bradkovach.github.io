@@ -7,10 +7,10 @@ export enum ExplorerColumn {
 	Month,
 }
 export const explorerColumnLabels: Record<ExplorerColumn, string> = {
-	[ExplorerColumn.Name]: 'Name',
-	[ExplorerColumn.CommmodityCharge]: 'Comm. Chg',
-	[ExplorerColumn.Term]: 'Term',
-	[ExplorerColumn.ConfirmationCode]: 'Conf. Code',
 	[ExplorerColumn.Average]: 'Average',
+	[ExplorerColumn.CommmodityCharge]: 'Comm. Chg',
+	[ExplorerColumn.ConfirmationCode]: 'Conf. Code',
 	[ExplorerColumn.Month]: 'Monthly',
+	[ExplorerColumn.Name]: 'Name',
+	[ExplorerColumn.Term]: 'Term',
 };

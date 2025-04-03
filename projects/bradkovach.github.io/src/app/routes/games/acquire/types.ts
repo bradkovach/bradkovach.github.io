@@ -8,26 +8,6 @@ export enum Chain {
   Imperial,
 }
 
-export interface Balance extends Record<Chain, number> {
-  [Chain.Sackson]: number;
-  [Chain.Tower]: number;
-  [Chain.Worldwide]: number;
-  [Chain.American]: number;
-  [Chain.Festival]: number;
-  [Chain.Continental]: number;
-  [Chain.Imperial]: number;
-  cash: number;
-}
-
-export interface Player extends Balance {
-  name: string;
-}
-
-export interface Transaction extends Balance {
-  debitIdx: number;
-  creditIdx: number;
-}
-
 // These are offsets that can be used in the lookup table
 export enum Schedule {
   Threshold = 0,
@@ -36,14 +16,34 @@ export enum Schedule {
   Tier3 = 3,
 }
 
+export enum Screen {
+  Balances,
+  NetWorth,
+  Schedules,
+}
+
 export enum SharePriceTier {
   Tier1 = Schedule.Tier1,
   Tier2 = Schedule.Tier2,
   Tier3 = Schedule.Tier3,
 }
 
-export enum Screen {
-  Balances,
-  NetWorth,
-  Schedules,
+export interface Balance extends Record<Chain, number> {
+  [Chain.American]: number;
+  [Chain.Continental]: number;
+  [Chain.Festival]: number;
+  [Chain.Imperial]: number;
+  [Chain.Sackson]: number;
+  [Chain.Tower]: number;
+  [Chain.Worldwide]: number;
+  cash: number;
+}
+
+export interface Player extends Balance {
+  name: string;
+}
+
+export interface Transaction extends Balance {
+  creditIdx: number;
+  debitIdx: number;
 }

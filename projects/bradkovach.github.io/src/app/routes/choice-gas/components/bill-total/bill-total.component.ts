@@ -1,23 +1,25 @@
+import type { Bill } from '../../entity/Bill';
+import type { Offer } from '../../entity/Offer';
+
+import { RouterLink } from '@angular/router';
 import { DecimalPipe } from '@angular/common';
 import { Component, input } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { Month, monthLabels } from '../../data/enum/month.enum';
-import { Bill } from '../../entity/Bill';
+
 import { ChargeType } from '../../entity/ChargeType';
-import { Offer } from '../../entity/Offer';
+import { Month, monthLabels } from '../../data/enum/month.enum';
 
 @Component({
-    selector: 'app-bill-total',
     imports: [DecimalPipe, RouterLink],
-    templateUrl: './bill-total.component.html',
-    styleUrl: './bill-total.component.scss'
+    selector: 'app-bill-total',
+    styleUrl: './bill-total.component.scss',
+    templateUrl: './bill-total.component.html'
 })
 export class BillTotalComponent {
+	bill = input.required<Bill>();
 	readonly ChargeType = ChargeType;
-	readonly MonthLabels = monthLabels;
 	readonly Month = Month;
 
+	readonly MonthLabels = monthLabels;
 	offer = input.required<Offer>();
-	bill = input.required<Bill>();
-	show = input<'total' | 'dollarsPerTherm' | 'thermsPerDollar'>('total');
+	show = input<'dollarsPerTherm' | 'thermsPerDollar' | 'total'>('total');
 }

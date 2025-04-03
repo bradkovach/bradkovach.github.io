@@ -1,6 +1,6 @@
-import { ArrayRowOf } from './RowOf';
+import type { ArrayRowOf } from './RowOf';
 
-export type LevelOf<T> = {
+export interface LevelOf<T> {
   level: number;
   members: ArrayRowOf<T>;
-};
+}

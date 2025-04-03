@@ -1,5 +1,8 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import { Schedule } from '../types';
+import type { PipeTransform } from '@angular/core';
+
+import type { Schedule } from '../types';
+
+import { Pipe } from '@angular/core';
 
 export type SharePriceRow = [number, number, number, number] & {
   length: 4;

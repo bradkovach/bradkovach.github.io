@@ -1,3 +1,3 @@
-import { LevelOf } from './LevelOf';
+import type { LevelOf } from './LevelOf';
 
 export type StringLevel = LevelOf<string>;

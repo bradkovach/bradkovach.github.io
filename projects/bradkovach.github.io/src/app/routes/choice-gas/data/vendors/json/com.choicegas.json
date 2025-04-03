@@ -1,11 +1,10 @@
 [
   {
-    "type": "market",
-    "id": "gca-Casper-1",
-    "name": "Gas Cost Adjustment - $0.0000 - Casper Division",
+    "confirmationCode": "99001",
+    "id": "gca-Casper",
+    "name": "Gas Cost Adjustment - Casper Division",
     "term": 1,
-    "market": 1,
-    "rate": 0,
-    "confirmationCode": "99001"
+    "rate": 0.4759,
+    "type": "fpt"
   }
 ]

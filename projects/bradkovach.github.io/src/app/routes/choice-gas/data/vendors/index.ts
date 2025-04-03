@@ -1,13 +1,14 @@
-import { Vendor } from '../../entity/Vendor';
+import type { Vendor } from '../../entity/Vendor';
+
 import { archerEnergy } from './archerEnergy';
-import { blackHillsEnergyServices } from './blackHillsEnergyServices';
-import { blackHillsWyomingGas } from './blackHillsWyomingGas';
-import { legacyNaturalGas } from './legacyNaturalGas';
-import { symmetryEnergySolutions } from './symmetryEnergySolutions';
-import { uncleFrankEnergyServices } from './uncleFrankEnergyServices';
-import { vistaEnergyMarketing } from './vistaEnergyMarketing';
 import { woodRiverEnergy } from './woodRiverEnergy';
+import { legacyNaturalGas } from './legacyNaturalGas';
 import { wyomingCommunityGas } from './wyomingCommunityGas';
+import { blackHillsWyomingGas } from './blackHillsWyomingGas';
+import { vistaEnergyMarketing } from './vistaEnergyMarketing';
+import { symmetryEnergySolutions } from './symmetryEnergySolutions';
+import { blackHillsEnergyServices } from './blackHillsEnergyServices';
+import { uncleFrankEnergyServices } from './uncleFrankEnergyServices';
 import { wyomingProducerConsumerAlliance } from './wyomingProducerConsumerAlliance';
 
 export const vendors: Vendor[] = [

@@ -1,179 +1,183 @@
+import type { StringLevel } from '../../../../types/StringLevel';
+import type { StringMemberRow } from '../../../../types/StringMemberRow';
+import type { StringPuzzle } from '../../../../types/StringPuzzle';
+
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { StringPuzzle } from '../../../../types/StringPuzzle';
-import { StringMemberRow } from '../../../../types/StringMemberRow';
-import { SymbolLevel } from '../../../../types/SymbolLevel';
-import { StringLevel } from '../../../../types/StringLevel';
-import { shuffleImmutable } from '../../../puzzle/puzzle.component';
-import { JsonPipe } from '@angular/common';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+
 import { PuzzleHelpers } from '../../../helpers/puzzle-helpers';
+import { shuffleImmutable } from '../../../puzzle/puzzle.component';
 
 @Component({
-    selector: 'app-create',
-    imports: [FormsModule, JsonPipe, RouterLink],
-    templateUrl: './create.component.html',
-    styleUrl: './create.component.scss'
+	imports: [FormsModule],
+	selector: 'app-create',
+	styleUrl: './create.component.scss',
+	templateUrl: './create.component.html',
 })
 export class CreateComponent {
-  private readonly router = inject(Router);
+	categories: StringMemberRow = ['Yellow', 'Green', 'Blue', 'Purple'];
 
-  toJson() {
-    prompt('Your Puzzle as JSON', JSON.stringify(this.generatePuzzle()));
-  }
-  toPlayer() {
-    // go to ./solve?puzzle=...
-    this.router.navigate(['/connections/solve'], {
-      queryParams: { puzzle: this.getBase64(this.generatePuzzle()) },
-    });
-  }
-  toPermalink() {
-    prompt("Your Puzzle's Permalink", this.getPermalink());
-  }
-  levels = [0, 1, 2, 3];
+	colors = [
+		'#fdcb58', //yellow
+		'#78b159', // green
+		'#55acee', // blue
+		'#aa8ed6', // purple
+	];
+	emoji = ['🟨', '🟩', '🟦', '🟪'];
+	examples: Record<string, StringPuzzle> = {
+		// Duplicate Puzzle has duplicate words
+		chaotic: {
+			groups: {
+				FOUR: {
+					level: 3,
+					members: ['ONE', 'TWO', 'THREE', 'FOUR'],
+				},
+				ONE: {
+					level: 0,
+					members: ['ONE', 'ONE', 'ONE', 'ONE'],
+				},
+				THREE: {
+					level: 2,
+					members: ['THREE', 'THREE', 'THREE', 'THREE'],
+				},
+				TWO: {
+					level: 1,
+					members: ['TWO', 'TWO', 'TWO', 'TWO'],
+				},
+			},
+			id: 1234,
+			startingGroups: [
+				['TWO', 'ONE', 'THREE', 'THREE'],
+				['ONE', 'ONE', 'FOUR', 'TWO'],
+				['THREE', 'TWO', 'TWO', 'ONE'],
+				['TWO', 'THREE', 'THREE', 'ONE'],
+			],
+		},
 
-  emoji = ['🟨', '🟩', '🟦', '🟪'];
+		// Normal Puzzle has no duplicates
+		normal: {
+			groups: {
+				'Baked Goods': {
+					level: 2,
+					members: ['Muffin', 'Bagel', 'Croissant', 'Cookie'],
+				},
+				'Chocolate Products': {
+					level: 1,
+					members: ['Truffle', 'Mousse', 'Fudge', 'Brownie'],
+				},
+				'Internet Terms': {
+					level: 3,
+					members: ['Browser', 'Server', 'Firewall', 'Domain'],
+				},
+				'Morning Drinks': {
+					level: 0,
+					members: ['Tea', 'Coffee', 'Juice', 'Cocoa'],
+				},
+			},
+			id: -1234,
+			startingGroups: [
+				['Firewall', 'Brownie', 'Bagel', 'Croissant'],
+				['Fudge', 'Cocoa', 'Tea', 'Browser'],
+				['Server', 'Juice', 'Mousse', 'Muffin'],
+				['Domain', 'Cookie', 'Truffle', 'Coffee'],
+			],
+		},
+	};
+	levels = [0, 1, 2, 3];
 
-  colors = [
-    '#fdcb58', //yellow
-    '#78b159', // green
-    '#55acee', // blue
-    '#aa8ed6', // purple
-  ];
+	words: StringMemberRow[] = [
+		['', '', '', ''],
+		['', '', '', ''],
+		['', '', '', ''],
+		['', '', '', ''],
+	];
 
-  categories: StringMemberRow = ['Yellow', 'Green', 'Blue', 'Purple'];
+	private readonly route = inject(ActivatedRoute);
 
-  words: StringMemberRow[] = [
-    ['', '', '', ''],
-    ['', '', '', ''],
-    ['', '', '', ''],
-    ['', '', '', ''],
-  ];
+	private readonly router = inject(Router);
 
-  examples: Record<string, StringPuzzle> = {
-    // Normal Puzzle has no duplicates
-    normal: {
-      id: -1234,
-      groups: {
-        'Morning Drinks': {
-          level: 0,
-          members: ['Tea', 'Coffee', 'Juice', 'Cocoa'],
-        },
-        'Chocolate Products': {
-          level: 1,
-          members: ['Truffle', 'Mousse', 'Fudge', 'Brownie'],
-        },
-        'Baked Goods': {
-          level: 2,
-          members: ['Muffin', 'Bagel', 'Croissant', 'Cookie'],
-        },
-        'Internet Terms': {
-          level: 3,
-          members: ['Browser', 'Server', 'Firewall', 'Domain'],
-        },
-      },
-      startingGroups: [
-        ['Firewall', 'Brownie', 'Bagel', 'Croissant'],
-        ['Fudge', 'Cocoa', 'Tea', 'Browser'],
-        ['Server', 'Juice', 'Mousse', 'Muffin'],
-        ['Domain', 'Cookie', 'Truffle', 'Coffee'],
-      ],
-    },
+	constructor() {
+		this.route.snapshot.queryParams['puzzle'] &&
+			this.loadPuzzle(
+				PuzzleHelpers.fromBase64(
+					this.route.snapshot.queryParams['puzzle'],
+				),
+			);
+	}
 
-    // Duplicate Puzzle has duplicate words
-    chaotic: {
-      id: 1234,
-      groups: {
-        ONE: {
-          level: 0,
-          members: ['ONE', 'ONE', 'ONE', 'ONE'],
-        },
-        TWO: {
-          level: 1,
-          members: ['TWO', 'TWO', 'TWO', 'TWO'],
-        },
-        THREE: {
-          level: 2,
-          members: ['THREE', 'THREE', 'THREE', 'THREE'],
-        },
-        FOUR: {
-          level: 3,
-          members: ['ONE', 'TWO', 'THREE', 'FOUR'],
-        },
-      },
-      startingGroups: [
-        ['TWO', 'ONE', 'THREE', 'THREE'],
-        ['ONE', 'ONE', 'FOUR', 'TWO'],
-        ['THREE', 'TWO', 'TWO', 'ONE'],
-        ['TWO', 'THREE', 'THREE', 'ONE'],
-      ],
-    },
-  };
+	generatePuzzle() {
+		const groups = this.levels.reduce(
+			(acc, level, i) => {
+				const category = this.categories[i].toUpperCase();
+				const members = this.words[i];
+				acc[category] = {
+					level,
+					members: members.map((word) =>
+						word.toUpperCase(),
+					) as StringMemberRow,
+				};
+				return acc;
+			},
+			{} as Record<string, StringLevel>,
+		);
 
-  loadExample(ex: keyof typeof this.examples) {
-    const puzzle = this.examples[ex];
+		const allStrings = this.words.flat().map((word) => word.toUpperCase());
 
-    this.loadPuzzle(puzzle);
-  }
+		const shuffled = shuffleImmutable(allStrings);
 
-  private readonly route = inject(ActivatedRoute);
+		const puzzle: StringPuzzle = {
+			groups,
+			id: 1234,
+			startingGroups: [
+				shuffled.slice(0, 4) as StringMemberRow,
+				shuffled.slice(4, 8) as StringMemberRow,
+				shuffled.slice(8, 12) as StringMemberRow,
+				shuffled.slice(12, 16) as StringMemberRow,
+			],
+		};
+		return puzzle;
+	}
 
-  constructor() {
-    this.route.snapshot.queryParams['puzzle'] &&
-      this.loadPuzzle(
-        PuzzleHelpers.fromBase64(this.route.snapshot.queryParams['puzzle']),
-      );
-  }
+	getBase64(puzzle: StringPuzzle) {
+		return PuzzleHelpers.toBase64(puzzle);
+	}
 
-  loadPuzzle(puzzle: StringPuzzle) {
-    console.log(puzzle);
-    this.categories = Object.keys(puzzle.groups) as StringMemberRow;
-    this.words = Object.values(puzzle.groups).map(
-      (group) => group.members,
-    ) as StringMemberRow[];
-  }
+	getPermalink() {
+		const puzzle = this.generatePuzzle();
+		const encoded = PuzzleHelpers.toBase64(puzzle);
+		const url = new URL(window.location.href);
+		url.pathname = '/connections/solve';
+		url.searchParams.set('puzzle', encoded);
+		return url.toString();
+	}
 
-  generatePuzzle() {
-    const groups = this.levels.reduce(
-      (acc, level, i) => {
-        const category = this.categories[i].toUpperCase();
-        const members = this.words[i];
-        acc[category] = {
-          level,
-          members: members.map((word) => word.toUpperCase()) as StringMemberRow,
-        };
-        return acc;
-      },
-      {} as Record<string, StringLevel>,
-    );
+	loadExample(ex: keyof typeof this.examples) {
+		const puzzle = this.examples[ex];
 
-    const allStrings = this.words.flat().map((word) => word.toUpperCase());
+		this.loadPuzzle(puzzle);
+	}
 
-    const shuffled = shuffleImmutable(allStrings);
+	loadPuzzle(puzzle: StringPuzzle) {
+		console.log(puzzle);
+		this.categories = Object.keys(puzzle.groups) as StringMemberRow;
+		this.words = Object.values(puzzle.groups).map(
+			(group) => group.members,
+		) as StringMemberRow[];
+	}
 
-    const puzzle: StringPuzzle = {
-      id: 1234,
-      groups,
-      startingGroups: [
-        shuffled.slice(0, 4) as StringMemberRow,
-        shuffled.slice(4, 8) as StringMemberRow,
-        shuffled.slice(8, 12) as StringMemberRow,
-        shuffled.slice(12, 16) as StringMemberRow,
-      ],
-    };
-    return puzzle;
-  }
+	toJson() {
+		prompt('Your Puzzle as JSON', JSON.stringify(this.generatePuzzle()));
+	}
 
-  getBase64(puzzle: StringPuzzle) {
-    return PuzzleHelpers.toBase64(puzzle);
-  }
+	toPermalink() {
+		prompt("Your Puzzle's Permalink", this.getPermalink());
+	}
 
-  getPermalink() {
-    const puzzle = this.generatePuzzle();
-    const encoded = PuzzleHelpers.toBase64(puzzle);
-    const url = new URL(window.location.href);
-    url.pathname = '/connections/solve';
-    url.searchParams.set('puzzle', encoded);
-    return url.toString();
-  }
+	toPlayer() {
+		// go to ./solve?puzzle=...
+		return this.router.navigate(['/connections/solve'], {
+			queryParams: { puzzle: this.getBase64(this.generatePuzzle()) },
+		});
+	}
 }

@@ -1,1 +1,46 @@
-[]
+[
+  {
+    "id": "fpm-1",
+    "name": "Secure Fixed Price - Fixed Monthly Bill",
+    "rate": 0,
+    "term": 1,
+    "type": "fpm"
+  },
+  {
+    "id": "fpm-2",
+    "name": "Secure Fixed Price - Fixed Monthly Bill",
+    "rate": 0,
+    "term": 2,
+    "type": "fpm"
+  },
+  {
+    "id": "fpt-1",
+    "name": "Guaranteed Fixed Price",
+    "rate": 0.514,
+    "term": 1,
+    "type": "fpt"
+  },
+  {
+    "id": "fpt-2",
+    "name": "Guaranteed Fixed Price",
+    "rate": 0.504,
+    "term": 2,
+    "type": "fpt"
+  },
+  {
+    "id": "index-1",
+    "market": 0,
+    "name": "Guaranteed Index",
+    "rate": 0.069,
+    "term": 1,
+    "type": "market"
+  },
+  {
+    "id": "index-2",
+    "market": 0,
+    "name": "Guaranteed Index",
+    "rate": 0.069,
+    "term": 2,
+    "type": "market"
+  }
+]

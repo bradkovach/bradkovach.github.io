@@ -1,22 +1,32 @@
-import { Directive, ElementRef } from '@angular/core';
+import { Directive, ElementRef, inject } from '@angular/core';
+
+type Position = {
+	height: number;
+	left: number;
+	top: number;
+	width: number;
+};
+
+type TransitionEventListener = (event?: TransitionEvent) => void;
 
 @Directive({
-  selector: '[transition-group-item]',
-  standalone: true,
+	selector: '[transition-group-item]',
+	standalone: true,
 })
-export class TransitionGroupItemDirective {
-  prevPos: any;
+export class TransitionGroupItemDirective implements Record<string, unknown> {
+	[x: string]: unknown;
+	private elRef: ElementRef = inject<ElementRef<HTMLElement>>(
+		ElementRef<HTMLElement>,
+	);
 
-  newPos: any;
+	el: HTMLElement = this.elRef.nativeElement;
 
-  el: HTMLElement;
+	moveCallback: null | TransitionEventListener = null;
 
-  // setting to false to begin
-  moved: boolean = false;
+	// setting to false to begin
+	moved = false;
 
-  moveCallback: any;
+	newPos?: Position;
 
-  constructor(elRef: ElementRef) {
-    this.el = elRef.nativeElement;
-  }
+	prevPos?: Position;
 }

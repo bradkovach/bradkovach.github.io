@@ -1,4 +1,5 @@
-import { Offer } from '../../entity/Offer';
+import type { Offer } from '../../entity/Offer';
+
 import { Vendor } from '../../entity/Vendor';
 import offers from './json/com.legacynaturalgas.www.json';
 

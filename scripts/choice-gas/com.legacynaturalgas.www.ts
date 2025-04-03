@@ -1,26 +1,35 @@
-import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/data.current';
-import { Offer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
+import type { Offer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
 
-type ExtractFn<T extends Offer> = (
-	term: number,
-	name: string,
-	priceText: string,
-	confirmationCode: string,
-) => T;
-
-interface PriceOption {
-	Term: '18 Month' | '12 Month' | '24 Month';
-	FixedPrice: number;
-	FixedPriceCode: string;
-	Index: number;
-	IndexPriceCode: string;
-	FixedBill: number;
-	FixedBillCode: string;
-}
+import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/Market';
 
 interface GetQuotePricesResponse {
 	PriceOptions: PriceOption[];
 }
+
+interface PriceOption {
+	FixedBill: number;
+	FixedBillCode: string;
+	FixedPrice: number;
+	FixedPriceCode: string;
+	Index: number;
+	IndexPriceCode: string;
+	Term: '12 Month' | '18 Month' | '24 Month';
+}
+
+const headers = {
+	Accept: 'application/json, text/plain, */*',
+	'Accept-Language': 'en-US,en;q=0.5',
+	'Cache-Control': 'no-cache',
+	'Content-Type': 'application/json',
+	Pragma: 'no-cache',
+	Priority: 'u=0',
+	'Sec-Fetch-Dest': 'empty',
+	'Sec-Fetch-Mode': 'cors',
+	'Sec-Fetch-Site': 'same-origin',
+	'Sec-GPC': '1',
+	'User-Agent':
+		'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:136.0) Gecko/20100101 Firefox/136.0',
+};
 
 const checkIPUrl = 'https://ifconfig.io/ip';
 
@@ -30,116 +39,137 @@ const CheckAccountNumberUrl = (custOrAcctNumber: string) =>
 const GetQuotePricesUrl = (addressOrMeter: string, clientIP: string) =>
 	`https://enrollment.legacynaturalgas.com/api/Signup/GetQuotePrices?addressOrMeter=${addressOrMeter}&clientIP=${clientIP}`;
 
+const checkIp = () =>
+	fetch(checkIPUrl)
+		.then((response) => response.text())
+		.then((ip) => ip.trim());
+
+type CheckAccountNumberResponse = {
+	AccountNumber: string;
+	Email: string;
+	MeterNumbers: MeterNumber[];
+};
+
+type MeterNumber = {
+	BillClass: string;
+	ControlNumber: string;
+	MeterNumber: string;
+};
+
+const checkAccountNumber = (custOrAcctNumber: string): Promise<string> =>
+	fetch(CheckAccountNumberUrl(custOrAcctNumber), {
+		credentials: 'omit',
+		headers,
+		method: 'GET',
+		mode: 'cors',
+		referrer: 'https://www.legacynaturalgas.com/',
+	})
+		.then((r) => r.json() as unknown as CheckAccountNumberResponse[])
+		.then((r) => {
+			if (r.length === 0) {
+				throw new Error('No account found');
+			}
+			const { MeterNumbers } = r[0];
+			if (MeterNumbers.length === 0) {
+				throw new Error('No meter found');
+			}
+			return MeterNumbers[0].MeterNumber;
+		});
+
+const getQuotePrices = (
+	addressOrMeter: string,
+	clientIP: string,
+): Promise<GetQuotePricesResponse> =>
+	fetch(GetQuotePricesUrl(addressOrMeter, clientIP), {
+		credentials: 'omit',
+		headers: {
+			Accept: 'application/json, text/plain, */*',
+			'Accept-Language': 'en-US,en;q=0.5',
+			'Cache-Control': 'no-cache',
+			'Content-Type': 'application/json',
+			Pragma: 'no-cache',
+			'Sec-Fetch-Dest': 'empty',
+			'Sec-Fetch-Mode': 'cors',
+			'Sec-Fetch-Site': 'same-origin',
+			'Sec-GPC': '1',
+			'User-Agent':
+				'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:136.0) Gecko/20100101 Firefox/136.0',
+		},
+		method: 'GET',
+		mode: 'cors',
+		referrer: 'https://www.legacynaturalgas.com/',
+	}).then((response) => response.json() as unknown as GetQuotePricesResponse);
+
 export function run(): Promise<Offer[]> {
 	const accountNumber = process.env.BHES_ACCOUNT_NUMBER;
 	if (!accountNumber) {
 		throw new Error('BHES_ACCOUNT_NUMBER not set');
 	}
-	return Promise.all([
-		fetch(checkIPUrl)
-			.then((response) => response.text())
-			.then((ip) => ip.trim()),
-		fetch(CheckAccountNumberUrl(accountNumber), {
-			credentials: 'omit',
-			headers: {
-				'User-Agent':
-					'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:123.0) Gecko/20100101 Firefox/123.0',
-				Accept: 'application/json, text/plain, */*',
-				'Accept-Language': 'en-US,en;q=0.5',
-				'Content-Type': 'application/json',
-				'Sec-Fetch-Dest': 'empty',
-				'Sec-Fetch-Mode': 'cors',
-				'Sec-Fetch-Site': 'same-origin',
-			},
-			referrer: 'https://enrollment.legacynaturalgas.com/',
-			method: 'GET',
-			mode: 'cors',
-		}).then((response) => response.json() as unknown as string),
-	])
+	return Promise.all([checkIp(), checkAccountNumber(accountNumber)])
 		.then(([clientIP, addressOrMeter]: [string, string]) =>
-			fetch(GetQuotePricesUrl(addressOrMeter, clientIP), {
-				credentials: 'omit',
-				headers: {
-					'User-Agent':
-						'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:123.0) Gecko/20100101 Firefox/123.0',
-					Accept: 'application/json, text/plain, */*',
-					'Accept-Language': 'en-US,en;q=0.5',
-					'Content-Type': 'application/json',
-					'Sec-Fetch-Dest': 'empty',
-					'Sec-Fetch-Mode': 'cors',
-					'Sec-Fetch-Site': 'same-origin',
-				},
-				referrer: 'https://enrollment.legacynaturalgas.com/',
-				method: 'GET',
-				mode: 'cors',
-			}),
-		)
-		.then(
-			(response) => response.json() as unknown as GetQuotePricesResponse,
+			getQuotePrices(addressOrMeter, clientIP),
 		)
 		.then((quote) =>
 			quote.PriceOptions.flatMap((priceOption): Offer[] => {
-				if (priceOption.Term === '18 Month') {
-					return [];
-				} else if (priceOption.Term === '12 Month') {
+				if (priceOption.Term === '12 Month') {
 					return [
 						{
-							type: 'fpt',
+							confirmationCode: priceOption.FixedPriceCode,
 							id: `fixed-1`,
 							name: 'Fixed Price',
-							term: 1,
 							rate: priceOption.FixedPrice,
-							confirmationCode: priceOption.FixedPriceCode,
-						},
-						{
-							type: 'market',
-							id: `index-1`,
-							name: 'Index Price',
 							term: 1,
-							rate: priceOption.Index,
-							market: Market.CIG,
-							confirmationCode: priceOption.IndexPriceCode,
+							type: 'fpt',
 						},
 						{
-							type: 'fpm',
+							confirmationCode: priceOption.IndexPriceCode,
+							id: `index-1`,
+							market: Market.CIG,
+							name: 'Index Price',
+							rate: priceOption.Index,
+							term: 1,
+							type: 'market',
+						},
+						{
+							confirmationCode: priceOption.FixedBillCode,
 							id: `fixed-bill-1`,
 							name: 'Fixed Bill',
-							term: 1,
 							rate: 0,
-							confirmationCode: priceOption.FixedBillCode,
+							term: 1,
+							type: 'fpm',
 						},
 					];
 				} else if (priceOption.Term === '24 Month') {
 					return [
 						{
-							type: 'fpt',
+							confirmationCode: priceOption.FixedPriceCode,
 							id: `fixed-2`,
 							name: 'Fixed Price',
-							term: 2,
 							rate: priceOption.FixedPrice,
-							confirmationCode: priceOption.FixedPriceCode,
-						},
-						{
-							type: 'market',
-							id: `index-2`,
-							name: 'Index Price',
 							term: 2,
-							rate: priceOption.Index,
-							market: Market.CIG,
-							confirmationCode: priceOption.IndexPriceCode,
+							type: 'fpt',
 						},
 						{
-							type: 'fpm',
+							confirmationCode: priceOption.IndexPriceCode,
+							id: `index-2`,
+							market: Market.CIG,
+							name: 'Index Price',
+							rate: priceOption.Index,
+							term: 2,
+							type: 'market',
+						},
+						{
+							confirmationCode: priceOption.FixedBillCode,
 							id: `fixed-bill-2`,
 							name: 'Fixed Bill',
-							term: 2,
 							rate: 0,
-							confirmationCode: priceOption.FixedBillCode,
+							term: 2,
+							type: 'fpm',
 						},
 					];
-				} else {
-					return [];
 				}
+
+				return [];
 			}),
 		);
 }

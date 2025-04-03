@@ -1,3 +1,12 @@
+import type {
+	BestOffer,
+	BlendedOffer,
+	FixedPerMonthOffer,
+	FixedPerThermOffer,
+	MarketOffer,
+	OfferBase,
+} from '../../entity/Offer';
+
 import {
 	AsyncPipe,
 	DecimalPipe,
@@ -8,41 +17,44 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
+
 import { combineLatest, map } from 'rxjs';
+
 import z from 'zod';
-import { Market } from '../../data/data.current';
-import {
-	BestOffer,
-	BlendedOffer,
-	FixedPerMonthOffer,
-	FixedPerThermOffer,
-	MarketOffer,
-	OfferBase,
-	OfferSchema,
-} from '../../entity/Offer';
+
 import { DataService } from '../../services/data/data.service';
 
+import { Market } from '../../data/Market';
+import { OfferSchema } from '../../entity/Offer';
+
 const VendorSchema = z.object({
-	name: z.string().min(2),
 	id: z.string().min(2),
+	name: z.string().min(2),
 	offers: z.array(OfferSchema),
 	phone: z.string(),
 });
 
 @Component({
-    selector: 'app-cg-import',
-    imports: [AsyncPipe, JsonPipe, NgTemplateOutlet, DecimalPipe, FormsModule],
-    templateUrl: './import.component.html',
-    styleUrl: './import.component.scss'
+	imports: [AsyncPipe, JsonPipe, NgTemplateOutlet, DecimalPipe, FormsModule],
+	selector: 'app-cg-import',
+	styleUrl: './import.component.scss',
+	templateUrl: './import.component.html',
 })
 export class ImportComponent {
-	private dataService = inject(DataService);
 	private route = inject(ActivatedRoute);
+	offers$ = this.route.queryParamMap.pipe(
+		map((p) => {
+			const offers = p.getAll('offer');
+			if (!offers) return [];
 
-	vm$ = combineLatest({
-		charges: this.dataService.charges$,
-		series: this.dataService.series$,
-	});
+			return offers.map((offer) => {
+				return {
+					import: true,
+					offer: OfferSchema.parse(JSON.parse(offer)),
+				};
+			});
+		}),
+	);
 
 	vendors$ = this.route.queryParamMap.pipe(
 		map((p) => {
@@ -58,81 +70,76 @@ export class ImportComponent {
 		}),
 	);
 
-	offers$ = this.route.queryParamMap.pipe(
-		map((p) => {
-			const offers = p.getAll('offer');
-			if (!offers) return [];
+	private dataService = inject(DataService);
 
-			return offers.map((offer) => {
-				return {
-					import: true,
-					offer: OfferSchema.parse(JSON.parse(offer)),
-				};
-			});
-		}),
-	);
+	vm$ = combineLatest({
+		charges: this.dataService.charges$,
+		series: this.dataService.series$,
+	});
 
-	constructor(title: Title) {
-		title.setTitle('Choice Gas - Import Data');
+	private readonly title = inject(Title);
+
+	constructor() {
+		this.title.setTitle('Choice Gas - Import Data');
 		const query = new URLSearchParams();
-		const fpmOffer: OfferBase & FixedPerMonthOffer = {
+		const fpmOffer: FixedPerMonthOffer & OfferBase = {
 			id: '185',
 			name: 'FPM @ $90 x 2 years',
-			type: 'fpm',
 			rate: 90,
 			term: 2,
+			type: 'fpm',
 		};
 		query.append('offer', JSON.stringify(fpmOffer));
 
-		const fptOffer: OfferBase & FixedPerThermOffer = {
+		const fptOffer: FixedPerThermOffer & OfferBase = {
 			id: '186',
 			name: 'FPT @ $0.25',
-			type: 'fpt',
 			rate: 0.25,
 			term: 1,
+			type: 'fpt',
 			vendor_id: 'com.choicegas',
 		};
 		query.append('offer', JSON.stringify(fptOffer));
 
-		const indexOffer: OfferBase & MarketOffer = {
+		const indexOffer: MarketOffer & OfferBase = {
 			id: '187',
-			name: 'Index @ $0.25',
-			type: 'market',
 			market: Market.CIG,
+			name: 'Index @ $0.25',
 			rate: 0.25,
 			term: 1,
+			type: 'market',
 		};
 		query.append('offer', JSON.stringify(indexOffer));
 
-		const gcaOffer: OfferBase & MarketOffer = {
+		const gcaOffer: MarketOffer & OfferBase = {
 			id: '188',
-			name: 'GCA @ $0.25',
-			type: 'market',
 			market: Market.GCA,
+			name: 'GCA @ $0.25',
 			rate: 0.25,
 			term: 1,
+			type: 'market',
 		};
 		query.append('offer', JSON.stringify(gcaOffer));
 
-		const blendedOffer: OfferBase & BlendedOffer = {
+		const blendedOffer: BlendedOffer & OfferBase = {
 			id: '189',
 			name: 'Blended',
-			type: 'blended',
-			term: 1,
 			offers: [
 				[0.25, fptOffer],
 				[0.25, indexOffer],
 				[0.25, gcaOffer],
 			],
+			term: 1,
+			type: 'blended',
 		};
 		query.append('offer', JSON.stringify(blendedOffer));
 
-		const bestOffer: OfferBase & BestOffer = {
+		const bestOffer: BestOffer & OfferBase = {
 			id: '190',
 			name: 'Best',
-			type: 'best',
-			term: 1,
 			offers: [fptOffer, fpmOffer, indexOffer, gcaOffer],
+			term: 1,
+			type: 'best',
 		};
 		query.append('offer', JSON.stringify(bestOffer));
 	}

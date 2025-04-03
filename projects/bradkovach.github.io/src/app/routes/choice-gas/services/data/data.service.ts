@@ -1,24 +1,28 @@
-import { Injectable, computed } from '@angular/core';
+import type { Offer } from '../../entity/Offer';
+import type { Charge } from '../../entity/Charge';
+import type {
+	Series} from '../../data/data.default';
+import type { FixedArray } from '../../entity/FixedArray';
+
+import { computed, Injectable } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
+
 import { z } from 'zod';
+
+import { vendors } from '../../data/vendors';
+import { ChargeType } from '../../entity/ChargeType';
+import { Setting } from '../../data/enum/settings.enum';
+import { storageSignal } from '../../pages/explorer/localStorageSignal';
 import {
-	Series,
-	SeriesKeys,
 	defaultCharges,
 	seriesDefaults,
+	SeriesKeys,
 } from '../../data/data.default';
-import { Setting } from '../../data/enum/settings.enum';
-import { vendors } from '../../data/vendors';
-import { Charge } from '../../entity/Charge';
-import { ChargeType } from '../../entity/ChargeType';
-import { FixedArray } from '../../entity/FixedArray';
-import { Offer } from '../../entity/Offer';
-import { storageSignal } from '../../pages/explorer/localStorageSignal';
 
 const ChargeSchema = z.object({
 	name: z.string(),
-	type: z.nativeEnum(ChargeType),
 	rate: z.number(),
+	type: z.nativeEnum(ChargeType),
 });
 
 const ChargesSchema = z.array(ChargeSchema);
@@ -58,25 +62,7 @@ export class DataService {
 		(str) => ChargesSchema.parse(JSON.parse(str)),
 	);
 
-	private rateOverridesSignal = storageSignal<Record<string, number>>(
-		Setting.OfferRateOverrides,
-		{},
-		JSON.stringify,
-		(str) => OverridesSchema.parse(JSON.parse(str)),
-	);
-
-	private seriesOverridesSignal = storageSignal<
-		Record<string, FixedArray<number, 12>>
-	>(
-		Setting.SeriesOverrides,
-		{},
-		JSON.stringify,
-		(str) =>
-			SeriesSchema.parse(JSON.parse(str)) as Record<
-				string,
-				FixedArray<number, 12>
-			>,
-	);
+	charges$ = toObservable(this.chargesSignal);
 
 	private enrollmentFieldSignal = storageSignal<
 		Record<EnrollmentField, string>
@@ -93,17 +79,33 @@ export class DataService {
 
 	enrollmentFields = this.enrollmentFieldSignal.asReadonly();
 
-	setEnrollmentField(field: EnrollmentField, value: string) {
-		this.enrollmentFieldSignal.update((current) => ({
-			...current,
-			[field]: value,
-		}));
-	}
+	private rateOverridesSignal = storageSignal<Record<string, number>>(
+		Setting.OfferRateOverrides,
+		{},
+		JSON.stringify,
+		(str) => OverridesSchema.parse(JSON.parse(str)),
+	);
+
+	rateOverrides$ = toObservable(this.rateOverridesSignal);
+
+	private seriesOverridesSignal = storageSignal<
+		Record<string, FixedArray<number, 12>>
+	>(
+		Setting.SeriesOverrides,
+		{},
+		JSON.stringify,
+		(str) =>
+			SeriesSchema.parse(JSON.parse(str)) as Record<
+				string,
+				FixedArray<number, 12>
+			>,
+	);
 
 	series = computed(() => {
 		return Object.assign({}, seriesDefaults, this.seriesOverridesSignal());
 	});
 
+	series$ = toObservable(this.series);
 	private vendorsSignal = computed(() =>
 		vendors.map((vendor) => {
 			const newVendor = { ...vendor };
@@ -122,14 +124,22 @@ export class DataService {
 			return newVendor;
 		}),
 	);
-
-	charges$ = toObservable(this.chargesSignal);
-	rateOverrides$ = toObservable(this.rateOverridesSignal);
 	vendors$ = toObservable(this.vendorsSignal);
-	series$ = toObservable(this.series);
+	resetSettings() {
+		this.seriesOverridesSignal.set({});
+		this.rateOverridesSignal.set({});
+		this.chargesSignal.set(defaultCharges);
+	}
 
 	setCharges(charges: Charge[]) {
 		this.chargesSignal.set(charges);
+	}
+
+	setEnrollmentField(field: EnrollmentField, value: string) {
+		this.enrollmentFieldSignal.update((current) => ({
+			...current,
+			[field]: value,
+		}));
 	}
 
 	setRateOverrides(rateOverrides: Record<string, number>) {
@@ -161,11 +171,5 @@ export class DataService {
 
 			return merged;
 		});
-	}
-
-	resetSettings() {
-		this.seriesOverridesSignal.set({});
-		this.rateOverridesSignal.set({});
-		this.chargesSignal.set(defaultCharges);
 	}
 }

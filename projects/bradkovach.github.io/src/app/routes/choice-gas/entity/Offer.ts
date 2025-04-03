@@ -6,29 +6,30 @@
 // 	| BlendedOffer
 // 	| BestOfOffer;
 
-import { Market } from '../data/data.current';
+import type { FixedArray } from './FixedArray';
+import type { Line } from './Line';
 
 import z from 'zod';
+
 import { marketLabels } from '../data/data.current';
+import { Market } from '../data/Market';
 import { line } from './Bill';
 import { ChargeType } from './ChargeType';
-import { FixedArray } from './FixedArray';
-import { Line } from './Line';
 
 export interface OfferBase extends HasId, HasName {
-  vendor_id?: string;
-  term: number;
-  confirmationCode?: string | null;
-  isSpecial?: boolean | null;
+	confirmationCode?: null | string;
+	isSpecial?: boolean | null;
+	term: number;
+	vendor_id?: string;
 }
 
 export const OfferBaseSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  term: z.number(),
-  vendor_id: z.string().optional(),
-  confirmationCode: z.string().nullable().optional(),
-  isSpecial: z.boolean().nullable().optional(),
+	confirmationCode: z.string().nullable().optional(),
+	id: z.string(),
+	isSpecial: z.boolean().nullable().optional(),
+	name: z.string(),
+	term: z.number(),
+	vendor_id: z.string().optional(),
 });
 
 // export interface Offer {
@@ -40,123 +41,132 @@ export const OfferBaseSchema = z.object({
 // 	rate: number;
 // }
 
-export type FixedPerThermOffer = { type: 'fpt'; rate: number };
+export interface FixedPerThermOffer {
+	rate: number;
+	type: 'fpt';
+}
 export const FixedPerThermOfferSchema = z
-  .object({})
-  .merge(OfferBaseSchema)
-  .merge(z.object({ type: z.literal('fpt'), rate: z.number() }));
+	.object({})
+	.merge(OfferBaseSchema)
+	.merge(z.object({ rate: z.number(), type: z.literal('fpt') }));
 
-export type FixedPerMonthOffer = { type: 'fpm'; rate: number };
+export interface FixedPerMonthOffer {
+	rate: number;
+	type: 'fpm';
+}
 export const FixedPerMonthOfferSchema = z
-  .object({})
-  .merge(OfferBaseSchema)
-  .merge(z.object({ type: z.literal('fpm'), rate: z.number() }));
+	.object({})
+	.merge(OfferBaseSchema)
+	.merge(z.object({ rate: z.number(), type: z.literal('fpm') }));
 
-export type MarketOffer = {
-  type: 'market';
-  market: Market;
-  rate: number;
-};
+export interface MarketOffer {
+	market: Market;
+	rate: number;
+	type: 'market';
+}
 export const MarketOfferSchema = z
-  .object({})
-  .merge(OfferBaseSchema)
-  .merge(
-    z.object({
-      type: z.literal('market'),
-      market: z.nativeEnum(Market),
-      rate: z.number(),
-    }),
-  );
+	.object({})
+	.merge(OfferBaseSchema)
+	.merge(
+		z.object({
+			market: z.nativeEnum(Market),
+			rate: z.number(),
+			type: z.literal('market'),
+		}),
+	);
 
-export type SimpleOffer = FixedPerThermOffer | FixedPerMonthOffer | MarketOffer;
+export type SimpleOffer = FixedPerMonthOffer | FixedPerThermOffer | MarketOffer;
 
 export const SimpleOfferSchema = z.union([
-  FixedPerThermOfferSchema,
-  FixedPerMonthOfferSchema,
-  MarketOfferSchema,
+	FixedPerThermOfferSchema,
+	FixedPerMonthOfferSchema,
+	MarketOfferSchema,
 ]);
 
-export type BlendedOffer = {
-  type: 'blended';
-  offers: [number, Omit<SimpleOffer, 'id' | 'term'>][];
-};
+export interface BlendedOffer {
+	offers: [number, Omit<SimpleOffer, 'id' | 'term'>][];
+	type: 'blended';
+}
 
 export const BlendedOfferSchema = z
-  .object({})
-  .merge(OfferBaseSchema)
-  .merge(
-    z.object({
-      type: z.literal('blended'),
-      offers: z.array(z.tuple([z.number(), z.any(SimpleOfferSchema)])),
-    }),
-  );
+	.object({})
+	.merge(OfferBaseSchema)
+	.merge(
+		z.object({
+			offers: z.array(z.tuple([z.number(), z.any(SimpleOfferSchema)])),
+			type: z.literal('blended'),
+		}),
+	);
 
-export type BestOffer = { type: 'best'; offers: Omit<SimpleOffer, 'id'>[] };
+export interface BestOffer {
+	offers: Omit<SimpleOffer, 'id'>[];
+	type: 'best';
+}
 export const BestOfferSchema = z
-  .object({})
-  .merge(OfferBaseSchema)
-  .merge(
-    z.object({
-      type: z.literal('best'),
-      offers: z.array(SimpleOfferSchema),
-    }),
-  );
+	.object({})
+	.merge(OfferBaseSchema)
+	.merge(
+		z.object({
+			offers: z.array(SimpleOfferSchema),
+			type: z.literal('best'),
+		}),
+	);
 
-export type CompoundOffer = BlendedOffer | BestOffer;
+export type CompoundOffer = BestOffer | BlendedOffer;
 export const CompoundOfferSchema = z.union([
-  BlendedOfferSchema,
-  BestOfferSchema,
+	BlendedOfferSchema,
+	BestOfferSchema,
 ]);
 
 export type OfferType = Offer['type'];
 
 export const OfferTypeSchema = z.enum([
-  'fpt',
-  'fpm',
-  'market',
-  'blended',
-  'best',
-  'custom',
+	'fpt',
+	'fpm',
+	'market',
+	'blended',
+	'best',
+	'custom',
 ]);
 
 export interface HasId {
-  id: string;
+	id: string;
 }
 
 export interface HasName {
-  name: string;
+	name: string;
 }
 
 export const fptOfferToCustomOffer = (
-  offer: FixedPerThermOffer & OfferBase,
+	offer: FixedPerThermOffer & OfferBase,
 ): CustomOffer => ({
-  type: 'custom',
-  id: offer.id,
-  name: offer.name,
-  term: offer.term,
-  coefTherm: offer.rate,
+	coefTherm: offer.rate,
+	id: offer.id,
+	name: offer.name,
+	term: offer.term,
+	type: 'custom',
 });
 
 export const fpmOfferToCustomOffer = (
-  offer: FixedPerMonthOffer & OfferBase,
+	offer: FixedPerMonthOffer & OfferBase,
 ): CustomOffer => ({
-  type: 'custom',
-  id: offer.id,
-  name: offer.name,
-  term: offer.term,
-  addendMonth: offer.rate,
+	addendMonth: offer.rate,
+	id: offer.id,
+	name: offer.name,
+	term: offer.term,
+	type: 'custom',
 });
 
 export const marketOfferToCustomOffer = (
-  offer: MarketOffer & OfferBase,
+	offer: MarketOffer & OfferBase,
 ): CustomOffer => ({
-  type: 'custom',
-  id: offer.id,
-  market: offer.market,
-  name: offer.name,
-  term: offer.term,
-  coefRate: 1,
-  addendRate: offer.rate,
+	addendRate: offer.rate,
+	coefRate: 1,
+	id: offer.id,
+	market: offer.market,
+	name: offer.name,
+	term: offer.term,
+	type: 'custom',
 });
 
 /**
@@ -189,106 +199,105 @@ export const marketOfferToCustomOffer = (
  *
  */
 export interface CustomOffer extends HasId, HasName {
-  type: 'custom';
-  term: number;
+	/**
+	 * A constant to add to the monthly amount.
+	 */
+	addendMonth?: number;
+	/**
+	 * A constant to add to the market rate.
+	 * @default 0
+	 */
+	addendRate?: number;
 
-  market?: Market;
+	/**
+	 * A constant to add to the usage.
+	 * @default 0
+	 */
+	addendTherm?: number;
 
-  /**
-   * A coefficient to multiply the market rate by.
-   * @default 1 when addendIndex is set; otherwise 0
-   */
-  coefRate?: number;
+	/**
+	 * A coefficient to multiply the monthly amount by.
+	 * @default 1 when addendMonth is set; otherwise 0
+	 */
+	coefMonth?: number;
 
-  /**
-   * A constant to add to the market rate.
-   * @default 0
-   */
-  addendRate?: number;
+	/**
+	 * A coefficient to multiply the market rate by.
+	 * @default 1 when addendIndex is set; otherwise 0
+	 */
+	coefRate?: number;
 
-  /**
-   * A coefficient to multiply the usage by.
-   * @default 1 when addendTherm is set; otherwise 0
-   */
-  coefTherm?: number;
+	/**
+	 * A coefficient to multiply the usage by.
+	 * @default 1 when addendTherm is set; otherwise 0
+	 */
+	coefTherm?: number;
 
-  /**
-   * A constant to add to the usage.
-   * @default 0
-   */
-  addendTherm?: number;
+	market?: Market;
 
-  /**
-   * A coefficient to multiply the monthly amount by.
-   * @default 1 when addendMonth is set; otherwise 0
-   */
-  coefMonth?: number;
+	term: number;
 
-  /**
-   * A constant to add to the monthly amount.
-   */
-  addendMonth?: number;
+	type: 'custom';
 }
 
 export const CustomOfferSchema = z
-  .object({})
-  .merge(OfferBaseSchema)
-  .merge(
-    z.object({
-      type: z.literal('custom'),
-      term: z.number(),
-      market: z.nativeEnum(Market).optional(),
-      coefRate: z.number().optional(),
-      addendRate: z.number().optional(),
-      coefTherm: z.number().optional(),
-      addendTherm: z.number().optional(),
-      coefMonth: z.number().optional(),
-      addendMonth: z.number().optional(),
-    }),
-  );
+	.object({})
+	.merge(OfferBaseSchema)
+	.merge(
+		z.object({
+			addendMonth: z.number().optional(),
+			addendRate: z.number().optional(),
+			addendTherm: z.number().optional(),
+			coefMonth: z.number().optional(),
+			coefRate: z.number().optional(),
+			coefTherm: z.number().optional(),
+			market: z.nativeEnum(Market).optional(),
+			term: z.number(),
+			type: z.literal('custom'),
+		}),
+	);
 
-export type Offer = OfferBase & (SimpleOffer | CompoundOffer | CustomOffer);
+export type Offer = (CompoundOffer | CustomOffer | SimpleOffer) & OfferBase;
 
 export const OfferSchema = z.union([
-  FixedPerThermOfferSchema,
-  FixedPerMonthOfferSchema,
-  SimpleOfferSchema,
-  CompoundOfferSchema,
-  CustomOfferSchema,
+	FixedPerThermOfferSchema,
+	FixedPerMonthOfferSchema,
+	SimpleOfferSchema,
+	CompoundOfferSchema,
+	CustomOfferSchema,
 ]);
 
 export const calculateCommodityCharge =
-  (
-    offer: CustomOffer,
-    therms: number,
-    rates: Record<Market, FixedArray<number, 12>>,
-  ) =>
-  (month: number): Record<ChargeType, Line[]> => {
-    const market = offer.market ?? Market.CIG;
-    const rate = rates[market][month];
+	(
+		offer: CustomOffer,
+		therms: number,
+		rates: Record<Market, FixedArray<number, 12>>,
+	) =>
+	(month: number): Record<ChargeType, Line[]> => {
+		const market = offer.market ?? Market.CIG;
+		const rate = rates[market][month];
 
-    const addendRate = offer.addendRate ?? 0;
-    const coefRate = offer.coefRate ?? 1;
+		const addendRate = offer.addendRate ?? 0;
+		const coefRate = offer.coefRate ?? 1;
 
-    const addendTherm = offer.addendTherm ?? 0;
-    const coefTherm = offer.coefTherm ?? 1;
+		const addendTherm = offer.addendTherm ?? 0;
+		const coefTherm = offer.coefTherm ?? 1;
 
-    const addendMonth = offer.addendMonth ?? 0;
-    const coefMonth = offer.coefMonth ?? 1;
+		const addendMonth = offer.addendMonth ?? 0;
+		const coefMonth = offer.coefMonth ?? 1;
 
-    const useTherms = coefTherm * therms + addendTherm;
-    const useRate = coefRate * rate + addendRate;
-    const useMonth = coefMonth * 1 + addendMonth;
+		const useTherms = coefTherm * therms + addendTherm;
+		const useRate = coefRate * rate + addendRate;
+		const useMonth = coefMonth * 1 + addendMonth;
 
-    // prettier-ignore
-    return {
-    [ChargeType.PerTherm]: [
-      line(`[info] ${marketLabels[market]} Rate`, 0, rate),
-      line(`[custom $/therm] ${offer.name}`, useTherms, useRate),
-    ],
-    [ChargeType.PerMonth]: [
-      line(`[custom $/month] ${offer.name}`, 1, useMonth),
-    ],
-    [ChargeType.Tax]:[]
-  }
-  };
+		return {
+			[ChargeType.PerMonth]: [
+				line(`[custom $/month] ${offer.name}`, 1, useMonth),
+			],
+			[ChargeType.PerTherm]: [
+				line(`[info] ${marketLabels[market]} Rate`, 0, rate),
+				line(`[custom $/therm] ${offer.name}`, useTherms, useRate),
+			],
+			[ChargeType.Tax]: [],
+		};
+	};

@@ -1,1 +1,124 @@
-[]
+[
+  {
+    "confirmationCode": "94015",
+    "id": "market-1",
+    "market": 0,
+    "name": "Market Index",
+    "rate": 0.125,
+    "term": 1,
+    "type": "market"
+  },
+  {
+    "confirmationCode": "94013",
+    "id": "fixed-1",
+    "name": "Fixed",
+    "rate": 0.595,
+    "term": 1,
+    "type": "fpt"
+  },
+  {
+    "confirmationCode": "94018",
+    "id": "blended-1",
+    "name": "Blended",
+    "offers": [
+      [
+        1,
+        {
+          "confirmationCode": "94018",
+          "rate": 0.595,
+          "type": "fpt"
+        }
+      ],
+      [
+        1,
+        {
+          "confirmationCode": "94018",
+          "market": 0,
+          "rate": 0.125,
+          "type": "market"
+        }
+      ]
+    ],
+    "term": 1,
+    "type": "blended"
+  },
+  {
+    "confirmationCode": "94064",
+    "id": "best-1",
+    "name": "Index With A Cap",
+    "offers": [
+      {
+        "rate": 0.789,
+        "type": "fpt"
+      },
+      {
+        "market": 0,
+        "rate": 0.189,
+        "type": "market"
+      }
+    ],
+    "term": 1,
+    "type": "best"
+  },
+  {
+    "confirmationCode": "94016",
+    "id": "market-2",
+    "market": 0,
+    "name": "Market Index",
+    "rate": 0.125,
+    "term": 2,
+    "type": "market"
+  },
+  {
+    "confirmationCode": "94014",
+    "id": "fixed-2",
+    "name": "Fixed",
+    "rate": 0.585,
+    "term": 2,
+    "type": "fpt"
+  },
+  {
+    "confirmationCode": "94019",
+    "id": "blended-2",
+    "name": "Blended",
+    "offers": [
+      [
+        1,
+        {
+          "confirmationCode": "94019",
+          "rate": 0.585,
+          "type": "fpt"
+        }
+      ],
+      [
+        1,
+        {
+          "confirmationCode": "94019",
+          "market": 0,
+          "rate": 0.125,
+          "type": "market"
+        }
+      ]
+    ],
+    "term": 2,
+    "type": "blended"
+  },
+  {
+    "confirmationCode": "94065",
+    "id": "best-2",
+    "name": "Index With A Cap",
+    "offers": [
+      {
+        "rate": 0.789,
+        "type": "fpt"
+      },
+      {
+        "market": 0,
+        "rate": 0.189,
+        "type": "market"
+      }
+    ],
+    "term": 2,
+    "type": "best"
+  }
+]
