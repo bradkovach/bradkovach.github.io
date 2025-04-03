@@ -1,13 +1,13 @@
+import type { Vendor } from '../../entity/Vendor';
+
 import { Injectable } from '@angular/core';
-import { Subject, map, scan } from 'rxjs';
-import { Vendor } from '../../entity/Vendor';
+
+import { map, scan, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class VendorService {
-  constructor() {}
-
   private vendorSubject = new Subject<Vendor>();
 
   vendor$ = this.vendorSubject.asObservable();
@@ -22,6 +22,8 @@ export class VendorService {
   vendorEntries$ = this.vendorMap$.pipe(
     map((vendorMap) => Array.from(vendorMap.entries())),
   );
+
+  constructor() {}
 
   addVendor(vendor: Vendor) {
     this.vendorSubject.next(vendor);

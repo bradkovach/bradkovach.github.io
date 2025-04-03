@@ -1,46 +1,76 @@
-import cheerio from 'cheerio';
-import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/data.current';
-import {
-	MarketOffer,
-	OfferBase,
-} from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
+import type { Offer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
+
+import * as cheerio from 'cheerio';
+
+import { FixedPerThermOfferSchema } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
 
 const url =
 	'https://www.blackhillsenergy.com/services/choice-gas-program/wyoming-choice-gas-customers/black-hills-wyoming-gas-llc-utility-gas';
 
-export function run(): Promise<(OfferBase & MarketOffer)[]> {
-	return fetch(url)
+/*
+	As of 2025-04-03, this is the structure of the data on the scraped page:
+
+	<div class="article--content__description">
+
+		<!-- ... -->
+
+		<table border="1" cellpadding="1" cellspacing="1">
+			<thead>
+				<tr>
+					<th scope="col">Division</th>
+					<th scope="col">Price&nbsp;per therm</th>
+					<th scope="col">Confirmation code</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Casper</td>
+					<td>$0.4759</td>
+					<td>99001</td>
+				</tr>
+				<tr>
+					<td>Gillette</td>
+					<td>$0.4759</td>
+					<td>99004</td>
+				</tr>
+				<tr>
+					<td>Torrington</td>
+					<td>$0.4759</td>
+					<td>99003</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<!-- ... -->
+
+	</div>
+
+*/
+export const run = (): Promise<Offer[]> =>
+	fetch(url)
 		.then((response) => response.text())
-		.then((text) => {
-			const $ = cheerio.load(text);
-			return $;
-		})
+		.then((text) => cheerio.load(text))
 		.then(($) =>
 			$(
-				'.article--content__description > table:nth-of-type(1) > tbody:nth-of-type(1) > tr:nth-of-type(1)',
+				'.article--content__description > table:nth-of-type(1) > tbody > tr',
 			)
-				.map((rowIdx, tr): OfferBase & MarketOffer => {
-					const tds = $(tr).find('td:not(colspan)');
-					const term = Math.floor(rowIdx / 4) + 1;
+				.toArray()
+				.map((tr) => {
+					const tds = $(tr).find('td');
 					const [division, priceText, confirmationCode] = tds
 						.toArray()
-						.slice(-3)
 						.map((td) => $(td).text().trim());
 
-					return {
-						type: 'market',
-						id: `gca-${division}-${term}`,
-						name: `Gas Cost Adjustment - $${Number(
-							priceText,
-						).toFixed(4)} - ${division} Division`,
-						term,
-						market: Market.GCA,
-						rate: 0,
+					return FixedPerThermOfferSchema.parse({
 						confirmationCode,
-					};
+						id: `gca-${division}`,
+						name: `Gas Cost Adjustment - ${division} Division`,
+						rate: Number(priceText.slice(1)),
+						term: 1,
+						type: 'fpt',
+					});
 				})
-				.toArray(),
+				// Some day, this tool will allow you to see prices in many divisions.
+				// For now, we only care about Casper.
+				.filter((o) => o.id === 'gca-Casper'),
 		);
-}
-
-// run();

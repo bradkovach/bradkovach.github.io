@@ -1,8 +1,8 @@
-import { BoardOf } from './BoardOf';
-import { LevelOf } from './LevelOf';
+import type { BoardOf } from './BoardOf';
+import type { LevelOf } from './LevelOf';
 
-export type PuzzleOf<TileType> = {
-  id: number;
+export interface PuzzleOf<TileType> {
   groups: Record<string, LevelOf<TileType>>;
+  id: number;
   startingGroups: BoardOf<TileType>;
-};
+}

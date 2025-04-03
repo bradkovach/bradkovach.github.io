@@ -108,8 +108,23 @@
             ],
             "scripts": []
           }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/bradkovach.github.io/**/*.ts",
+              "projects/bradkovach.github.io/**/*.html"
+            ],
+            "eslintConfig": "projects/bradkovach.github.io/eslint.config.js"
+          }
         }
       }
     }
+  },
+  "cli": {
+    "schematicCollections": [
+      "angular-eslint"
+    ]
   }
 }

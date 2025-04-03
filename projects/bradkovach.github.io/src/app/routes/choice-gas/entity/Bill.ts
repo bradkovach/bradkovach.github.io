@@ -1,6 +1,6 @@
-import { Month } from '../data/enum/month.enum';
-import { ChargeType } from './ChargeType';
-import { Line } from './Line';
+import type { Line } from './Line';
+import type { ChargeType } from './ChargeType';
+import type { Month } from '../data/enum/month.enum';
 
 export const line = (
 	description: string,
@@ -9,11 +9,11 @@ export const line = (
 ): Line => [description, quantity, rate, quantity * rate];
 
 export interface Bill {
-	month: Month;
-	therms: number;
-	lines: Record<ChargeType, Line[]>;
-	subtotals: Record<ChargeType, number>;
 	dollarsPerTherm: number;
+	lines: Record<ChargeType, Line[]>;
+	month: Month;
+	subtotals: Record<ChargeType, number>;
+	therms: number;
 	thermsPerDollar: number;
 	total: number;
 }

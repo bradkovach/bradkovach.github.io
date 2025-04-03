@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 
 @Component({
-    selector: 'app-offers',
     imports: [],
-    templateUrl: './offers.component.html',
-    styleUrl: './offers.component.scss'
+    selector: 'app-offers',
+    styleUrl: './offers.component.scss',
+    templateUrl: './offers.component.html'
 })
 export class OffersComponent {
 

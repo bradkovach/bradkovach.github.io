@@ -1,4 +1,4 @@
-import { ArrayRowOf } from './RowOf';
-import { SymbolMember } from './SymbolMember';
+import type { ArrayRowOf } from './RowOf';
+import type { SymbolMember } from './SymbolMember';
 
 export type SymbolMemberRow = ArrayRowOf<SymbolMember>;

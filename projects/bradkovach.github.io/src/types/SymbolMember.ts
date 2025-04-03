@@ -1,4 +1,4 @@
-export type SymbolMember = {
-  symbol: Symbol;
+export interface SymbolMember {
   label: string;
-};
+  symbol: symbol;
+}

@@ -1,13 +1,15 @@
-import { DecimalPipe, JsonPipe } from '@angular/common';
+import type { Bill } from '../../entity/Bill';
+
 import { Component, input } from '@angular/core';
-import { Bill } from '../../entity/Bill';
+import { DecimalPipe, JsonPipe } from '@angular/common';
+
 import { ChargeType } from '../../entity/ChargeType';
 
 @Component({
-    selector: 'app-bill',
     imports: [JsonPipe, DecimalPipe],
-    templateUrl: './bill.component.html',
-    styleUrl: './bill.component.scss'
+    selector: 'app-bill',
+    styleUrl: './bill.component.scss',
+    templateUrl: './bill.component.html'
 })
 export class BillComponent {
   bill = input.required<Bill>();

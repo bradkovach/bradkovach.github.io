@@ -1,13 +1,20 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import { Market, marketLabels } from '../../data/data.current';
-import { Series } from '../../data/data.default';
-import { Month } from '../../data/enum/month.enum';
-import { Bill, line } from '../../entity/Bill';
-import { Charge } from '../../entity/Charge';
+import type { PipeTransform } from '@angular/core';
+
+import type { Series } from '../../data/data.default';
+import type { Month } from '../../data/enum/month.enum';
+import type { Market } from '../../data/Market';
+import type { Bill } from '../../entity/Bill';
+import type { Charge } from '../../entity/Charge';
+import type { FixedArray } from '../../entity/FixedArray';
+import type { Line } from '../../entity/Line';
+import type { Offer } from '../../entity/Offer';
+
+import { Pipe } from '@angular/core';
+
+import { marketLabels } from '../../data/data.current';
+import { line } from '../../entity/Bill';
 import { ChargeType } from '../../entity/ChargeType';
-import { FixedArray } from '../../entity/FixedArray';
-import { Line } from '../../entity/Line';
-import { Offer, calculateCommodityCharge } from '../../entity/Offer';
+import { calculateCommodityCharge } from '../../entity/Offer';
 
 export const createBill = (
 	offer: Offer,
@@ -17,21 +24,21 @@ export const createBill = (
 	marketRates: Record<Market, FixedArray<number, 12>>,
 ): Bill => {
 	const bill: Bill = {
-		month: month,
-		therms: usage[month],
 		dollarsPerTherm: 0,
-		thermsPerDollar: 0,
-		total: 0,
 		lines: {
-			[ChargeType.PerTherm]: [],
 			[ChargeType.PerMonth]: [],
+			[ChargeType.PerTherm]: [],
 			[ChargeType.Tax]: [],
 		},
+		month: month,
 		subtotals: {
-			[ChargeType.PerTherm]: 0,
 			[ChargeType.PerMonth]: 0,
+			[ChargeType.PerTherm]: 0,
 			[ChargeType.Tax]: 0,
 		},
+		therms: usage[month],
+		thermsPerDollar: 0,
+		total: 0,
 	};
 	// deal with charges
 
@@ -57,7 +64,7 @@ export const createBill = (
 		);
 	} else if (offer.type === 'blended') {
 		const sumOfWeights = offer.offers.reduce(
-			(acc, [weight, _]) => acc + weight,
+			(acc, [weight]) => acc + weight,
 			0,
 		);
 		offer.offers
@@ -75,18 +82,18 @@ export const createBill = (
 				);
 
 				return {
-					[ChargeType.PerTherm]: subbill.lines[
-						ChargeType.PerTherm
-					].map(([name, qty, rate, value]) =>
+					[ChargeType.PerMonth]: subbill.lines[
+						ChargeType.PerMonth
+					].map(([name, qty, rate]) =>
 						line(
 							`[blended @ ${weight / sumOfWeights}] ${name}`,
 							(qty * weight) / sumOfWeights,
 							rate,
 						),
 					),
-					[ChargeType.PerMonth]: subbill.lines[
-						ChargeType.PerMonth
-					].map(([name, qty, rate, value]) =>
+					[ChargeType.PerTherm]: subbill.lines[
+						ChargeType.PerTherm
+					].map(([name, qty, rate]) =>
 						line(
 							`[blended @ ${weight / sumOfWeights}] ${name}`,
 							(qty * weight) / sumOfWeights,
@@ -147,10 +154,10 @@ export const createBill = (
 	// subtotal
 	bill.subtotals[ChargeType.PerTherm] = bill.lines[
 		ChargeType.PerTherm
-	].reduce((acc, [_, qty, rate, value]) => acc + value, 0);
+	].reduce((acc, [, , , value]) => acc + value, 0);
 	bill.subtotals[ChargeType.PerMonth] = bill.lines[
 		ChargeType.PerMonth
-	].reduce((acc, [_, qty, rate, value]) => acc + value, 0);
+	].reduce((acc, [, , , value]) => acc + value, 0);
 
 	bill.lines[ChargeType.Tax] = charges
 		.filter((charge) => charge.type === ChargeType.Tax)
@@ -169,7 +176,7 @@ export const createBill = (
 		});
 
 	bill.subtotals[ChargeType.Tax] = bill.lines[ChargeType.Tax].reduce(
-		(acc, [_, qty, rate, value]) => acc + value,
+		(acc, [, , , value]) => acc + value,
 		0,
 	);
 

@@ -1,6 +1,11 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import { SharePriceRow } from '../price-by-schedule/PriceBySchedulePipe';
-import { Chain, Player, Schedule } from '../types';
+import type { PipeTransform } from '@angular/core';
+
+import type { Player, Schedule } from '../types';
+import type { SharePriceRow } from '../price-by-schedule/PriceBySchedulePipe';
+
+import { Pipe } from '@angular/core';
+
+import { Chain } from '../types';
 
 @Pipe({
   name: 'netWorth',

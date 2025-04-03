@@ -1,23 +1,23 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { lastUpdated } from './data/last-updated';
-import { WINDOW } from './pages/explorer/localStorageSignal';
+import { Component, computed, inject, signal } from '@angular/core';
+
 import { DataService, EnrollmentField } from './services/data/data.service';
 
+import { lastUpdated } from './data/last-updated';
+import { WINDOW } from './pages/explorer/localStorageSignal';
+
 @Component({
-    selector: 'app-choice-gas-root',
     imports: [RouterOutlet, RouterLink, FormsModule, DatePipe],
-    templateUrl: './choice-gas.component.html',
-    styleUrl: './choice-gas.component.scss'
+    selector: 'app-choice-gas-root',
+    styleUrl: './choice-gas.component.scss',
+    templateUrl: './choice-gas.component.html'
 })
 export class ChoiceGasComponent {
-	private readonly dataService = inject(DataService);
-
-	readonly updated = lastUpdated;
-
 	public readonly EnrollmentField = EnrollmentField;
+
+	private readonly dataService = inject(DataService);
 
 	enrollmentFields = this.dataService.enrollmentFields;
 
@@ -28,19 +28,9 @@ export class ChoiceGasComponent {
 		);
 	});
 
-	setEnrollmentField(field: EnrollmentField, value: string) {
-		this.dataService.setEnrollmentField(field, value);
-	}
-
 	showNotes = signal(false);
 
-	toggleNotes() {
-		this.showNotes.update((current) => !current);
-	}
-
-	setShowNotes(value: boolean) {
-		this.showNotes.set(value);
-	}
+	readonly updated = lastUpdated;
 
 	Window = inject(WINDOW);
 
@@ -50,5 +40,17 @@ export class ChoiceGasComponent {
 			// refresh the page
 			window.location.reload();
 		}
+	}
+
+	setEnrollmentField(field: EnrollmentField, value: string) {
+		this.dataService.setEnrollmentField(field, value);
+	}
+
+	setShowNotes(value: boolean) {
+		this.showNotes.set(value);
+	}
+
+	toggleNotes() {
+		this.showNotes.update((current) => !current);
 	}
 }

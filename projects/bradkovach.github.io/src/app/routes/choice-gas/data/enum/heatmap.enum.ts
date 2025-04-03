@@ -29,10 +29,10 @@ export const heatmapSchemePalettes = {
 	[HeatmapScheme.BlackWhite]: [black, white],
 	[HeatmapScheme.BlueWhiteRed]: [blue, white, red],
 	[HeatmapScheme.BlueWhiteYellow]: [blue, white, yellow],
+	[HeatmapScheme.GreenWhitePurple]: [green, white, purple],
 	[HeatmapScheme.GreenWhiteRed]: [green, white, red],
 	[HeatmapScheme.GreenYellowRed]: [green, yellow, red],
 	[HeatmapScheme.None]: [white],
-	[HeatmapScheme.GreenWhitePurple]: [green, white, purple],
 	[HeatmapScheme.WhiteBlue]: [white, blue],
 	[HeatmapScheme.WhitePurple]: [white, purple],
 	[HeatmapScheme.WhiteRed]: [white, red],
@@ -42,10 +42,10 @@ export const heatmapSchemeLabels = {
 	[HeatmapScheme.BlackWhite]: 'Black/White',
 	[HeatmapScheme.BlueWhiteRed]: 'Blue/White/Red',
 	[HeatmapScheme.BlueWhiteYellow]: 'Blue/White/Yellow',
+	[HeatmapScheme.GreenWhitePurple]: 'Green/White/Purple',
 	[HeatmapScheme.GreenWhiteRed]: 'Green/White/Red',
 	[HeatmapScheme.GreenYellowRed]: 'Green/Yellow/Red',
 	[HeatmapScheme.None]: 'None',
-	[HeatmapScheme.GreenWhitePurple]: 'Green/White/Purple',
 	[HeatmapScheme.WhiteBlue]: 'White/Blue',
 	[HeatmapScheme.WhitePurple]: 'White/Purple',
 	[HeatmapScheme.WhiteRed]: 'White/Red',
@@ -53,6 +53,6 @@ export const heatmapSchemeLabels = {
 };
 export const heatmapsLabels = {
 	[Heatmap.Averages]: 'Averages',
-	[Heatmap.Totals]: 'Totals',
 	[Heatmap.Series]: 'Extra Series',
+	[Heatmap.Totals]: 'Totals',
 };

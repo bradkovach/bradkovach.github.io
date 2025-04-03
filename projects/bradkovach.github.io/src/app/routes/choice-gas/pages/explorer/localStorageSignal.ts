@@ -1,5 +1,5 @@
-import { InjectionToken, effect, inject, signal } from '@angular/core';
-export const WINDOW = new InjectionToken<Window | null>('window');
+import { effect, inject, InjectionToken, signal } from '@angular/core';
+export const WINDOW = new InjectionToken<null | Window>('window');
 
 export type Parser<T> = (s: string) => T;
 export type Serializer<T> = (i: T) => string;
@@ -33,13 +33,16 @@ export const storageSignal = <T, K extends string = string>(
 	// in SSR contexts, it will be null; in browser contexts, it will be the window object.
 	if (Window) {
 		Window.addEventListener('storage', (e: StorageEvent) => {
-			if (e.storageArea !== storage) return;
-			if (e.key !== key) return;
-			if (!e.newValue) return;
-			if (e.newValue === e.oldValue) return;
-			console.log(e.type);
+			if (
+				e.storageArea !== storage ||
+				e.key !== key ||
+				!e.newValue ||
+				e.newValue === e.oldValue
+			) {
+				return;
+			}
 
-			s.set(parse(e.newValue!));
+			s.set(parse(e.newValue));
 		});
 	}
 

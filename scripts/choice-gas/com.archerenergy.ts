@@ -1,6 +1,4 @@
-import cheerio from 'cheerio';
-import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/data.current';
-import {
+import type {
 	BlendedOffer,
 	FixedPerThermOffer,
 	MarketOffer,
@@ -8,74 +6,46 @@ import {
 	OfferBase,
 } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
 
-const url = 'https://www.archerenergy.com/black-hills-casper.php';
+import * as cheerio from 'cheerio';
 
-export function run(): Promise<(OfferBase & Offer)[]> {
-	return fetch(url)
+import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/Market';
+
+const url = 'https://www.archerenergy.com/shop/black-hills';
+
+export const run = (): Promise<Offer[]> =>
+	fetch(url)
 		.then((response) => response.text())
-		.then((text) => {
-			const $ = cheerio.load(text);
-			return $;
-		})
-		.then(($) => {
-			const planNames = $(
-				'.plan-table > tbody > tr > td[rowspan=2]:nth-of-type(1)',
-			)
+		.then((text) => cheerio.load(text))
+		.then(($): Offer[] => {
+			const $accordionItem = $(
+				'#blackHillsRates > .accordion-item:nth-of-type(1)',
+			);
+			return $accordionItem
+				.find('.table > tbody > tr')
 				.toArray()
-				.map((th) => $(th).text().trim());
-			return $('.plan-table > tbody > tr')
-				.slice(0, -1)
-				.map((rowIdx, tr) => {
+				.flatMap((tr, rowIdx): Offer[] => {
 					const tds = $(tr).find('td');
-					const [nYr, priceText, confirmationCode] = tds
+					const [plan, priceText, confirmationCode] = tds
 						.toArray()
 						.slice(-3)
 						.map((td) => $(td).text().trim());
 
-					const plan = planNames[Math.floor(rowIdx / 2)];
-
-					const term = Number(nYr[0]);
+					const term = rowIdx < 5 ? 1 : 2;
 
 					switch (plan) {
-						case 'RATE LOCK': {
-							const offer: OfferBase & FixedPerThermOffer = {
-								type: 'fpt',
-								id: `ratelock-${term}`,
-								name: 'Rate Lock',
-								term,
-								rate: Number(priceText.slice(1)),
-								confirmationCode,
-							};
-							return offer;
-						}
-						case 'PASS THRU': {
-							const offer: OfferBase & MarketOffer = {
-								type: 'market',
-								id: `pass-thru-${term}`,
-								name: 'Pass Thru',
-								term,
-								market: Market.CIG,
-								rate: Number(priceText.slice(1)),
-								confirmationCode,
-							};
-							return offer;
-						}
-						case 'ARCHER PRO': {
-							const rx =
-								/^\$+(\d+\.\d+)\s*\/\s*CIG\+\s*\$+(\d+\.\d+)$/;
+						case 'ArcherPro': {
+							const rx = /CIG\+\s*\$([\d.]+)\s*\/\s*\$([\d.]+)/;
 							const matches = priceText.match(rx);
 							if (!matches) {
-								console.error(`No match for ${priceText}`);
-								return null;
+								throw Error(`No match for ${priceText}`);
 							}
-							const [fptRate, mktRate] = matches
+							const [mktRate, fptRate] = matches
 								.slice(1)
 								.map(Number);
-							const offer: OfferBase & BlendedOffer = {
-								type: 'blended',
+							const offer: BlendedOffer & OfferBase = {
+								confirmationCode,
 								id: `archer-pro-${term}`,
-								name: 'Archer Pro',
-								term,
+								name: plan,
 								offers: [
 									[
 										1,
@@ -87,33 +57,61 @@ export function run(): Promise<(OfferBase & Offer)[]> {
 									[
 										2,
 										{
+											market: Market.CIG,
 											rate: mktRate,
 											type: 'market',
-											market: Market.CIG,
 										} as MarketOffer,
 									],
 								],
-								confirmationCode,
-							};
-							return offer;
-						}
-						case 'GREENGAS': {
-							const offer: OfferBase & FixedPerThermOffer = {
-								type: 'fpt',
-								id: `green-gas-${term}`,
-								name: 'Green Gas',
 								term,
-								rate: Number(priceText.slice(1)),
-								confirmationCode,
+								type: 'blended',
 							};
-							return offer;
+							return [offer];
 						}
-						default:
-							throw new Error(`Unknown plan: ${plan}`);
+						case 'GreenGas': {
+							const offer: FixedPerThermOffer & OfferBase = {
+								confirmationCode,
+								id: `green-gas-${term}`,
+								name: plan,
+								rate: Number(priceText.slice(1)),
+								term,
+								type: 'fpt',
+							};
+							return [offer];
+						}
+						case 'Pass-Through': {
+							const rx = /CIG\+\s*\$([\d.]+)/;
+							const matches = priceText.match(rx);
+							if (!matches) {
+								throw Error(`No match for ${priceText}`);
+							}
+							const mktRate = Number(matches[1]);
+							const offer: MarketOffer & OfferBase = {
+								confirmationCode,
+								id: `pass-thru-${term}`,
+								market: Market.CIG,
+								name: plan,
+								rate: mktRate,
+								term,
+								type: 'market',
+							};
+							return [offer];
+						}
+						case 'RateLock': {
+							const offer: FixedPerThermOffer & OfferBase = {
+								confirmationCode,
+								id: `ratelock-${term}`,
+								name: plan,
+								rate: Number(priceText.slice(1)),
+								term,
+								type: 'fpt',
+							};
+							return [offer];
+						}
+						default: {
+							console.info('Skipping unknown plan type', plan);
+						}
 					}
-				})
-				.toArray();
+					return [];
+				});
 		});
-}
-
-run();

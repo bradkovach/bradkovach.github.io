@@ -1,6 +1,7 @@
-import { Offer } from '../../entity/Offer';
-import { Vendor } from '../../entity/Vendor';
+import type { Offer } from '../../entity/Offer';
+
 import offers from './json/com.wp-ca.json';
+import { Vendor } from '../../entity/Vendor';
 
 export const wyomingProducerConsumerAlliance = new Vendor(
 	'com.wp-ca',

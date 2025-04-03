@@ -1,43 +1,43 @@
+import { Market } from '../Market';
 import { Vendor } from '../../entity/Vendor';
-import { Market } from '../data.current';
 
 export const uncleFrankEnergyServices = new Vendor(
-  'com.unclefrankenergy',
-  'Uncle Frank Energy Services',
-  'https://www.unclefrankenergy.com',
-  '8333726564',
+	'com.unclefrankenergy',
+	'Uncle Frank Energy Services',
+	'https://www.unclefrankenergy.com',
+	'8333726564',
 )
-  .addOffer({
-    id: 'index-1',
-    name: 'Variable Index Adder',
-    type: 'market',
-    market: Market.CIG,
-    term: 1,
-    rate: 0.3,
-    confirmationCode: '10500',
-  })
-  .addOffer({
-    id: 'green-index-1',
-    name: 'Variable Green Index Adder',
-    type: 'market',
-    market: Market.CIG,
-    term: 1,
-    rate: 0.4,
-    confirmationCode: '10501',
-  })
-  .addOffer({
-    id: 'fpt-1',
-    name: 'Fixed 1 Year',
-    type: 'fpt',
-    term: 1,
-    rate: 1.12,
-    confirmationCode: '11500',
-  })
-  .addOffer({
-    id: 'green-fpt-1',
-    name: 'Fixed Green 1 Year',
-    type: 'fpt',
-    term: 1,
-    rate: 1.22,
-    confirmationCode: '11501',
-  });
+	.addOffer({
+		confirmationCode: '10500',
+		id: 'index-1',
+		market: Market.CIG,
+		name: 'Variable Index Adder',
+		rate: 0.3,
+		term: 1,
+		type: 'market',
+	})
+	.addOffer({
+		confirmationCode: '10501',
+		id: 'green-index-1',
+		market: Market.CIG,
+		name: 'Variable Green Index Adder',
+		rate: 0.4,
+		term: 1,
+		type: 'market',
+	})
+	.addOffer({
+		confirmationCode: '11500',
+		id: 'fpt-1',
+		name: 'Fixed 1 Year',
+		rate: 1.12,
+		term: 1,
+		type: 'fpt',
+	})
+	.addOffer({
+		confirmationCode: '11501',
+		id: 'green-fpt-1',
+		name: 'Fixed Green 1 Year',
+		rate: 1.22,
+		term: 1,
+		type: 'fpt',
+	});

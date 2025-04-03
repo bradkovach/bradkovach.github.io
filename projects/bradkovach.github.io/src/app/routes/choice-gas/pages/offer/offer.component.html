@@ -148,15 +148,6 @@
 												@case ('market') {
 													Market
 												}
-												@case ('blended') {
-													Blended
-												}
-												@case ('best') {
-													Best
-												}
-												@case ('custom') {
-													Custom
-												}
 											}
 										</td>
 										<td>
@@ -184,15 +175,6 @@
 														offer.rate
 															| number: '1.4-4'
 													}}/Therm
-												}
-												@case ('blended') {
-													Blended
-												}
-												@case ('best') {
-													Best
-												}
-												@case ('custom') {
-													Custom
 												}
 											}
 										</td>
@@ -283,6 +265,10 @@
 						</details>
 					}
 				</div>
+
+				<hr />
+				<h3>Export Offer</h3>
+				<textarea readonly>{{ v.offer | json }}</textarea>
 			}
 		}
 	}

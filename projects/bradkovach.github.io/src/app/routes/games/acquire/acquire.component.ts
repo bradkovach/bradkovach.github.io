@@ -1,28 +1,29 @@
-import { CommonModule } from '@angular/common';
+import type {
+  Balance,
+  Player} from './types';
+import type {
+  SharePriceRow} from './price-by-schedule/PriceBySchedulePipe';
+
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-import { HostListener } from '@angular/core';
 import 'zone.js';
+
+import { HostListener } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
 import { IntegerComponent } from '../../../components/integer/integer/integer.component';
+
 import { NetWorthPipe } from './net-worth/net-worth.pipe';
 import {
-  PriceBySchedulePipe,
-  SharePriceRow,
-} from './price-by-schedule/PriceBySchedulePipe';
-import {
-  Balance,
   Chain,
-  Player,
   Schedule,
   Screen,
   SharePriceTier,
 } from './types';
-
-export enum GameMode {
-  Classic,
-  Tycoon,
-}
+import {
+  PriceBySchedulePipe
+} from './price-by-schedule/PriceBySchedulePipe';
 
 export enum BonusTier {
   None,
@@ -31,134 +32,33 @@ export enum BonusTier {
   Tertiary,
 }
 
+export enum GameMode {
+  Classic,
+  Tycoon,
+}
+
 @Component({
-    selector: 'bk-games-acquire',
     imports: [
         ...[CommonModule, FormsModule],
         ...[IntegerComponent],
         ...[PriceBySchedulePipe, NetWorthPipe],
     ],
-    templateUrl: './acquire.component.html',
-    styleUrls: ['./acquire.component.scss']
+    selector: 'bk-games-acquire',
+    styleUrls: ['./acquire.component.scss'],
+    templateUrl: './acquire.component.html'
 })
 export class AcquireComponent {
-  name = 'Angular';
+  bank: Player = {
+    cash: Number.POSITIVE_INFINITY,
+    [Chain.American]: 25,
 
-  readonly Chain = Chain;
-  readonly Schedule = Schedule;
-  readonly GameMode = GameMode;
-  readonly Tier = SharePriceTier;
-  readonly BonusTier = BonusTier;
-  readonly Chains = [
-    Chain.Sackson,
-    Chain.Tower,
-    Chain.Worldwide,
-    Chain.Festival,
-    Chain.American,
-    Chain.Continental,
-    Chain.Imperial,
-  ];
-
-  readonly sizes: Record<Chain, number> = {
-    [Chain.Sackson]: 0,
-    [Chain.Tower]: 0,
-    [Chain.Worldwide]: 0,
-    [Chain.American]: 0,
-    [Chain.Festival]: 0,
-    [Chain.Continental]: 0,
-    [Chain.Imperial]: 0,
-  };
-
-  readonly colors: Record<Chain, string> = {
-    [Chain.Sackson]: '#e6323c',
-    [Chain.Tower]: '#f7a102',
-    [Chain.Worldwide]: '#813f97',
-    [Chain.American]: '#4850a1',
-    [Chain.Festival]: '#009973',
-    [Chain.Continental]: '#007bc3',
-    [Chain.Imperial]: '#e86328',
-  };
-
-  readonly chainToSchedule: Record<Chain, Schedule> = {
-    [Chain.Sackson]: Schedule.Tier1,
-    [Chain.Tower]: Schedule.Tier1,
-    [Chain.Worldwide]: Schedule.Tier2,
-    [Chain.American]: Schedule.Tier2,
-    [Chain.Festival]: Schedule.Tier2,
-    [Chain.Continental]: Schedule.Tier3,
-    [Chain.Imperial]: Schedule.Tier3,
-  };
-
-  gameMode: GameMode = GameMode.Classic;
-
-  getPlayerBonus(player: Player, chain: Chain, bonusTier: BonusTier): number[] {
-    const shareholders = [...this.players]
-      // only players with shares
-      .filter((p) => p[chain] > 0)
-      // sort by share count, descending
-      .sort((a, b) => b[chain] - a[chain]);
-
-    if (shareholders.length === 0) {
-      return [];
-    }
-
-    const tierIndexes: Record<BonusTier, number> = {
-      [BonusTier.None]: 0,
-      [BonusTier.Primary]: 0,
-      [BonusTier.Secondary]: 0,
-      [BonusTier.Tertiary]: 0,
-    };
-
-    // Determine shareholder bonuses.  These are awarded by # of shares.
-    // If more than one player has the same number of shares, they split the bonus at that tier.
-    // If there are only primary shareholders, they get
-    const bonusTiers = [
-      BonusTier.Primary,
-      BonusTier.Secondary,
-      BonusTier.Tertiary,
-    ];
-    let currentBonusTierIdx = 0;
-    for (
-      let shareholderIdx = 1;
-      shareholderIdx < shareholders.length;
-      shareholderIdx++
-    ) {}
-
-    return [];
-  }
-
-  /**
-   * 2D lookup for prices
-   * - threshold
-   * - tier 1 price
-   * - tier 2 price
-   * - tier 3 price
-   */
-
-  //prettier-ignore
-  readonly scheduleByGameMode: Record<GameMode, SharePriceRow[]> = {
-    [GameMode.Classic]: [
-      [2,     200,    300,    400,    ],
-      [3,     300,    400,    500,    ],
-      [4,     400,    500,    600,    ],
-      [5,     500,    600,    700,    ],
-      [6,     600,    700,    800,    ],
-      [11,    700,    800,    900,    ],
-      [21,    800,    900,    1000,   ],
-      [31,    900,    1000,   1100,   ],
-      [41,    1000,   1100,   1200,   ],
-    ],
-    [GameMode.Tycoon]: [
-      [2,     200,    300,    400,    ],
-      [3,     300,    400,    500,    ],
-      [4,     400,    500,    600,    ],
-      [5,     500,    600,    700,    ],
-      [6,     600,    700,    800,    ],
-      [11,    700,    800,    900,    ],
-      [21,    800,    900,    1000,   ],
-      [31,    900,    1000,   1100,   ],
-      [41,    1000,   1100,   1200,   ],
-    ],
+    [Chain.Continental]: 25,
+    [Chain.Festival]: 25,
+    [Chain.Imperial]: 25,
+    [Chain.Sackson]: 25,
+    [Chain.Tower]: 25,
+    [Chain.Worldwide]: 25,
+    name: 'Bank',
   };
 
   // bonusByGameMode[gameMode][tier] = [threshold, primary, secondary, tertiary]
@@ -237,75 +137,189 @@ export class AcquireComponent {
       ],
     },
   };
+  readonly BonusTier = BonusTier;
+  readonly Chain = Chain;
+  readonly Chains = [
+    Chain.Sackson,
+    Chain.Tower,
+    Chain.Worldwide,
+    Chain.Festival,
+    Chain.American,
+    Chain.Continental,
+    Chain.Imperial,
+  ];
+  readonly chainToSchedule: Record<Chain, Schedule> = {
+    [Chain.American]: Schedule.Tier2,
+    [Chain.Continental]: Schedule.Tier3,
+    [Chain.Festival]: Schedule.Tier2,
+    [Chain.Imperial]: Schedule.Tier3,
+    [Chain.Sackson]: Schedule.Tier1,
+    [Chain.Tower]: Schedule.Tier1,
+    [Chain.Worldwide]: Schedule.Tier2,
+  };
+  readonly colors: Record<Chain, string> = {
+    [Chain.American]: '#4850a1',
+    [Chain.Continental]: '#007bc3',
+    [Chain.Festival]: '#009973',
+    [Chain.Imperial]: '#e86328',
+    [Chain.Sackson]: '#e6323c',
+    [Chain.Tower]: '#f7a102',
+    [Chain.Worldwide]: '#813f97',
+  };
+
+  credit: Balance = {
+    cash: 0,
+    [Chain.American]: 0,
+    [Chain.Continental]: 0,
+    [Chain.Festival]: 0,
+    [Chain.Imperial]: 0,
+    [Chain.Sackson]: 0,
+    [Chain.Tower]: 0,
+    [Chain.Worldwide]: 0,
+  };
+
+  creditIdx: null | number = null;
+
+  debit: Balance = {
+    cash: 0,
+    [Chain.American]: 0,
+    [Chain.Continental]: 0,
+    [Chain.Festival]: 0,
+    [Chain.Imperial]: 0,
+    [Chain.Sackson]: 0,
+    [Chain.Tower]: 0,
+    [Chain.Worldwide]: 0,
+  };
+
+  debitIdx: null | number = null;
+
+  gameMode: GameMode = GameMode.Classic;
+
+  /**
+   * 2D lookup for prices
+   * - threshold
+   * - tier 1 price
+   * - tier 2 price
+   * - tier 3 price
+   */
+
+  readonly GameMode = GameMode;
+
+  name = 'Angular';
 
   // 2-d lookup table for prices
   /**
    *
    */
 
-  showPrices: boolean = false;
-
-  readonly Screen = Screen;
-  screen: Screen = Screen.Balances;
-
-  @HostListener('document:keydown.shift')
-  setBig(event?: MouseEvent) {
-    console.log(`shift down`);
-  }
-
-  bank: Player = {
-    name: 'Bank',
-    cash: Number.POSITIVE_INFINITY,
-
-    [Chain.Sackson]: 25,
-    [Chain.Tower]: 25,
-    [Chain.Worldwide]: 25,
-    [Chain.American]: 25,
-    [Chain.Festival]: 25,
-    [Chain.Continental]: 25,
-    [Chain.Imperial]: 25,
-  };
-
   players: Player[] = [];
 
-  debitIdx: number | null = null;
-  creditIdx: number | null = null;
+  readonly Schedule = Schedule;
+  //prettier-ignore
+  readonly scheduleByGameMode: Record<GameMode, SharePriceRow[]> = {
+    [GameMode.Classic]: [
+      [2,     200,    300,    400,    ],
+      [3,     300,    400,    500,    ],
+      [4,     400,    500,    600,    ],
+      [5,     500,    600,    700,    ],
+      [6,     600,    700,    800,    ],
+      [11,    700,    800,    900,    ],
+      [21,    800,    900,    1000,   ],
+      [31,    900,    1000,   1100,   ],
+      [41,    1000,   1100,   1200,   ],
+    ],
+    [GameMode.Tycoon]: [
+      [2,     200,    300,    400,    ],
+      [3,     300,    400,    500,    ],
+      [4,     400,    500,    600,    ],
+      [5,     500,    600,    700,    ],
+      [6,     600,    700,    800,    ],
+      [11,    700,    800,    900,    ],
+      [21,    800,    900,    1000,   ],
+      [31,    900,    1000,   1100,   ],
+      [41,    1000,   1100,   1200,   ],
+    ],
+  };
 
-  debit: Balance = {
-    cash: 0,
+  screen: Screen = Screen.Balances;
+
+  readonly Screen = Screen;
+
+  showPrices = false;
+
+  readonly sizes: Record<Chain, number> = {
+    [Chain.American]: 0,
+    [Chain.Continental]: 0,
+    [Chain.Festival]: 0,
+    [Chain.Imperial]: 0,
     [Chain.Sackson]: 0,
     [Chain.Tower]: 0,
     [Chain.Worldwide]: 0,
-    [Chain.American]: 0,
-    [Chain.Festival]: 0,
-    [Chain.Continental]: 0,
-    [Chain.Imperial]: 0,
   };
-  credit: Balance = {
-    cash: 0,
-    [Chain.Sackson]: 0,
-    [Chain.Tower]: 0,
-    [Chain.Worldwide]: 0,
-    [Chain.American]: 0,
-    [Chain.Festival]: 0,
-    [Chain.Continental]: 0,
-    [Chain.Imperial]: 0,
-  };
+  readonly Tier = SharePriceTier;
 
+  constructor() {
+    this.addPlayer('Brad');
+    this.addPlayer('Connor');
+    this.addPlayer('Esther');
+  }
   addPlayer(name: string) {
     if (this.players.length < 6) {
       this.players.push({
-        name,
+        cash: 5000,
+        [Chain.American]: 0,
+        [Chain.Continental]: 0,
+        [Chain.Festival]: 0,
+        [Chain.Imperial]: 0,
         [Chain.Sackson]: 0,
         [Chain.Tower]: 0,
         [Chain.Worldwide]: 0,
-        [Chain.American]: 0,
-        [Chain.Festival]: 0,
-        [Chain.Continental]: 0,
-        [Chain.Imperial]: 0,
-        cash: 5000,
+        name,
       });
     }
+  }
+
+  canStageProperty(playerIdx: number, property: Chain): boolean {
+    const player = playerIdx == -1 ? this.bank : this.players[playerIdx];
+    const playerQty = player[property];
+
+    return playerQty > 0 && playerQty <= 3;
+  }
+
+  getPlayerBonus(player: Player, chain: Chain, bonusTier: BonusTier): number[] {
+    const shareholders = [...this.players]
+      // only players with shares
+      .filter((p) => p[chain] > 0)
+      // sort by share count, descending
+      .sort((a, b) => b[chain] - a[chain]);
+
+    if (shareholders.length === 0) {
+      return [];
+    }
+
+    const tierIndexes: Record<BonusTier, number> = {
+      [BonusTier.None]: 0,
+      [BonusTier.Primary]: 0,
+      [BonusTier.Secondary]: 0,
+      [BonusTier.Tertiary]: 0,
+    };
+
+    // Determine shareholder bonuses.  These are awarded by # of shares.
+    // If more than one player has the same number of shares, they split the bonus at that tier.
+    // If there are only primary shareholders, they get
+    const bonusTiers = [
+      BonusTier.Primary,
+      BonusTier.Secondary,
+      BonusTier.Tertiary,
+    ];
+    const currentBonusTierIdx = 0;
+    for (
+      let shareholderIdx = 1;
+      shareholderIdx < shareholders.length;
+      shareholderIdx++
+    ) {}
+
+    return [];
   }
 
   removePlayer(playerIdx: number) {
@@ -314,24 +328,16 @@ export class AcquireComponent {
     }
   }
 
+  @HostListener('document:keydown.shift')
+  setBig(event?: MouseEvent) {
+    console.log(`shift down`);
+  }
+
   stageCash(playerIdx: number, event: MouseEvent) {
     const coefficient = event.shiftKey ? 10 : 1;
     const amount = 100 * coefficient;
 
     console.log(`moving ${amount}`);
-  }
-
-  constructor() {
-    this.addPlayer('Brad');
-    this.addPlayer('Connor');
-    this.addPlayer('Esther');
-  }
-
-  canStageProperty(playerIdx: number, property: Chain): boolean {
-    const player = playerIdx == -1 ? this.bank : this.players[playerIdx];
-    const playerQty = player[property];
-
-    return playerQty > 0 && playerQty <= 3;
   }
 
   stageProperty(playerIdx: number, property: Chain, event: MouseEvent) {

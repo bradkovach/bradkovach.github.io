@@ -1,18 +1,18 @@
-import { DatePipe } from '@angular/common';
 import { Component } from '@angular/core';
-import { FormsModule, NgModel } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
+import { FormsModule, NgModel } from '@angular/forms';
 
 @Component({
-    selector: 'app-connections',
     imports: [RouterOutlet, FormsModule, DatePipe],
-    templateUrl: './connections.component.html',
-    styleUrl: './connections.component.scss'
+    selector: 'app-connections',
+    styleUrl: './connections.component.scss',
+    templateUrl: './connections.component.html'
 })
 export class ConnectionsComponent {
   connectionsEpoch = new Date('2021-01-01T00:00:00.000Z');
   date = new Date();
-  puzzleData: string = '';
+  puzzleData = '';
   constructor() {
     this.date.setHours(0, 0, 0, 0);
   }

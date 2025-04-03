@@ -1,4 +1,7 @@
-import { Pipe, PipeTransform } from '@angular/core';
+import type { PipeTransform } from '@angular/core';
+
+import { Pipe } from '@angular/core';
+
 import { contrast, scale } from 'chroma-js';
 
 @Pipe({

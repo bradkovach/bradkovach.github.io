@@ -1,4 +1,5 @@
-import { Routes } from '@angular/router';
+import type { Routes } from '@angular/router';
+
 import { ChoiceGasComponent } from './choice-gas.component';
 import { DataEditorComponent } from './pages/data-editor/data-editor.component';
 import { DevelopersComponent } from './pages/developers/developers.component';
@@ -11,46 +12,46 @@ import { VendorComponent } from './pages/vendor/vendor.component';
 import { VendorsComponent } from './pages/vendors/vendors.component';
 
 export const CHOICE_GAS_ROUTES: Routes = [
-  {
-    path: '',
-    component: ChoiceGasComponent,
-    children: [
-      {
-        path: '',
-        component: MainComponent,
-      },
-      {
-        path: 'import',
-        component: ImportComponent,
-      },
-      {
-        path: 'data-editor',
-        component: DataEditorComponent,
-      },
-      {
-        path: 'developers',
-        component: DevelopersComponent,
-      },
-      {
-        path: 'explorer',
-        component: ExplorerComponent,
-      },
-      {
-        path: 'vendors',
-        component: VendorsComponent,
-      },
-      {
-        path: 'vendors/:vendorId',
-        component: VendorComponent,
-      },
-      {
-        path: 'vendors/:vendorId/offers',
-        component: OffersComponent,
-      },
-      {
-        path: 'vendors/:vendorId/offers/:offerId',
-        component: OfferComponent,
-      },
-    ],
-  },
+	{
+		children: [
+			{
+				component: MainComponent,
+				path: '',
+			},
+			{
+				component: ImportComponent,
+				path: 'import',
+			},
+			{
+				component: DataEditorComponent,
+				path: 'data-editor',
+			},
+			{
+				component: DevelopersComponent,
+				path: 'developers',
+			},
+			{
+				component: ExplorerComponent,
+				path: 'explorer',
+			},
+			{
+				component: VendorsComponent,
+				path: 'vendors',
+			},
+			{
+				component: VendorComponent,
+				path: 'vendors/:vendorId',
+			},
+			{
+				component: OffersComponent,
+				path: 'vendors/:vendorId/offers',
+			},
+			{
+				component: OfferComponent,
+				path: 'vendors/:vendorId/offers/:offerId',
+			},
+		],
+		component: ChoiceGasComponent,
+		path: '',
+	},
 ];

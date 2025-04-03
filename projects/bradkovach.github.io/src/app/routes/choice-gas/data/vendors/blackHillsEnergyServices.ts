@@ -1,6 +1,6 @@
-import { Offer } from '../../entity/Offer';
-import { Vendor } from '../../entity/Vendor';
+import type { Offer } from '../../entity/Offer';
 
+import { Vendor } from '../../entity/Vendor';
 import offers from './json/com.choosebhes.json';
 /*
 id    name                          type    market  term  rate  confirmationCode
@@ -19,6 +19,6 @@ export const blackHillsEnergyServices = new Vendor(
 	true,
 );
 
-for (let offer of offers as Offer[]) {
+for (const offer of offers as Offer[]) {
 	blackHillsEnergyServices.addOffer(offer);
 }

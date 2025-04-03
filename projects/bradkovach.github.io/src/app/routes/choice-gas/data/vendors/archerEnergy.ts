@@ -1,6 +1,6 @@
-import { Offer } from '../../entity/Offer';
-import { Vendor } from '../../entity/Vendor';
+import type { Offer } from '../../entity/Offer';
 
+import { Vendor } from '../../entity/Vendor';
 import offers from './json/com.archerenergy.json';
 
 export const archerEnergy = new Vendor(

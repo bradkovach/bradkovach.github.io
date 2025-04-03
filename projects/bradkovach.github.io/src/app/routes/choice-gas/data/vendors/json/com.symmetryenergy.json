@@ -1,1 +1,52 @@
-[]
+[
+  {
+    "confirmationCode": "43391",
+    "id": "WYCAS-FD2605RS-27580-43391",
+    "name": "Fixed Rate Per Therm (1 Year)  ",
+    "rate": 0.555,
+    "term": 1,
+    "type": "fpt"
+  },
+  {
+    "confirmationCode": "43396",
+    "id": "WYCAS-FD2705RS-27581-43396",
+    "name": "Fixed Rate Per Therm (2 Year)  ",
+    "rate": 0.545,
+    "term": 2,
+    "type": "fpt"
+  },
+  {
+    "confirmationCode": "43401",
+    "id": "WYCAS-ND2605RS-27578-43401",
+    "market": 0,
+    "name": "Market Index Rate (1 Year)  ",
+    "rate": 0.069,
+    "term": 1,
+    "type": "market"
+  },
+  {
+    "confirmationCode": "43403",
+    "id": "WYCAS-ND2705RS-27579-43403",
+    "market": 0,
+    "name": "Market Index Rate (2 Year)  ",
+    "rate": 0.069,
+    "term": 2,
+    "type": "market"
+  },
+  {
+    "confirmationCode": "43405",
+    "id": "WYCAS-MD2605RS-27582-43405",
+    "name": "Managed (1 Year)  ",
+    "rate": 0.599,
+    "term": 1,
+    "type": "fpt"
+  },
+  {
+    "confirmationCode": "43406",
+    "id": "WYCAS-MD2705RS-27583-43406",
+    "name": "Managed (2 Year)  ",
+    "rate": 0.599,
+    "term": 2,
+    "type": "fpt"
+  }
+]

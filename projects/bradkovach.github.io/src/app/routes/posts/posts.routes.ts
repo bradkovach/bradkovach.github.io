@@ -1,20 +1,21 @@
-import { Routes } from '@angular/router';
-import { ArchiveComponent } from './archive/archive.component';
+import type { Routes } from '@angular/router';
+
 import { PostComponent } from './post/post.component';
 import { PostsComponent } from './posts/posts.component';
+import { ArchiveComponent } from './archive/archive.component';
 
 export const POSTS_ROUTES: Routes = [
   {
-    path: '',
     component: PostsComponent,
+    path: '',
     pathMatch: 'full',
   },
   {
-    path: ':year/:month/:day',
     component: ArchiveComponent,
+    path: ':year/:month/:day',
   },
   {
-    path: ':year/:month/:day/:slug',
     component: PostComponent,
+    path: ':year/:month/:day/:slug',
   },
 ];

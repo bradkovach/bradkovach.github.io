@@ -1,109 +1,107 @@
 <div class="puzzle">
-  @if (symbolPuzzle$ | async; as symbolPuzzle) {
-    <section class="title">
-      <h3>
-        <span class="name">Connections</span>
-        <span class="date" title="Puzzle {{ symbolPuzzle.id }}">{{
-          symbolPuzzle.id | epochToDate | date: "MMMM d, YYYY"
-        }}</span>
-        <a
-          class="permalink"
-          [routerLink]="['/connections', 'solve']"
-          [queryParams]="{
-            puzzle: asBase64(symbolPuzzle)
-          }"
-          >Permalink</a
-        >
-        <a
-          class="permalink"
-          [routerLink]="['/connections', 'create']"
-          [queryParams]="{
-            puzzle: asBase64(symbolPuzzle)
-          }"
-          >Edit</a
-        >
-      </h3>
-    </section>
+	@if (symbolPuzzle$ | async; as symbolPuzzle) {
+		<section class="title">
+			<h3>
+				<span class="name">Connections</span>
+				<span class="date" title="Puzzle {{ symbolPuzzle.id }}">{{
+					symbolPuzzle.id | epochToDate | date: 'MMMM d, YYYY'
+				}}</span>
+				<a
+					class="permalink"
+					[routerLink]="['/connections', 'solve']"
+					[queryParams]="{
+						puzzle: asBase64(symbolPuzzle)
+					}"
+					>Permalink</a
+				>
+				<a
+					class="permalink"
+					[routerLink]="['/connections', 'create']"
+					[queryParams]="{
+						puzzle: asBase64(symbolPuzzle)
+					}"
+					>Edit</a
+				>
+			</h3>
+		</section>
 
-    <section class="description">
-      <p>Create four groups of four!</p>
-    </section>
+		<section class="description">
+			<p>Create four groups of four!</p>
+		</section>
 
-    <section class="board">
-      @if (groupsComplete.size > 0) {
-        <div class="completed-groups">
-          @for (group of groupsComplete; track group[1].level) {
-            <div
-              class="completed-group"
-              [style.background-color]="getColor(group[1].level)"
-            >
-              <h3>{{ group[0] }}</h3>
-              <p>
-                {{ group[1].members | printSymbolMembers }}
-              </p>
-            </div>
-          }
-        </div>
-      }
-      @if (tilesAvailable.size > 0) {
-        <div class="remaining-tiles">
-          @for (symbol of tilesAvailable; track symbol) {
-            <li
-              class="tile"
-              [class.tile--selected]="tilesSelected.has(symbol)"
-              (click)="toggleTileSelection(symbol)"
-            >
-              {{ tilesBySymbol.get(symbol)?.label }}
-            </li>
-          }
-        </div>
-      }
-    </section>
+		<section class="board">
+			@if (groupsComplete.size > 0) {
+				<div class="completed-groups">
+					@for (group of groupsComplete; track group[1].level) {
+						<div
+							class="completed-group"
+							[style.background-color]="getColor(group[1].level)">
+							<h3>{{ group[0] }}</h3>
+							<p>
+								{{ group[1].members | printSymbolMembers }}
+							</p>
+						</div>
+					}
+				</div>
+			}
+			@if (tilesAvailable.size > 0) {
+				<div class="remaining-tiles">
+					@for (symbol of tilesAvailable; track symbol) {
+						<li
+							class="tile"
+							[class.tile--selected]="tilesSelected.has(symbol)"
+							(click)="toggleTileSelection(symbol)">
+							{{ tilesBySymbol.get(symbol)?.label }}
+						</li>
+					}
+				</div>
+			}
+		</section>
 
-    @if (heckleAndReset$ | async; as currentHeckle) {
-      <section class="heckle">
-        @switch (currentHeckle) {
-          @case (Heckle.AlreadyGuessed) {
-            <p>Already Guessed</p>
-          }
-          @case (Heckle.OneAway) {
-            <p>One Away</p>
-          }
-          @case (Heckle.NextTime) {
-            <p>Next Time</p>
-          }
-          @case (Heckle.None) {}
-        }
-      </section>
-    }
+		@if (heckleAndReset$ | async; as currentHeckle) {
+			<section class="heckle">
+				@switch (currentHeckle) {
+					@case (Heckle.AlreadyGuessed) {
+						<p>Already Guessed</p>
+					}
+					@case (Heckle.OneAway) {
+						<p>One Away</p>
+					}
+					@case (Heckle.NextTime) {
+						<p>Next Time</p>
+					}
+				}
+			</section>
+		}
 
-    <section class="mistakes-remaining">
-      <p>Mistakes remaining:</p>
-      <ol>
-        @for (step of mistakesRemaining | exclusiveRange; track step) {
-          <li class="mistake">
-            <span class="sr-only">{{ step }}</span>
-          </li>
-        }
-      </ol>
-    </section>
+		<section class="mistakes-remaining">
+			<p>Mistakes remaining:</p>
+			<ol>
+				@for (step of mistakesRemaining | exclusiveRange; track step) {
+					<li class="mistake">
+						<span class="sr-only">{{ step }}</span>
+					</li>
+				}
+			</ol>
+		</section>
 
-    <section class="actions">
-      <button [disabled]="tilesAvailable.size === 0" (click)="shuffle()">
-        Shuffle
-      </button>
-      <button [disabled]="tilesSelected.size === 0" (click)="deselectAll()">
-        Deselect All
-      </button>
-      <button
-        [class.button--primary]="tilesSelected.size === 4"
-        [disabled]="tilesSelected.size !== 4"
-        (click)="submit()"
-      >
-        Submit
-      </button>
-    </section>
-  }
+		<section class="actions">
+			<button [disabled]="tilesAvailable.size === 0" (click)="shuffle()">
+				Shuffle
+			</button>
+			<button
+				[disabled]="tilesSelected.size === 0"
+				(click)="deselectAll()">
+				Deselect All
+			</button>
+			<button
+				[class.button--primary]="tilesSelected.size === 4"
+				[disabled]="tilesSelected.size !== 4"
+				(click)="submit()">
+				Submit
+			</button>
+		</section>
+	}
 </div>
 
 <p class="actions"></p>

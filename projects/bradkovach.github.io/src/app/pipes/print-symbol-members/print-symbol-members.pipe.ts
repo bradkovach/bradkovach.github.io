@@ -1,5 +1,8 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import { SymbolMemberRow } from '../../../types/SymbolMemberRow';
+import type { PipeTransform } from '@angular/core';
+
+import type { SymbolMemberRow } from '../../../types/SymbolMemberRow';
+
+import { Pipe } from '@angular/core';
 
 @Pipe({
   name: 'printSymbolMembers',

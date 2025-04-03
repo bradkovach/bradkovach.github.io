@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
-    selector: 'app-notary',
     imports: [RouterOutlet],
-    templateUrl: './notary.component.html',
-    styleUrl: './notary.component.scss'
+    selector: 'app-notary',
+    styleUrl: './notary.component.scss',
+    templateUrl: './notary.component.html'
 })
 export class NotaryComponent {}

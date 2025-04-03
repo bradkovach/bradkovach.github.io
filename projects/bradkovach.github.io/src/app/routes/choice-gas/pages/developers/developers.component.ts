@@ -1,15 +1,16 @@
 import { JsonPipe } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
 @Component({
-    selector: 'app-developers',
-    imports: [JsonPipe],
-    templateUrl: './developers.component.html',
-    styleUrl: './developers.component.scss'
+	imports: [JsonPipe],
+	selector: 'app-developers',
+	styleUrl: './developers.component.scss',
+	templateUrl: './developers.component.html',
 })
 export class DevelopersComponent {
-  constructor(title: Title) {
-    title.setTitle('Choice Gas - Developers');
-  }
+	private readonly title: Title = inject(Title);
+	constructor() {
+		this.title.setTitle('Choice Gas - Developers');
+	}
 }

@@ -1,25 +1,30 @@
+import type { Observable} from 'rxjs';
+
+import type { StringPuzzle } from '../../../../types/StringPuzzle';
+
+import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { Observable, catchError, filter, map, of, shareReplay } from 'rxjs';
-import { StringPuzzle } from '../../../../types/StringPuzzle';
-import { AsyncPipe } from '@angular/common';
+
+import { catchError, filter, map, of, shareReplay } from 'rxjs';
+
 import { PuzzleComponent } from '../../../puzzle/puzzle.component';
 
 type SolveViewModel =
   | {
-      status: 'loaded';
-      puzzle: StringPuzzle;
+      error: string;
+      status: 'error';
     }
   | {
-      status: 'error';
-      error: string;
+      puzzle: StringPuzzle;
+      status: 'loaded';
     };
 
 @Component({
-    selector: 'app-solve',
     imports: [AsyncPipe, PuzzleComponent, RouterLink],
-    templateUrl: './solve.component.html',
-    styleUrl: './solve.component.scss'
+    selector: 'app-solve',
+    styleUrl: './solve.component.scss',
+    templateUrl: './solve.component.html'
 })
 export class SolveComponent {
   private readonly route = inject(ActivatedRoute);
@@ -37,9 +42,9 @@ export class SolveComponent {
   );
 
   vm$: Observable<SolveViewModel> = this.puzzle$.pipe(
-    map((puzzle) => ({ status: 'loaded' as const, puzzle })),
+    map((puzzle) => ({ puzzle, status: 'loaded' as const })),
     catchError((err: Error) => {
-      return of({ status: 'error' as const, error: err.message });
+      return of({ error: err.message, status: 'error' as const });
     }),
   );
 }

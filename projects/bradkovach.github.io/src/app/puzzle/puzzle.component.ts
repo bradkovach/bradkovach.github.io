@@ -1,40 +1,45 @@
-import { AsyncPipe, DatePipe, JsonPipe, NgFor, NgIf } from '@angular/common';
+import type {
+  Observable} from 'rxjs';
+
+import type { BoardOf } from '../../types/BoardOf';
+import type { ArrayRowOf } from '../../types/RowOf';
+import type { SymbolLevel } from '../../types/SymbolLevel';
+import type { StringPuzzle } from '../../types/StringPuzzle';
+import type { SymbolMember } from '../../types/SymbolMember';
+import type { SymbolPuzzle } from '../../types/SymbolPuzzle';
+import type { SymbolMemberRow } from '../../types/SymbolMemberRow';
+
+import { RouterLink } from '@angular/router';
 import { Component, Input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import { AsyncPipe, DatePipe, JsonPipe, NgFor, NgIf } from '@angular/common';
+
 import {
-  Observable,
-  ReplaySubject,
   map,
+  ReplaySubject,
   share,
   shareReplay,
   startWith,
   switchMap,
   timer,
 } from 'rxjs';
-import { BoardOf } from '../../types/BoardOf';
-import { Heckle } from '../../types/Heckle';
-import { ArrayRowOf } from '../../types/RowOf';
-import { StringPuzzle } from '../../types/StringPuzzle';
-import { SymbolLevel } from '../../types/SymbolLevel';
-import { SymbolMember } from '../../types/SymbolMember';
-import { SymbolMemberRow } from '../../types/SymbolMemberRow';
-import { SymbolPuzzle } from '../../types/SymbolPuzzle';
-import { PuzzleHelpers } from '../helpers/puzzle-helpers';
-import { ExclusiveRangePipe } from '../pipes/exclusive-range/exclusive-range.pipe';
-import { PrintSymbolMembersPipe } from '../pipes/print-symbol-members/print-symbol-members.pipe';
-import { EpochToDatePipe } from '../pipes/since-cnx-epoch/since-cnx-epoch.pipe';
-import { TransitionGroupItemDirective } from '../transition-group/transition-group-item.directive';
-import { TransitionGroupComponent } from '../transition-group/transition-group.component';
 
-type PuzzleViewModel = {
-  puzzle: StringPuzzle;
-  heckle: Heckle;
+import { Heckle } from '../../types/Heckle';
+import { PuzzleHelpers } from '../helpers/puzzle-helpers';
+import { EpochToDatePipe } from '../pipes/since-cnx-epoch/since-cnx-epoch.pipe';
+import { ExclusiveRangePipe } from '../pipes/exclusive-range/exclusive-range.pipe';
+import { TransitionGroupComponent } from '../transition-group/transition-group.component';
+import { PrintSymbolMembersPipe } from '../pipes/print-symbol-members/print-symbol-members.pipe';
+import { TransitionGroupItemDirective } from '../transition-group/transition-group-item.directive';
+
+interface PuzzleViewModel {
   completedGroups: [string, SymbolLevel][];
+  heckle: Heckle;
+  mistakesRemaining: number;
+  puzzle: StringPuzzle;
   remainingTiles: string[];
   selected: Set<string>;
-  mistakesRemaining: number;
-};
+}
 
 const mapSet = <T, U>(set: Set<T>, fn: (item: T) => U): Set<U> => {
   const result = new Set<U>();
@@ -43,7 +48,6 @@ const mapSet = <T, U>(set: Set<T>, fn: (item: T) => U): Set<U> => {
 };
 
 @Component({
-    selector: 'app-puzzle',
     imports: [
         DatePipe,
         AsyncPipe,
@@ -57,20 +61,16 @@ const mapSet = <T, U>(set: Set<T>, fn: (item: T) => U): Set<U> => {
         ExclusiveRangePipe,
         EpochToDatePipe,
     ],
-    templateUrl: './puzzle.component.html',
-    styleUrls: ['./puzzle.component.scss']
+    selector: 'app-puzzle',
+    styleUrls: ['./puzzle.component.scss'],
+    templateUrl: './puzzle.component.html'
 })
 export class PuzzleComponent {
-  private readonly groupsAll = new Map<string, SymbolLevel>();
-  private readonly groupsIncomplete = new Map<string, SymbolLevel>();
-  private readonly guessHistory: Set<Symbol>[] = [];
+  readonly groupsComplete = new Map<string, SymbolLevel>();
+  public readonly groupsSets: Record<string, Set<symbol>> = {};
+  readonly Heckle = Heckle;
   // heckle = Heckle.None;
   private readonly heckleSubject = new ReplaySubject<Heckle>(Heckle.None);
-  private readonly puzzleSubject = new ReplaySubject<StringPuzzle>(1);
-  private readonly symbolMemberToLevel: Map<Symbol, SymbolLevel> = new Map();
-
-  readonly Heckle = Heckle;
-  readonly groupsComplete = new Map<string, SymbolLevel>();
   readonly heckle$: Observable<Heckle> = this.heckleSubject.asObservable();
   readonly heckleAndReset$: Observable<Heckle> = this.heckle$.pipe(
     switchMap((current) =>
@@ -81,7 +81,10 @@ export class PuzzleComponent {
     ),
     share(),
   );
+
+  private readonly puzzleSubject = new ReplaySubject<StringPuzzle>(1);
   readonly puzzle$ = this.puzzleSubject.asObservable();
+  puzzleDate: Date = new Date();
   readonly symbolPuzzle$: Observable<SymbolPuzzle> = this.puzzle$.pipe(
     map((puzzle) => {
       const symbolGroupEntries = Object.entries(puzzle.groups).map(
@@ -91,8 +94,8 @@ export class PuzzleComponent {
             level: stringGroups.level,
             members: stringGroups.members.map((member) => {
               return {
-                symbol: Symbol(member),
                 label: member,
+                symbol: Symbol(member),
               } as SymbolMember;
             }) as unknown as ArrayRowOf<SymbolMember>,
           },
@@ -131,14 +134,18 @@ export class PuzzleComponent {
       );
 
       return {
-        id: puzzle.id,
         groups: Object.fromEntries(symbolGroupEntries),
+        id: puzzle.id,
         startingGroups: startingGroups as BoardOf<SymbolMember>,
       };
     }),
     shareReplay(),
   );
-  public readonly groupsSets: Record<string, Set<Symbol>> = {};
+  readonly tilesAvailable = new Set<symbol>();
+  readonly tilesBySymbol = new Map<symbol, SymbolMember>();
+  private readonly groupsAll = new Map<string, SymbolLevel>();
+  private readonly groupsIncomplete = new Map<string, SymbolLevel>();
+  private readonly symbolMemberToLevel = new Map<symbol, SymbolLevel>();
   public readonly symbolPuzzle$$ = this.symbolPuzzle$
     .pipe(takeUntilDestroyed())
     .subscribe((puzzle) => {
@@ -163,16 +170,7 @@ export class PuzzleComponent {
         });
       });
     });
-  readonly tilesAvailable: Set<Symbol> = new Set();
-  readonly tilesBySymbol: Map<Symbol, SymbolMember> = new Map();
-  readonly tilesSelected: Set<Symbol> = new Set();
-
-  puzzleDate: Date = new Date();
-
-  @Input() set puzzle(puzzle: StringPuzzle) {
-    console.log('Received puzzle; updating subject.');
-    this.puzzleSubject.next(puzzle);
-  }
+  readonly tilesSelected = new Set<symbol>();
 
   get mistakesRemaining() {
     const invalidGuesses = this.guessHistory.filter((guess) => {
@@ -194,6 +192,13 @@ export class PuzzleComponent {
 
     return 4 - invalidGuesses.length;
   }
+
+  @Input() set puzzle(puzzle: StringPuzzle) {
+    console.log('Received puzzle; updating subject.');
+    this.puzzleSubject.next(puzzle);
+  }
+
+  private readonly guessHistory: Set<symbol>[] = [];
 
   asBase64(puzzle: SymbolPuzzle) {
     return PuzzleHelpers.toBase64(PuzzleHelpers.toStringPuzzle(puzzle));
@@ -230,20 +235,6 @@ export class PuzzleComponent {
     const shuffled = shuffleImmutable([...this.tilesAvailable]);
     this.tilesAvailable.clear();
     shuffled.forEach((tile) => this.tilesAvailable.add(tile));
-  }
-
-  verdict(
-    heckle: Heckle,
-    clearSelections: boolean = false,
-    logHistory: boolean = false,
-  ) {
-    this.heckleSubject.next(heckle);
-    if (logHistory) {
-      this.guessHistory.push(new Set(this.tilesSelected));
-    }
-    if (clearSelections) {
-      this.tilesSelected.clear();
-    }
   }
 
   submit() {
@@ -347,11 +338,25 @@ export class PuzzleComponent {
     this.verdict(Heckle.None, true, true);
   }
 
-  toggleTileSelection(symbol: Symbol) {
+  toggleTileSelection(symbol: symbol) {
     if (this.tilesSelected.has(symbol)) {
       this.tilesSelected.delete(symbol);
     } else if (this.tilesSelected.size < 4) {
       this.tilesSelected.add(symbol);
+    }
+  }
+
+  verdict(
+    heckle: Heckle,
+    clearSelections = false,
+    logHistory = false,
+  ) {
+    this.heckleSubject.next(heckle);
+    if (logHistory) {
+      this.guessHistory.push(new Set(this.tilesSelected));
+    }
+    if (clearSelections) {
+      this.tilesSelected.clear();
     }
   }
 }

@@ -1,5 +1,10 @@
-import { Offer } from './Offer';
+import type { Offer } from './Offer';
 
+export interface IVendor {
+	id: string;
+	name: string;
+	offers: Map<string, Offer>;
+}
 export class Vendor implements IVendor {
 	offers: Map<string, Offer> = new Map<string, Offer>();
 
@@ -8,15 +13,17 @@ export class Vendor implements IVendor {
 		public name: string,
 		public website: string,
 		public phone: string,
-		public automated: boolean = false,
+		public automated = false,
 	) {
 		this.id = id;
 		this.name = name;
 	}
 
-	addOffer(offer: Offer, replace: boolean = false): this {
+	addOffer(offer: Offer, replace = false): this {
 		if (this.offers.has(offer.id) && !replace) {
-			throw new Error(`Offer with id ${offer.id} already exists`);
+			throw new Error(
+				`Vendor ${this.name} Offer with id ${offer.id} already exists`,
+			);
 		}
 		this.offers.set(offer.id, { vendor_id: this.id, ...offer });
 		return this;
@@ -25,9 +32,4 @@ export class Vendor implements IVendor {
 	getOffersArray(): Offer[] {
 		return Array.from(this.offers.values());
 	}
-}
-export interface IVendor {
-	id: string;
-	name: string;
-	offers: Map<string, Offer>;
 }

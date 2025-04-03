@@ -1,12 +1,13 @@
-import { ApplicationConfig } from '@angular/core';
+import type { ApplicationConfig } from '@angular/core';
+
+import { provideClientHydration } from '@angular/platform-browser';
+import { provideHttpClient, withFetch } from '@angular/common/http';
 import {
 	provideRouter,
 	withComponentInputBinding,
 	withInMemoryScrolling,
 } from '@angular/router';
 
-import { provideHttpClient, withFetch } from '@angular/common/http';
-import { provideClientHydration } from '@angular/platform-browser';
 import { routes } from './app.routes';
 import {
 	STORAGE,

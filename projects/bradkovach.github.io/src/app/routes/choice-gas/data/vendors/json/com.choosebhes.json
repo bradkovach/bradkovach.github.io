@@ -1,1 +1,94 @@
-[]
+[
+  {
+    "id": "ratelock-1",
+    "name": "Rate Lock",
+    "rate": 0.529,
+    "term": 1,
+    "type": "fpt"
+  },
+  {
+    "id": "ratelock-2",
+    "name": "Rate Lock",
+    "rate": 0.516,
+    "term": 2,
+    "type": "fpt"
+  },
+  {
+    "confirmationCode": "13900",
+    "id": "winterguard-1",
+    "name": "WinterGuard",
+    "rate": 0,
+    "term": 1,
+    "type": "fpm"
+  },
+  {
+    "confirmationCode": "13927",
+    "id": "winterguard-2",
+    "name": "WinterGuard",
+    "rate": 0,
+    "term": 2,
+    "type": "fpm"
+  },
+  {
+    "id": "market-1",
+    "market": 0,
+    "name": "Market Index",
+    "rate": 0.086,
+    "term": 1,
+    "type": "market"
+  },
+  {
+    "id": "market-2",
+    "market": 0,
+    "name": "Market Index",
+    "rate": 0.085,
+    "term": 2,
+    "type": "market"
+  },
+  {
+    "id": "blended-1",
+    "name": "Blended",
+    "offers": [
+      [
+        0.5,
+        {
+          "rate": 0.529,
+          "type": "fpt"
+        }
+      ],
+      [
+        0.5,
+        {
+          "market": 0,
+          "rate": 0.086,
+          "type": "market"
+        }
+      ]
+    ],
+    "term": 1,
+    "type": "blended"
+  },
+  {
+    "id": "blended-2",
+    "name": "Blended",
+    "offers": [
+      [
+        0.5,
+        {
+          "rate": 0.516,
+          "type": "fpt"
+        }
+      ],
+      [
+        0.5,
+        {
+          "market": 0,
+          "rate": 0.085,
+          "type": "market"
+        }
+      ]
+    ],
+    "term": 2,
+    "type": "blended"
+  }
+]
