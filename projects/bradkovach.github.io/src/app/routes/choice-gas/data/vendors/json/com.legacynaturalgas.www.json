@@ -1,9 +1,9 @@
 [
   {
-    "confirmationCode": "20668",
+    "confirmationCode": "20699",
     "id": "fixed-1",
     "name": "Fixed Price",
-    "rate": 0.515,
+    "rate": 0.47,
     "term": 1,
     "type": "fpt"
   },
@@ -25,10 +25,10 @@
     "type": "fpm"
   },
   {
-    "confirmationCode": "20740",
+    "confirmationCode": "20772",
     "id": "fixed-2",
     "name": "Fixed Price",
-    "rate": 0.505,
+    "rate": 0.47,
     "term": 2,
     "type": "fpt"
   },
