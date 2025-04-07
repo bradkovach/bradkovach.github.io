@@ -2,14 +2,14 @@
   {
     "id": "ratelock-1",
     "name": "Rate Lock",
-    "rate": 0.529,
+    "rate": 0.517,
     "term": 1,
     "type": "fpt"
   },
   {
     "id": "ratelock-2",
     "name": "Rate Lock",
-    "rate": 0.516,
+    "rate": 0.51,
     "term": 2,
     "type": "fpt"
   },
@@ -41,7 +41,7 @@
     "id": "market-2",
     "market": 0,
     "name": "Market Index",
-    "rate": 0.085,
+    "rate": 0.086,
     "term": 2,
     "type": "market"
   },
@@ -52,7 +52,7 @@
       [
         0.5,
         {
-          "rate": 0.529,
+          "rate": 0.517,
           "type": "fpt"
         }
       ],
@@ -75,7 +75,7 @@
       [
         0.5,
         {
-          "rate": 0.516,
+          "rate": 0.51,
           "type": "fpt"
         }
       ],
@@ -83,7 +83,7 @@
         0.5,
         {
           "market": 0,
-          "rate": 0.085,
+          "rate": 0.086,
           "type": "market"
         }
       ]

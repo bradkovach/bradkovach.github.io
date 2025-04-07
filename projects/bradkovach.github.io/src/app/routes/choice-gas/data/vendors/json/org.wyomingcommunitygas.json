@@ -1,17 +1,17 @@
 [
   {
-    "confirmationCode": "19051",
+    "confirmationCode": "19056",
     "id": "fpt-1",
     "name": "Fixed Price",
-    "rate": 0.5489999999999999,
+    "rate": 0.528,
     "term": 1,
     "type": "fpt"
   },
   {
-    "confirmationCode": "19116",
+    "confirmationCode": "19121",
     "id": "fpt-2",
     "name": "Fixed Price",
-    "rate": 0.539,
+    "rate": 0.517,
     "term": 2,
     "type": "fpt"
   },
