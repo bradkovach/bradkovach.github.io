@@ -6,7 +6,7 @@ import type {
 	OfferBase,
 } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
 
-import cheerio from 'cheerio';
+import * as cheerio from 'cheerio';
 
 import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/Market';
 import { getEnvAsync } from '../getEnvAsync';

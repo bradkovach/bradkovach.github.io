@@ -6,18 +6,18 @@ import path from 'path/posix';
 
 const drivers = [
 	// NOT WORKING
-	// 'com.vistaenergymarketing', //
 	// 'com.unclefrankenergy',
 
 	// WORKING
-	'com.symmetryenergy',
-	'com.choosebhes',
-	'com.woodriverenergy',
 	'com.archerenergy',
+	'com.choicegas',
+	'com.choosebhes',
+	'com.legacynaturalgas.www',
+	'com.symmetryenergy',
+	'com.vistaenergymarketing',
+	'com.woodriverenergy',
 	'com.wp-ca',
 	'org.wyomingcommunitygas',
-	'com.legacynaturalgas.www',
-	'com.choicegas',
 ];
 
 export type OfferDriver = { run: () => Promise<Offer[]> };
