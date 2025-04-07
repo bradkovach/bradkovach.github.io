@@ -1,1 +1,34 @@
-[]
+[
+	{
+		"confirmationCode": "10559",
+		"id": "cig-1",
+		"market": 0,
+		"name": "Fixed Index Adder (1 year)",
+		"rate": 0.069,
+		"term": 1,
+		"type": "market"
+	},
+	{
+		"confirmationCode": "10558",
+		"id": "green-cig-1",
+		"market": 0,
+		"name": "Fixed Green Index Adder (1 Year)",
+		"rate": 0.4,
+		"term": 1,
+		"type": "market"
+	},
+	{
+		"type": "fpt",
+		"confirmationCode": "11560",
+		"id": "fpt-1",
+		"name": "Fixed Rate Per Therm (1 Year)",
+		"rate": 1.1
+	},
+	{
+		"type": "fpt",
+		"name": "Fixed Green 1 Year (1 Year)",
+		"confirmationCode": "11559",
+		"id": "fpt-green-1",
+		"rate": 1.2
+	}
+]
