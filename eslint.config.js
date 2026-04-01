@@ -1,8 +1,7 @@
-const path = require('node:path');
-
 const eslint = require('@eslint/js');
 const angular = require('angular-eslint');
 const perfectionist = require('eslint-plugin-perfectionist');
+const path = require('node:path');
 const tseslint = require('typescript-eslint');
 
 module.exports = tseslint.config(
@@ -10,72 +9,73 @@ module.exports = tseslint.config(
 	eslint.configs.recommended,
 	{
 		extends: [perfectionist.configs['recommended-natural']],
+		ignores: ['**/*.html'],
 		rules: {
 			'perfectionist/sort-imports': [
 				'error',
-				{
-					/**
-					 * These groups will match in the order they are defined.
-					 * `perfectionist` itself does not allow the groups to be in any
-					 * arbitrary order, but will leave arrays of entries as-is.
-					 *
-					 * By using entries => object, these can be in an arbitrary order.
-					 */
-					customGroups: {
-						type: Object.fromEntries([
-							['app-type', ['^@app/.+$']],
-							['material-type', ['^@angular/material.*$']],
-							['angular-type', ['^@angular/.+$']],
-						]),
-						value: Object.fromEntries([
-							['rxjs', ['^rxjs$']],
-							['tod', ['^@tod/']],
+				// {
+				// 	/**
+				// 	 * These groups will match in the order they are defined.
+				// 	 * `perfectionist` itself does not allow the groups to be in any
+				// 	 * arbitrary order, but will leave arrays of entries as-is.
+				// 	 *
+				// 	 * By using entries => object, these can be in an arbitrary order.
+				// 	 */
+				// 	customGroups: {
+				// 		type: Object.fromEntries([
+				// 			['app-type', ['^@app/.+$']],
+				// 			['material-type', ['^@angular/material.*$']],
+				// 			['angular-type', ['^@angular/.+$']],
+				// 		]),
+				// 		value: Object.fromEntries([
+				// 			['rxjs', ['^rxjs$']],
+				// 			['tod', ['^@tod/']],
 
-							// material needs to match first
-							['material', ['^@angular/material.*$']],
-							['angular', ['^@angular/.+$']],
+				// 			// material needs to match first
+				// 			['material', ['^@angular/material.*$']],
+				// 			['angular', ['^@angular/.+$']],
 
-							// order of matching is important.
-							['app-component', ['^@app/.+/.+\\.component$']],
-							['app-service', ['^@app/.+/.+\\.service$']],
-							['app-form', ['^@app/.+/.+\\.form$']],
-							['app', ['^@app/.+$']],
+				// 			// order of matching is important.
+				// 			['app-component', ['^@app/.+/.+\\.component$']],
+				// 			['app-service', ['^@app/.+/.+\\.service$']],
+				// 			['app-form', ['^@app/.+/.+\\.form$']],
+				// 			['app', ['^@app/.+$']],
 
-							['component', ['components/.+/.+\\.component$']],
-							['service', ['services/.+/.+\\.service$']],
-							['form', ['forms/.+/.+\\.form$']],
-						]),
-					},
-					groups: [
-						'type',
-						'angular-type',
-						'material-type',
-						'external-type',
-						'internal-type',
-						'app-type',
-						['parent-type', 'sibling-type', 'index-type'],
+				// 			['component', ['components/.+/.+\\.component$']],
+				// 			['service', ['services/.+/.+\\.service$']],
+				// 			['form', ['forms/.+/.+\\.form$']],
+				// 		]),
+				// 	},
+				// 	groups: [
+				// 		'type',
+				// 		'angular-type',
+				// 		'material-type',
+				// 		'external-type',
+				// 		'internal-type',
+				// 		'app-type',
+				// 		['parent-type', 'sibling-type', 'index-type'],
 
-						'builtin',
-						'angular',
-						'material',
-						'rxjs',
-						'external',
-						'tod',
-						'internal',
-						'app',
-						'app-service',
-						'app-component',
-						'app-form',
-						'service',
-						'component',
-						'form',
-						['parent', 'sibling', 'index'],
-						'object',
-						'unknown',
-					],
-					internalPattern: ['^@(app)/.+$'],
-					type: 'natural',
-				},
+				// 		'builtin',
+				// 		'angular',
+				// 		'material',
+				// 		'rxjs',
+				// 		'external',
+				// 		'tod',
+				// 		'internal',
+				// 		'app',
+				// 		'app-service',
+				// 		'app-component',
+				// 		'app-form',
+				// 		'service',
+				// 		'component',
+				// 		'form',
+				// 		['parent', 'sibling', 'index'],
+				// 		'object',
+				// 		'unknown',
+				// 	],
+				// 	internalPattern: ['^@(app)/.+$'],
+				// 	type: 'natural',
+				// },
 			],
 		},
 	},
@@ -91,7 +91,7 @@ module.exports = tseslint.config(
 			parser: tseslint.parser,
 			parserOptions: {
 				project: path.join(__dirname, 'tsconfig.json'),
-				projectService: true,
+				// projectService: true,
 				tsconfigRootDir: __dirname,
 			},
 		},

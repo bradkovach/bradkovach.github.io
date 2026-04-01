@@ -1,24 +1,22 @@
-import type {
-	BestOffer,
-	BlendedOffer,
-	FixedPerThermOffer,
-	MarketOffer,
-	Offer,
-	OfferBase,
-} from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
+import type { BestOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/best-offer.z';
+import type { BlendedOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/blended-offer.z';
+import type { FixedPerThermOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/fixed-per-therm-offer.z';
+import type { MarketOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/market-offer.z';
+import type { OfferBase } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/offer-base.z';
+import type { AnyOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/offer.z';
 
 import * as cheerio from 'cheerio';
 
 import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/Market';
 
-type ExtractFn<T extends Offer> = (
+type ExtractFn<T extends AnyOffer> = (
 	term: number,
 	name: string,
 	priceText: string,
 	confirmationCode: string,
 ) => T;
 const url = 'https://www.wp-ca.com/pricing/';
-const extractors: Record<string, ExtractFn<Offer>> = {
+const extractors: Record<string, ExtractFn<AnyOffer>> = {
 	Blended: (
 		term: number,
 		name: string,
@@ -153,7 +151,7 @@ const extractors: Record<string, ExtractFn<Offer>> = {
 		return offer;
 	},
 };
-export const run = (): Promise<Offer[]> =>
+export const run = (): Promise<AnyOffer[]> =>
 	fetch(url)
 		.then((response) => response.text())
 		.then((text) => cheerio.load(text))

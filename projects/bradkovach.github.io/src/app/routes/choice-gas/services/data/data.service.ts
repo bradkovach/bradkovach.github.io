@@ -1,23 +1,21 @@
-import type { Offer } from '../../entity/Offer';
-import type { Charge } from '../../entity/Charge';
-import type {
-	Series} from '../../data/data.default';
-import type { FixedArray } from '../../entity/FixedArray';
-
 import { computed, Injectable } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
-
 import { z } from 'zod';
 
-import { vendors } from '../../data/vendors';
-import { ChargeType } from '../../entity/ChargeType';
-import { Setting } from '../../data/enum/settings.enum';
-import { storageSignal } from '../../pages/explorer/localStorageSignal';
+import type { Series } from '../../data/data.default';
+import type { Charge } from '../../entity/Charge';
+import type { FixedArray } from '../../entity/FixedArray';
+import type { AnyOffer } from '../../schema/offer.z';
+
 import {
 	defaultCharges,
 	seriesDefaults,
 	SeriesKeys,
 } from '../../data/data.default';
+import { Setting } from '../../data/enum/settings.enum';
+import { vendors } from '../../data/vendors';
+import { ChargeType } from '../../entity/ChargeType';
+import { storageSignal } from '../../pages/explorer/localStorageSignal';
 
 const ChargeSchema = z.object({
 	name: z.string(),
@@ -111,7 +109,7 @@ export class DataService {
 			const newVendor = { ...vendor };
 			newVendor.offers = new Map(
 				[...vendor.offers.entries()].map(([id, offer]) => {
-					const newOffer = { ...offer } as Offer;
+					const newOffer = { ...offer } as AnyOffer;
 					if (newOffer.type === 'fpm') {
 						const key = `@${vendor.id}/${offer.id}`;
 						if (this.rateOverridesSignal()[key]) {

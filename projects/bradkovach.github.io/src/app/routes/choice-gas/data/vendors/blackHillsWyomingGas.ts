@@ -1,4 +1,4 @@
-import type { Offer } from '../../entity/Offer';
+import type { AnyOffer } from '../../schema/offer.z';
 
 import { Vendor } from '../../entity/Vendor';
 import offers from './json/com.choicegas.json';
@@ -12,5 +12,5 @@ export const blackHillsWyomingGas = new Vendor(
 );
 
 offers.forEach((offer) => {
-	blackHillsWyomingGas.addOffer(offer as Offer);
+	blackHillsWyomingGas.addOffer(offer as AnyOffer);
 });

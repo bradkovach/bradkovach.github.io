@@ -1,19 +1,15 @@
-import type { Month } from '../../data/enum/month.enum';
-import type { Offer } from '../../entity/Offer';
-import type { Vendor } from '../../entity/Vendor';
-
 import { AsyncPipe, DecimalPipe, JsonPipe } from '@angular/common';
 import { Component, computed, inject, input, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { Router } from '@angular/router';
-
 import { combineLatest, filter, map, tap } from 'rxjs';
 
-import { DataService } from '../../services/data/data.service';
+import type { Month } from '../../data/enum/month.enum';
+import type { Vendor } from '../../entity/Vendor';
+import type { AnyOffer } from '../../schema/offer.z';
 
 import { BillComponent } from '../../components/bill/bill.component';
-
 import { marketLabels } from '../../data/data.current';
 import { Series } from '../../data/data.default';
 import {
@@ -22,9 +18,10 @@ import {
 } from '../../data/enum/heatmap.enum';
 import { monthLabels } from '../../data/enum/month.enum';
 import { Setting } from '../../data/enum/settings.enum';
-import { createBill } from '../../pipes/bill/bill.pipe';
+import { createBill } from '../../helpers/create-bill/create-bill';
 import { HeatPipe } from '../../pipes/heat/heat.pipe';
 import { PhonePipe } from '../../pipes/phone/phone.pipe';
+import { DataService } from '../../services/data/data.service';
 import { storageSignal } from '../explorer/localStorageSignal';
 
 @Component({
@@ -98,12 +95,12 @@ export class OfferComponent {
 
 	readonly MarketLabels = marketLabels;
 	readonly MonthLabels = monthLabels;
+	scheme = storageSignal(Setting.Scheme, HeatmapScheme.GreenYellowRed);
 	palette = computed(() => {
 		return heatmapSchemePalettes[this.scheme()];
 	});
-	readonly router = inject(Router);
 
-	scheme = storageSignal(Setting.Scheme, HeatmapScheme.GreenYellowRed);
+	readonly router = inject(Router);
 
 	readonly Series = Series;
 	readonly title = inject(Title);
@@ -133,7 +130,7 @@ export class OfferComponent {
 
 	getShareLink(
 		vendor: null | undefined | Vendor,
-		offer: null | Offer | undefined,
+		offer: AnyOffer | null | undefined,
 	) {
 		return (
 			'https://bradkovach.github.io' +
@@ -151,7 +148,7 @@ export class OfferComponent {
 
 	setOverride(
 		vendor: null | undefined | Vendor,
-		offer: null | Offer | undefined,
+		offer: AnyOffer | null | undefined,
 		value: string,
 	) {
 		if (!vendor) {

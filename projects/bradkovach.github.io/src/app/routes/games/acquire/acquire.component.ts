@@ -1,29 +1,26 @@
+import { CommonModule } from '@angular/common';
+import { Component } from '@angular/core';
+import { HostListener } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import 'zone.js';
+
+import type {
+  SharePriceRow} from './price-by-schedule/PriceBySchedulePipe';
 import type {
   Balance,
   Player} from './types';
-import type {
-  SharePriceRow} from './price-by-schedule/PriceBySchedulePipe';
-
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-
-import 'zone.js';
-
-import { HostListener } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
 import { IntegerComponent } from '../../../components/integer/integer/integer.component';
-
 import { NetWorthPipe } from './net-worth/net-worth.pipe';
+import {
+  PriceBySchedulePipe
+} from './price-by-schedule/PriceBySchedulePipe';
 import {
   Chain,
   Schedule,
   Screen,
   SharePriceTier,
 } from './types';
-import {
-  PriceBySchedulePipe
-} from './price-by-schedule/PriceBySchedulePipe';
 
 export enum BonusTier {
   None,

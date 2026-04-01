@@ -1,6 +1,6 @@
 export const currentCigRate = 0.37;
 
-import type { FixedPerThermOffer } from '../entity/Offer';
+import type { FixedPerThermOffer } from '../schema/fixed-per-therm-offer.z';
 
 import { Market } from './Market';
 import gasCostAdjustment from './vendors/json/com.choicegas.json';

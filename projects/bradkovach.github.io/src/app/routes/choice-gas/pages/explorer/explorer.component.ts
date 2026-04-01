@@ -1,6 +1,4 @@
-import type { OfferType } from '../../entity/Offer';
-
-import { AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { AsyncPipe, DecimalPipe } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -12,14 +10,11 @@ import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
-
 import { combineLatest, map, tap } from 'rxjs';
 
-import { DataService, EnrollmentField } from '../../services/data/data.service';
+import type { OfferType } from '../../schema/offer.z';
 
 import { BillTotalComponent } from '../../components/bill-total/bill-total.component';
-import { BillComponent } from '../../components/bill/bill.component';
-
 import { marketLabels } from '../../data/data.current';
 import { Series, SeriesKeys, SeriesLabels } from '../../data/data.default';
 import {
@@ -38,12 +33,13 @@ import { Setting } from '../../data/enum/settings.enum';
 import { lastUpdated } from '../../data/last-updated';
 import { Market } from '../../data/Market';
 import { ChargeType } from '../../entity/ChargeType';
+import { createBill } from '../../helpers/create-bill/create-bill';
 import { AveragePipe } from '../../pipes/average/average.pipe';
-import { createBill } from '../../pipes/bill/bill.pipe';
 import { EnrollmentLinkPipe } from '../../pipes/enrollment-link/enrollment-link.pipe';
 import { HeatPipe } from '../../pipes/heat/heat.pipe';
 import { PhonePipe } from '../../pipes/phone/phone.pipe';
 import { SortPipe } from '../../pipes/sort/sort.pipe';
+import { DataService, EnrollmentField } from '../../services/data/data.service';
 import { ExplorerColumn, explorerColumnLabels } from './ExplorerColumn';
 import { Footnote, footnoteExplanations, footnoteSymbols } from './Footnote';
 import { storageSignal } from './localStorageSignal';
@@ -52,13 +48,13 @@ import { storageSignal } from './localStorageSignal';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		FormsModule,
-		BillComponent,
+
 		DecimalPipe,
 		AsyncPipe,
 		RouterLink,
 		AveragePipe,
 		PhonePipe,
-		DatePipe,
+
 		HeatPipe,
 		SortPipe,
 		BillTotalComponent,
@@ -204,13 +200,13 @@ export class ExplorerComponent {
 	) as unknown as OfferType[];
 	// #endregion
 
-	readonly palette = computed(() => heatmapSchemePalettes[this.scheme()]);
-
 	readonly scheme = storageSignal(
 		Setting.Scheme,
 		HeatmapScheme.GreenWhiteRed,
 		(s) => JSON.stringify(Number(s)),
 	);
+
+	readonly palette = computed(() => heatmapSchemePalettes[this.scheme()]);
 
 	// Series does not have a single/plural so the use of Keys and Labels suffixes is required here
 	// #region Series

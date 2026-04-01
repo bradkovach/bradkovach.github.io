@@ -1,12 +1,3 @@
-import type {
-	BestOffer,
-	BlendedOffer,
-	FixedPerMonthOffer,
-	FixedPerThermOffer,
-	MarketOffer,
-	OfferBase,
-} from '../../entity/Offer';
-
 import {
 	AsyncPipe,
 	DecimalPipe,
@@ -17,20 +8,24 @@ import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-
 import { combineLatest, map } from 'rxjs';
-
 import z from 'zod';
 
-import { DataService } from '../../services/data/data.service';
+import type { BestOffer } from '../../schema/best-offer.z';
+import type { BlendedOffer } from '../../schema/blended-offer.z';
+import type { FixedPerMonthOffer } from '../../schema/fixed-per-month.z';
+import type { FixedPerThermOffer } from '../../schema/fixed-per-therm-offer.z';
+import type { MarketOffer } from '../../schema/market-offer.z';
+import type { OfferBase } from '../../schema/offer-base.z';
 
 import { Market } from '../../data/Market';
-import { OfferSchema } from '../../entity/Offer';
+import { AnyOffer } from '../../schema/offer.z';
+import { DataService } from '../../services/data/data.service';
 
 const VendorSchema = z.object({
 	id: z.string().min(2),
 	name: z.string().min(2),
-	offers: z.array(OfferSchema),
+	offers: z.array(AnyOffer),
 	phone: z.string(),
 });
 
@@ -45,12 +40,14 @@ export class ImportComponent {
 	offers$ = this.route.queryParamMap.pipe(
 		map((p) => {
 			const offers = p.getAll('offer');
-			if (!offers) return [];
+			if (!offers) {
+				return [];
+			}
 
 			return offers.map((offer) => {
 				return {
 					import: true,
-					offer: OfferSchema.parse(JSON.parse(offer)),
+					offer: AnyOffer.parse(JSON.parse(offer)),
 				};
 			});
 		}),
@@ -59,7 +56,9 @@ export class ImportComponent {
 	vendors$ = this.route.queryParamMap.pipe(
 		map((p) => {
 			const vendor = p.getAll('vendor');
-			if (!vendor) return [];
+			if (!vendor) {
+				return [];
+			}
 
 			return vendor.map((vendor) => {
 				return {

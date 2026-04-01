@@ -1,17 +1,14 @@
-import type { Month } from '../../data/enum/month.enum';
-import type { Market } from '../../data/Market';
-import type { Charge } from '../../entity/Charge';
-import type { FixedArray } from '../../entity/FixedArray';
-
 import { AsyncPipe } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
-
 import { combineLatest, map, take, tap } from 'rxjs';
 
-import { DataService } from '../../services/data/data.service';
+import type { Month } from '../../data/enum/month.enum';
+import type { Market } from '../../data/Market';
+import type { Charge } from '../../entity/Charge';
+import type { FixedArray } from '../../entity/FixedArray';
 
 import { marketLabels } from '../../data/data.current';
 import {
@@ -23,6 +20,7 @@ import {
 } from '../../data/data.default';
 import { monthLabels } from '../../data/enum/month.enum';
 import { ChargeType } from '../../entity/ChargeType';
+import { DataService } from '../../services/data/data.service';
 
 @Component({
 	imports: [FormsModule, AsyncPipe, RouterLink],

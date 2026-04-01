@@ -1,10 +1,8 @@
-import type {
-	BlendedOffer,
-	FixedPerThermOffer,
-	MarketOffer,
-	Offer,
-	OfferBase,
-} from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
+import type { BlendedOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/blended-offer.z';
+import type { FixedPerThermOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/fixed-per-therm-offer.z';
+import type { MarketOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/market-offer.z';
+import type { OfferBase } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/offer-base.z';
+import type { AnyOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/offer.z';
 
 import * as cheerio from 'cheerio';
 
@@ -12,18 +10,18 @@ import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choic
 
 const url = 'https://www.archerenergy.com/shop/black-hills';
 
-export const run = (): Promise<Offer[]> =>
+export const run = (): Promise<AnyOffer[]> =>
 	fetch(url)
 		.then((response) => response.text())
 		.then((text) => cheerio.load(text))
-		.then(($): Offer[] => {
+		.then(($): AnyOffer[] => {
 			const $accordionItem = $(
 				'#blackHillsRates > .accordion-item:nth-of-type(1)',
 			);
 			return $accordionItem
 				.find('.table > tbody > tr')
 				.toArray()
-				.flatMap((tr, rowIdx): Offer[] => {
+				.flatMap((tr, rowIdx): AnyOffer[] => {
 					const tds = $(tr).find('td');
 					const [plan, priceText, confirmationCode] = tds
 						.toArray()
@@ -37,12 +35,12 @@ export const run = (): Promise<Offer[]> =>
 							const rx = /CIG\+\s*\$([\d.]+)\s*\/\s*\$([\d.]+)/;
 							const matches = priceText.match(rx);
 							if (!matches) {
-								throw Error(`No match for ${priceText}`);
+								throw Error(`No match for '${priceText}'`);
 							}
 							const [mktRate, fptRate] = matches
 								.slice(1)
 								.map(Number);
-							const offer: BlendedOffer & OfferBase = {
+							const offer: BlendedOffer = {
 								confirmationCode,
 								id: `archer-pro-${term}`,
 								name: plan,

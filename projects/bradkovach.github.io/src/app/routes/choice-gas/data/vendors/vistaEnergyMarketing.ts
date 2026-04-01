@@ -1,4 +1,4 @@
-import type { Offer } from '../../entity/Offer';
+import type { AnyOffer } from '../../schema/offer.z';
 
 import { Vendor } from '../../entity/Vendor';
 import offers from './json/com.vistaenergymarketing.json';
@@ -11,6 +11,6 @@ export const vistaEnergyMarketing = new Vendor(
 	true,
 );
 
-for (const offer of offers as Offer[]) {
+for (const offer of offers as AnyOffer[]) {
 	vistaEnergyMarketing.addOffer(offer);
 }

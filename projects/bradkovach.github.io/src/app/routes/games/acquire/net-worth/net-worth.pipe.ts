@@ -1,9 +1,9 @@
 import type { PipeTransform } from '@angular/core';
 
-import type { Player, Schedule } from '../types';
-import type { SharePriceRow } from '../price-by-schedule/PriceBySchedulePipe';
-
 import { Pipe } from '@angular/core';
+
+import type { SharePriceRow } from '../price-by-schedule/PriceBySchedulePipe';
+import type { Player, Schedule } from '../types';
 
 import { Chain } from '../types';
 

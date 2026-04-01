@@ -1,9 +1,7 @@
-import type {
-	FixedPerThermOffer,
-	MarketOffer,
-	Offer,
-	OfferBase,
-} from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
+import type { FixedPerThermOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/fixed-per-therm-offer.z';
+import type { MarketOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/market-offer.z';
+import type { OfferBase } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/offer-base.z';
+import type { AnyOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/offer.z';
 
 import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/Market';
 
@@ -62,7 +60,7 @@ await fetch("https://symmetryenergy.com/enrollment/api/products?zipCode=82070&ty
 });
 */
 
-export const run = (): Promise<Offer[]> =>
+export const run = (): Promise<AnyOffer[]> =>
 	fetch(
 		'https://symmetryenergy.com/enrollment/api/products?zipCode=82070&type=Residential&serviceId=12&customerType=existing&bhAccountId=783138',
 		{

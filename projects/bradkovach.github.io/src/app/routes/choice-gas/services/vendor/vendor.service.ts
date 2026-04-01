@@ -1,8 +1,7 @@
-import type { Vendor } from '../../entity/Vendor';
-
 import { Injectable } from '@angular/core';
-
 import { map, scan, Subject } from 'rxjs';
+
+import type { Vendor } from '../../entity/Vendor';
 
 @Injectable({
   providedIn: 'root',

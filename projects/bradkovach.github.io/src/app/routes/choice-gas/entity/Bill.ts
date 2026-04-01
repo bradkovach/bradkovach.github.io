@@ -1,6 +1,6 @@
-import type { Line } from './Line';
-import type { ChargeType } from './ChargeType';
 import type { Month } from '../data/enum/month.enum';
+import type { ChargeType } from './ChargeType';
+import type { Line } from './Line';
 
 export const line = (
 	description: string,

@@ -1,12 +1,12 @@
-import type { Offer } from './Offer';
+import type { AnyOffer } from '../schema/offer.z';
 
 export interface IVendor {
 	id: string;
 	name: string;
-	offers: Map<string, Offer>;
+	offers: Map<string, AnyOffer>;
 }
 export class Vendor implements IVendor {
-	offers: Map<string, Offer> = new Map<string, Offer>();
+	offers: Map<string, AnyOffer> = new Map<string, AnyOffer>();
 
 	constructor(
 		public id: string,
@@ -19,7 +19,7 @@ export class Vendor implements IVendor {
 		this.name = name;
 	}
 
-	addOffer(offer: Offer, replace = false): this {
+	addOffer(offer: AnyOffer, replace = false): this {
 		if (this.offers.has(offer.id) && !replace) {
 			throw new Error(
 				`Vendor ${this.name} Offer with id ${offer.id} already exists`,
@@ -29,7 +29,7 @@ export class Vendor implements IVendor {
 		return this;
 	}
 
-	getOffersArray(): Offer[] {
+	getOffersArray(): AnyOffer[] {
 		return Array.from(this.offers.values());
 	}
 }

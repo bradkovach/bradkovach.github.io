@@ -1,11 +1,9 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, inject, input } from '@angular/core';
-
 import { map } from 'rxjs';
 
-import { DataService } from '../../services/data/data.service';
-
 import { PhonePipe } from '../../pipes/phone/phone.pipe';
+import { DataService } from '../../services/data/data.service';
 
 @Component({
     imports: [PhonePipe, AsyncPipe],

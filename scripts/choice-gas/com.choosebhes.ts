@@ -1,18 +1,15 @@
-import type {
-	BlendedOffer,
-	FixedPerMonthOffer,
-	FixedPerThermOffer,
-	MarketOffer,
-	Offer,
-	OfferBase,
-} from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
-
 import * as cheerio from 'cheerio';
+
+import type { BlendedOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/blended-offer.z';
+import type { FixedPerMonthOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/fixed-per-month.z';
+import type { FixedPerThermOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/fixed-per-therm-offer.z';
+import type { MarketOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/market-offer.z';
+import type { AnyOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/offer.z';
 
 import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/Market';
 import { getEnvAsync } from '../getEnvAsync';
 
-export function run(): Promise<Offer[]> {
+export function run(): Promise<AnyOffer[]> {
 	let cookie = '';
 	const updateCookie = (postResponse: Response) => {
 		cookie = postResponse.headers.get('set-cookie') || cookie;
@@ -62,20 +59,6 @@ export function run(): Promise<Offer[]> {
 					{
 						credentials: 'include',
 						headers: headers(cookie),
-						// headers: {
-						// 	Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
-						// 	'Accept-Language': 'en-US,en;q=0.5',
-						// 	'Cache-Control': 'no-cache',
-						// 	Cookie: cookie,
-						// 	Pragma: 'no-cache',
-						// 	'Sec-Fetch-Dest': 'document',
-						// 	'Sec-Fetch-Mode': 'navigate',
-						// 	'Sec-Fetch-Site': 'same-origin',
-						// 	'Sec-Fetch-User': '?1',
-						// 	'Upgrade-Insecure-Requests': '1',
-						// 	'User-Agent':
-						// 		'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:124.0) Gecko/20100101 Firefox/124.0',
-						// },
 						method: 'GET',
 						mode: 'cors',
 						referrer: 'https://www.blackhillsenergyservices.com/',
@@ -123,7 +106,7 @@ export function run(): Promise<Offer[]> {
 							// $xxx.xx/month
 							//  ~~~~~~
 							const rate = o.priceText.slice(1).split('/')[0];
-							return <FixedPerThermOffer & OfferBase>{
+							return <FixedPerThermOffer>{
 								confirmationCode,
 								id: `ratelock-${o.term}`,
 								name: 'Rate Lock',
@@ -132,7 +115,7 @@ export function run(): Promise<Offer[]> {
 								type: 'fpt',
 							};
 						} else if (o.name === 'WinterGuard') {
-							return <FixedPerMonthOffer & OfferBase>{
+							return <FixedPerMonthOffer>{
 								confirmationCode,
 								id: 'winterguard-' + o.term,
 								name: 'WinterGuard',
@@ -156,7 +139,7 @@ export function run(): Promise<Offer[]> {
 							}
 							const fpt = parseFloat(fptMatch[1]);
 							const market = parseFloat(marketMatch[1]);
-							return <BlendedOffer & OfferBase>{
+							return <BlendedOffer>{
 								confirmationCode,
 								id: `blended-${o.term}`,
 								name: 'Blended',
@@ -190,7 +173,7 @@ export function run(): Promise<Offer[]> {
 								throw new Error('Failed to parse Index Rates');
 							}
 							const cig = parseFloat(cigmatch[1]);
-							return <MarketOffer & OfferBase>{
+							return <MarketOffer>{
 								confirmationCode,
 								id: `market-${o.term}`,
 								market: Market.CIG,

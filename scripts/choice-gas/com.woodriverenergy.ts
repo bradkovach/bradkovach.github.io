@@ -1,4 +1,4 @@
-import type { Offer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
+import type { AnyOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/offer.z';
 
 import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/Market';
 import { getEnvAsync } from '../getEnvAsync';
@@ -25,7 +25,7 @@ export interface Quote {
 	volume: number;
 }
 
-export const run = (): Promise<Offer[]> =>
+export const run = (): Promise<AnyOffer[]> =>
 	getEnvAsync('BHE_PREMISE_ID')
 		.catch(() => getEnvAsync('BHES_ACCOUNT_NUMBER'))
 		.catch(() => {
@@ -68,7 +68,7 @@ export const run = (): Promise<Offer[]> =>
 							rate: 0,
 							term: i + 1,
 							type: 'fpm',
-						} as Offer;
+						} as AnyOffer;
 					}),
 					...root.quote.fixed_per_therm.slice(0, 2).map((rate, i) => {
 						return {
@@ -77,7 +77,7 @@ export const run = (): Promise<Offer[]> =>
 							rate,
 							term: i + 1,
 							type: 'fpt',
-						} as Offer;
+						} as AnyOffer;
 					}),
 					...root.quote.index.slice(0, 2).map((rate, i) => {
 						return {
@@ -87,7 +87,7 @@ export const run = (): Promise<Offer[]> =>
 							rate,
 							term: i + 1,
 							type: 'market',
-						} as Offer;
+						} as AnyOffer;
 					}),
 				]),
 		);

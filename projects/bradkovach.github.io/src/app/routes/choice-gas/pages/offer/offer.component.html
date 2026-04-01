@@ -2,7 +2,7 @@
 	@if (
 		{
 			offer: offer$ | async,
-			vendor: vendor$ | async
+			vendor: vendor$ | async,
 		};
 		as v
 	) {
@@ -268,7 +268,9 @@
 
 				<hr />
 				<h3>Export Offer</h3>
-				<textarea readonly>{{ v.offer | json }}</textarea>
+				<textarea class="form-control" rows="10" readonly>{{
+					v.offer | json
+				}}</textarea>
 			}
 		}
 	}

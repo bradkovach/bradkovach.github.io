@@ -1,7 +1,7 @@
-import type { Offer } from '../../entity/Offer';
+import type { AnyOffer } from '../../schema/offer.z';
 
-import offers from './json/com.wp-ca.json';
 import { Vendor } from '../../entity/Vendor';
+import offers from './json/com.wp-ca.json';
 
 export const wyomingProducerConsumerAlliance = new Vendor(
 	'com.wp-ca',
@@ -11,7 +11,7 @@ export const wyomingProducerConsumerAlliance = new Vendor(
 	true,
 );
 
-for (const offer of offers as Offer[]) {
+for (const offer of offers as AnyOffer[]) {
 	wyomingProducerConsumerAlliance.addOffer(offer);
 }
 //   .addOffer({

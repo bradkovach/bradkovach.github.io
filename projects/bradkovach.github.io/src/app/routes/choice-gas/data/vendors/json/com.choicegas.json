@@ -1,10 +1,10 @@
 [
   {
     "confirmationCode": "99001",
-    "id": "gca-Casper",
+    "id": "gca-casper",
     "name": "Gas Cost Adjustment - Casper Division",
+    "rate": 0.378,
     "term": 1,
-    "rate": 0.4759,
     "type": "fpt"
   }
 ]

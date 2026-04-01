@@ -1,4 +1,4 @@
-import type { Offer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
+import type { AnyOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/offer.z';
 
 import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/Market';
 
@@ -64,7 +64,7 @@ const checkAccountNumber = (custOrAcctNumber: string): Promise<string> =>
 		mode: 'cors',
 		referrer: 'https://www.legacynaturalgas.com/',
 	})
-		.then((r) => r.json() as unknown as CheckAccountNumberResponse[])
+		.then((r) => r.json() as Promise<CheckAccountNumberResponse[]>)
 		.then((r) => {
 			if (r.length === 0) {
 				throw new Error('No account found');
@@ -100,7 +100,7 @@ const getQuotePrices = (
 		referrer: 'https://www.legacynaturalgas.com/',
 	}).then((response) => response.json() as unknown as GetQuotePricesResponse);
 
-export function run(): Promise<Offer[]> {
+export function run(): Promise<AnyOffer[]> {
 	const accountNumber = process.env.BHES_ACCOUNT_NUMBER;
 	if (!accountNumber) {
 		throw new Error('BHES_ACCOUNT_NUMBER not set');
@@ -110,7 +110,7 @@ export function run(): Promise<Offer[]> {
 			getQuotePrices(addressOrMeter, clientIP),
 		)
 		.then((quote) =>
-			quote.PriceOptions.flatMap((priceOption): Offer[] => {
+			quote.PriceOptions.flatMap((priceOption): AnyOffer[] => {
 				if (priceOption.Term === '12 Month') {
 					return [
 						{
