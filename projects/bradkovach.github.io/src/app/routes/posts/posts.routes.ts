@@ -1,8 +1,8 @@
 import type { Routes } from '@angular/router';
 
+import { ArchiveComponent } from './archive/archive.component';
 import { PostComponent } from './post/post.component';
 import { PostsComponent } from './posts/posts.component';
-import { ArchiveComponent } from './archive/archive.component';
 
 export const POSTS_ROUTES: Routes = [
   {

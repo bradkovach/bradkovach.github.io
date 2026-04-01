@@ -1,6 +1,6 @@
 import { AsyncPipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { Component, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import { DataService } from '../../services/data/data.service';
 

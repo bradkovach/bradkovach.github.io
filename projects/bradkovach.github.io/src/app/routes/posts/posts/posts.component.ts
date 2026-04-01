@@ -1,12 +1,10 @@
 import { AsyncPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, Injectable } from '@angular/core';
-
-import { map } from 'rxjs';
-
 import hljs from 'highlight.js';
 import markdownit from 'markdown-it';
 import replaceLink from 'markdown-it-replace-link';
+import { map } from 'rxjs';
 
 @Injectable({
 	providedIn: 'root',

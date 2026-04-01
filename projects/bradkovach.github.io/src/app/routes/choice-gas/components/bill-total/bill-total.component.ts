@@ -1,12 +1,12 @@
+import { DecimalPipe } from '@angular/common';
+import { Component, input } from '@angular/core';
+import { RouterLink } from '@angular/router';
+
 import type { Bill } from '../../entity/Bill';
 import type { Offer } from '../../entity/Offer';
 
-import { RouterLink } from '@angular/router';
-import { DecimalPipe } from '@angular/common';
-import { Component, input } from '@angular/core';
-
-import { ChargeType } from '../../entity/ChargeType';
 import { Month, monthLabels } from '../../data/enum/month.enum';
+import { ChargeType } from '../../entity/ChargeType';
 
 @Component({
     imports: [DecimalPipe, RouterLink],

@@ -1,5 +1,5 @@
-import { Market } from '../Market';
 import { Vendor } from '../../entity/Vendor';
+import { Market } from '../Market';
 
 export const uncleFrankEnergyServices = new Vendor(
 	'com.unclefrankenergy',

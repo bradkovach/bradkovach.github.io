@@ -1,12 +1,11 @@
 import { DatePipe } from '@angular/common';
+import { Component, computed, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterOutlet } from '@angular/router';
-import { Component, computed, inject, signal } from '@angular/core';
-
-import { DataService, EnrollmentField } from './services/data/data.service';
 
 import { lastUpdated } from './data/last-updated';
 import { WINDOW } from './pages/explorer/localStorageSignal';
+import { DataService, EnrollmentField } from './services/data/data.service';
 
 @Component({
     imports: [RouterOutlet, RouterLink, FormsModule, DatePipe],
