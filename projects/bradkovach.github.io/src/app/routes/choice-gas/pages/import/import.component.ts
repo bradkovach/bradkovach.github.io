@@ -1,4 +1,9 @@
-import { AsyncPipe, DecimalPipe, NgTemplateOutlet } from '@angular/common';
+import {
+	AsyncPipe,
+	DecimalPipe,
+	JsonPipe,
+	NgTemplateOutlet,
+} from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
@@ -27,7 +32,7 @@ const VendorSchema = z.object({
 });
 
 @Component({
-	imports: [AsyncPipe, NgTemplateOutlet, DecimalPipe, FormsModule],
+	imports: [AsyncPipe, JsonPipe, NgTemplateOutlet, DecimalPipe, FormsModule],
 	selector: 'app-cg-import',
 	styleUrl: './import.component.scss',
 	templateUrl: './import.component.html',
