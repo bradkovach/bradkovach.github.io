@@ -8,6 +8,7 @@ module.exports = tseslint.config(
 	// only add "root-level" configs here if the config can apply to all files.
 	eslint.configs.recommended,
 	{
+		ignores: ['**/*.html'],
 		extends: [perfectionist.configs['recommended-natural']],
 		ignores: ['**/*.html'],
 		rules: {
@@ -90,8 +91,8 @@ module.exports = tseslint.config(
 		languageOptions: {
 			parser: tseslint.parser,
 			parserOptions: {
-				project: path.join(__dirname, 'tsconfig.json'),
-				// projectService: true,
+				// project: path.join(__dirname, 'tsconfig.json'),
+				projectService: true,
 				tsconfigRootDir: __dirname,
 			},
 		},

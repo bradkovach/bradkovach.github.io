@@ -48,13 +48,11 @@ import { storageSignal } from './localStorageSignal';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		FormsModule,
-
 		DecimalPipe,
 		AsyncPipe,
 		RouterLink,
 		AveragePipe,
 		PhonePipe,
-
 		HeatPipe,
 		SortPipe,
 		BillTotalComponent,
@@ -200,13 +198,13 @@ export class ExplorerComponent {
 	) as unknown as OfferType[];
 	// #endregion
 
+	readonly palette = computed(() => heatmapSchemePalettes[this.scheme()]);
+
 	readonly scheme = storageSignal(
 		Setting.Scheme,
 		HeatmapScheme.GreenWhiteRed,
 		(s) => JSON.stringify(Number(s)),
 	);
-
-	readonly palette = computed(() => heatmapSchemePalettes[this.scheme()]);
 
 	// Series does not have a single/plural so the use of Keys and Labels suffixes is required here
 	// #region Series

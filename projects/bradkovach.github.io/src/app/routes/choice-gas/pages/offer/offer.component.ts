@@ -95,12 +95,12 @@ export class OfferComponent {
 
 	readonly MarketLabels = marketLabels;
 	readonly MonthLabels = monthLabels;
-	scheme = storageSignal(Setting.Scheme, HeatmapScheme.GreenYellowRed);
 	palette = computed(() => {
 		return heatmapSchemePalettes[this.scheme()];
 	});
-
 	readonly router = inject(Router);
+
+	scheme = storageSignal(Setting.Scheme, HeatmapScheme.GreenYellowRed);
 
 	readonly Series = Series;
 	readonly title = inject(Title);
