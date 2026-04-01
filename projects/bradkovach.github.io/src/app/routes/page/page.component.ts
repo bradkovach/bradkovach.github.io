@@ -1,5 +1,4 @@
 import type { SafeHtml } from '@angular/platform-browser';
-
 import type { Observable } from 'rxjs';
 
 import { AsyncPipe, DatePipe } from '@angular/common';
@@ -7,10 +6,8 @@ import { HttpClient } from '@angular/common/http';
 import { Component, inject, Injectable } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-
-import { catchError, map, of, startWith, switchMap } from 'rxjs';
-
 import fm from 'front-matter';
+import { catchError, map, of, startWith, switchMap } from 'rxjs';
 
 import { MarkdownService } from '../posts/post/post.component';
 

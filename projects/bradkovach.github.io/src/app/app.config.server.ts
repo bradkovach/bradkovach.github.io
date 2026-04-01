@@ -4,8 +4,8 @@ import { mergeApplicationConfig } from '@angular/core';
 import { provideServerRendering } from '@angular/platform-server';
 
 import { appConfig } from './app.config';
-import { Setting } from './routes/choice-gas/data/enum/settings.enum';
 import { HeatmapScheme } from './routes/choice-gas/data/enum/heatmap.enum';
+import { Setting } from './routes/choice-gas/data/enum/settings.enum';
 import {
 	STORAGE,
 	WINDOW,

@@ -6,10 +6,10 @@
 // 	| BlendedOffer
 // 	| BestOfOffer;
 
+import z from 'zod';
+
 import type { FixedArray } from './FixedArray';
 import type { Line } from './Line';
-
-import z from 'zod';
 
 import { marketLabels } from '../data/data.current';
 import { Market } from '../data/Market';

@@ -1,5 +1,7 @@
 import type { PipeTransform } from '@angular/core';
 
+import { Pipe } from '@angular/core';
+
 import type { Series } from '../../data/data.default';
 import type { Month } from '../../data/enum/month.enum';
 import type { Market } from '../../data/Market';
@@ -8,8 +10,6 @@ import type { Charge } from '../../entity/Charge';
 import type { FixedArray } from '../../entity/FixedArray';
 import type { Line } from '../../entity/Line';
 import type { Offer } from '../../entity/Offer';
-
-import { Pipe } from '@angular/core';
 
 import { marketLabels } from '../../data/data.current';
 import { line } from '../../entity/Bill';

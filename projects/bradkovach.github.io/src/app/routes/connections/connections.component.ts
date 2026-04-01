@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { RouterOutlet } from '@angular/router';
+import { Component } from '@angular/core';
 import { FormsModule, NgModel } from '@angular/forms';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
     imports: [RouterOutlet, FormsModule, DatePipe],

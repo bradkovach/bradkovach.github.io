@@ -4,12 +4,10 @@ import { AsyncPipe, DatePipe } from '@angular/common';
 import { Component, inject, Injectable } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute } from '@angular/router';
-
-import { map, switchMap } from 'rxjs';
-
 import fm from 'front-matter';
 import hljs from 'highlight.js';
 import markdownit from 'markdown-it';
+import { map, switchMap } from 'rxjs';
 
 import { PostsService } from '../posts/posts.component';
 

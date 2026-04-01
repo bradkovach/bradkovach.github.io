@@ -1,12 +1,11 @@
 import type { Observable} from 'rxjs';
 
-import type { StringPuzzle } from '../../../../types/StringPuzzle';
-
 import { AsyncPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-
 import { catchError, filter, map, of, shareReplay } from 'rxjs';
+
+import type { StringPuzzle } from '../../../../types/StringPuzzle';
 
 import { PuzzleComponent } from '../../../puzzle/puzzle.component';
 
