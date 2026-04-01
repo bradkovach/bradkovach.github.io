@@ -1,4 +1,4 @@
-import { AsyncPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { AsyncPipe, DecimalPipe } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -15,7 +15,6 @@ import { combineLatest, map, tap } from 'rxjs';
 import type { OfferType } from '../../entity/Offer';
 
 import { BillTotalComponent } from '../../components/bill-total/bill-total.component';
-import { BillComponent } from '../../components/bill/bill.component';
 import { marketLabels } from '../../data/data.current';
 import { Series, SeriesKeys, SeriesLabels } from '../../data/data.default';
 import {
@@ -49,13 +48,11 @@ import { storageSignal } from './localStorageSignal';
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		FormsModule,
-		BillComponent,
 		DecimalPipe,
 		AsyncPipe,
 		RouterLink,
 		AveragePipe,
 		PhonePipe,
-		DatePipe,
 		HeatPipe,
 		SortPipe,
 		BillTotalComponent,
@@ -201,13 +198,13 @@ export class ExplorerComponent {
 	) as unknown as OfferType[];
 	// #endregion
 
+	readonly palette = computed(() => heatmapSchemePalettes[this.scheme()]);
+
 	readonly scheme = storageSignal(
 		Setting.Scheme,
 		HeatmapScheme.GreenWhiteRed,
 		(s) => JSON.stringify(Number(s)),
 	);
-
-	readonly palette = computed(() => heatmapSchemePalettes[this.scheme()]);
 
 	// Series does not have a single/plural so the use of Keys and Labels suffixes is required here
 	// #region Series

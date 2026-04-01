@@ -1,7 +1,7 @@
 import type { PipeTransform } from '@angular/core';
 
 import { Pipe } from '@angular/core';
-import { contrast, scale } from 'chroma-js';
+import chroma from 'chroma-js';
 
 @Pipe({
 	name: 'heat',
@@ -18,12 +18,12 @@ export class HeatPipe implements PipeTransform {
 		if (idx === -1) {
 			return null;
 		}
-		const f = scale(colors);
+		const f = chroma.scale(colors);
 		const heatColor = f(idx / (values.length - 1))
 			.alpha(1)
 			.css();
 		const contrastColor =
-			contrast(heatColor, '#000') > 4.5 ? '#000' : '#fff';
+			chroma.contrast(heatColor, '#000') > 4.5 ? '#000' : '#fff';
 
 		return mode === 'bg'
 			? { backgroundColor: heatColor, color: contrastColor }
