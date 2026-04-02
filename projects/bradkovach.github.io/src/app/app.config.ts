@@ -8,11 +8,11 @@ import {
 	withInMemoryScrolling,
 } from '@angular/router';
 
-import { routes } from './app.routes';
 import {
 	STORAGE,
 	WINDOW,
-} from './routes/choice-gas/pages/explorer/localStorageSignal';
+} from '../../../choice-gas/src/app/moved/pages/explorer/localStorageSignal';
+import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
 	providers: [

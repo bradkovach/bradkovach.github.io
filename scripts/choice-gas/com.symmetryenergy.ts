@@ -1,9 +1,9 @@
-import type { FixedPerThermOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/fixed-per-therm-offer.z';
-import type { MarketOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/market-offer.z';
-import type { OfferBase } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/offer-base.z';
-import type { AnyOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/offer.z';
+import type { FixedPerThermOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-therm-offer.z';
+import type { MarketOffer } from '../../projects/choice-gas/src/app/schema/market-offer.z';
+import type { OfferBase } from '../../projects/choice-gas/src/app/schema/offer-base.z';
+import type { AnyOffer } from '../../projects/choice-gas/src/app/schema/offer.z';
 
-import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/Market';
+import { Market } from '../../projects/choice-gas/src/app/data/Market';
 
 export interface SymmetryProduct {
 	// broker_id: any;

@@ -1,0 +1,36 @@
+[
+  {
+    "confirmationCode": "19158",
+    "id": "fpt-1",
+    "name": "Fixed Price",
+    "rate": 0.47600000000000003,
+    "term": 1,
+    "type": "fpt"
+  },
+  {
+    "confirmationCode": "19217",
+    "id": "fpt-2",
+    "name": "Fixed Price",
+    "rate": 0.48700000000000004,
+    "term": 2,
+    "type": "fpt"
+  },
+  {
+    "confirmationCode": "28612",
+    "id": "market-1",
+    "market": 0,
+    "name": "Market Index",
+    "rate": 0.139,
+    "term": 1,
+    "type": "market"
+  },
+  {
+    "confirmationCode": "28707",
+    "id": "market-2",
+    "market": 0,
+    "name": "Market Index",
+    "rate": 0.13,
+    "term": 2,
+    "type": "market"
+  }
+]

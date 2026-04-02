@@ -1,8 +1,8 @@
 import * as crypto from 'crypto';
 
-import type { AnyOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/offer.z';
+import type { AnyOffer } from '../../projects/choice-gas/src/app/schema/offer.z';
 
-import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/Market';
+import { Market } from '../../projects/choice-gas/src/app/data/Market';
 import { getEnvAsync } from '../getEnvAsync';
 
 export interface Account {
@@ -81,7 +81,6 @@ const fetchOffers = (
 				.flatMap((account) =>
 					account.premises.flatMap((premise) =>
 						premise.prices.map((price) => {
-							console.log({ price });
 							const term = Number(price.term[0]);
 							const confirmationCode = price.priceCode.toString();
 							if (price.priceOption === 'FIXED') {

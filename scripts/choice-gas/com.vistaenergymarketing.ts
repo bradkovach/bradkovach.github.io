@@ -1,11 +1,11 @@
-import type { FixedPerMonthOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/fixed-per-month.z';
-import type { MarketOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/market-offer.z';
-
 import * as cheerio from 'cheerio';
 
-import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/Market';
-import type { FixedPerThermOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/fixed-per-therm-offer.z';
-import type { AnyOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/offer.z';
+import type { FixedPerMonthOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-month.z';
+import type { FixedPerThermOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-therm-offer.z';
+import type { MarketOffer } from '../../projects/choice-gas/src/app/schema/market-offer.z';
+import type { AnyOffer } from '../../projects/choice-gas/src/app/schema/offer.z';
+
+import { Market } from '../../projects/choice-gas/src/app/data/Market';
 import { getEnvAsync } from '../getEnvAsync';
 
 export const run = (): Promise<AnyOffer[]> =>

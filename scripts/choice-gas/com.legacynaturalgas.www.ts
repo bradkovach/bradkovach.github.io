@@ -1,6 +1,6 @@
-import type { AnyOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/offer.z';
+import type { AnyOffer } from '../../projects/choice-gas/src/app/schema/offer.z';
 
-import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/Market';
+import { Market } from '../../projects/choice-gas/src/app/data/Market';
 
 interface GetQuotePricesResponse {
 	PriceOptions: PriceOption[];

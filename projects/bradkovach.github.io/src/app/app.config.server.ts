@@ -1,15 +1,15 @@
-import { provideServerRendering } from '@angular/ssr';
 import type { ApplicationConfig } from '@angular/core';
+import { provideServerRendering } from '@angular/ssr';
 
 import { mergeApplicationConfig } from '@angular/core';
 
-import { appConfig } from './app.config';
-import { HeatmapScheme } from './routes/choice-gas/data/enum/heatmap.enum';
-import { Setting } from './routes/choice-gas/data/enum/settings.enum';
+import { HeatmapScheme } from '../../../choice-gas/src/app/moved/data/enum/heatmap.enum';
+import { Setting } from '../../../choice-gas/src/app/moved/data/enum/settings.enum';
 import {
 	STORAGE,
 	WINDOW,
-} from './routes/choice-gas/pages/explorer/localStorageSignal';
+} from '../../../choice-gas/src/app/moved/pages/explorer/localStorageSignal';
+import { appConfig } from './app.config';
 
 class MemoryStorage implements Storage {
 	[name: string]: any;

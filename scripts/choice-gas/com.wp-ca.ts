@@ -1,13 +1,13 @@
-import type { BestOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/best-offer.z';
-import type { BlendedOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/blended-offer.z';
-import type { FixedPerThermOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/fixed-per-therm-offer.z';
-import type { MarketOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/market-offer.z';
-import type { OfferBase } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/offer-base.z';
-import type { AnyOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/offer.z';
-
 import * as cheerio from 'cheerio';
 
-import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/Market';
+import type { BestOffer } from '../../projects/choice-gas/src/app/schema/best-offer.z';
+import type { BlendedOffer } from '../../projects/choice-gas/src/app/schema/blended-offer.z';
+import type { FixedPerThermOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-therm-offer.z';
+import type { MarketOffer } from '../../projects/choice-gas/src/app/schema/market-offer.z';
+import type { OfferBase } from '../../projects/choice-gas/src/app/schema/offer-base.z';
+import type { AnyOffer } from '../../projects/choice-gas/src/app/schema/offer.z';
+
+import { Market } from '../../projects/choice-gas/src/app/data/Market';
 
 type ExtractFn<T extends AnyOffer> = (
 	term: number,

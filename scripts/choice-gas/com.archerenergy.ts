@@ -1,12 +1,12 @@
-import type { BlendedOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/blended-offer.z';
-import type { FixedPerThermOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/fixed-per-therm-offer.z';
-import type { MarketOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/market-offer.z';
-import type { OfferBase } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/offer-base.z';
-import type { AnyOffer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/offer.z';
-
 import * as cheerio from 'cheerio';
 
-import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/Market';
+import type { BlendedOffer } from '../../projects/choice-gas/src/app/schema/blended-offer.z';
+import type { FixedPerThermOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-therm-offer.z';
+import type { MarketOffer } from '../../projects/choice-gas/src/app/schema/market-offer.z';
+import type { OfferBase } from '../../projects/choice-gas/src/app/schema/offer-base.z';
+import type { AnyOffer } from '../../projects/choice-gas/src/app/schema/offer.z';
+
+import { Market } from '../../projects/choice-gas/src/app/data/Market';
 
 const url = 'https://www.archerenergy.com/shop/black-hills';
 
@@ -35,7 +35,9 @@ export const run = (): Promise<AnyOffer[]> =>
 							const rx = /CIG\+\s*\$([\d.]+)\s*\/\s*\$([\d.]+)/;
 							const matches = priceText.match(rx);
 							if (!matches) {
-								throw Error(`No match for '${priceText}'`);
+								throw Error(
+									`Unable to extract price from '${priceText}'`,
+								);
 							}
 							const [mktRate, fptRate] = matches
 								.slice(1)
@@ -81,7 +83,9 @@ export const run = (): Promise<AnyOffer[]> =>
 							const rx = /CIG\+\s*\$([\d.]+)/;
 							const matches = priceText.match(rx);
 							if (!matches) {
-								throw Error(`No match for ${priceText}`);
+								throw Error(
+									`Unable to extract price from '${priceText}'`,
+								);
 							}
 							const mktRate = Number(matches[1]);
 							const offer: MarketOffer & OfferBase = {

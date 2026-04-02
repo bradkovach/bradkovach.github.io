@@ -25,6 +25,14 @@
 	"ts-node": {
 		"compilerOptions": {}
 	},
+	"references": [
+		{
+			"path": "./projects/choice-gas/tsconfig.app.json"
+		},
+		{
+			"path": "./projects/choice-gas/tsconfig.spec.json"
+		}
+	],
 	"angularCompilerOptions": {
 		"enableI18nLegacyMessageIdFormat": false,
 		"strictInjectionParameters": true,

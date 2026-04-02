@@ -4,21 +4,21 @@ import { writeFile } from 'fs/promises';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
-import type { AnyOffer } from '../projects/bradkovach.github.io/src/app/routes/choice-gas/schema/offer.z';
+import type { AnyOffer } from '../projects/choice-gas/src/app/schema/offer.z';
 
 const drivers = [
 	// NOT WORKING
 	// 'com.unclefrankenergy',
 
 	// WORKING
-	// 'com.archerenergy', // 2026-03-30 rate not published yet
-	// 'com.choicegas',
-	// 'com.choosebhes', // pricing available 2026-04-02
-	// 'com.legacynaturalgas.www', // 2026-04-02
-	// 'com.symmetryenergy', // closed until 4/2
-	// 'com.vistaenergymarketing', // "Pricing is no longer availalble for this account."
-	// 'com.woodriverenergy', // no pricing data available 3/30
-	// 'com.wp-ca', // 3/30 no prices in table
+	'com.archerenergy', // 2026-03-30 rate not published yet
+	'com.choicegas',
+	'com.choosebhes', // pricing available 2026-04-02
+	'com.legacynaturalgas.www', // 2026-04-02
+	'com.symmetryenergy', // closed until 4/2
+	'com.vistaenergymarketing', // "Pricing is no longer availalble for this account."
+	'com.woodriverenergy', // no pricing data available 3/30
+	'com.wp-ca', // 3/30 no prices in table
 	'org.wyomingcommunitygas',
 ];
 
@@ -43,23 +43,26 @@ export const findUp = (filename: string, startDir: string = process.cwd()) => {
 
 type IdentityFn<T> = (x: T) => T;
 
-const identity: IdentityFn<unknown> = (x) => x;
+const identity = <T>(x: T): T => x;
 
 type StringsFunction = (w: Strings) => string;
 
 class Strings {
-	bold(...topicsOrFunctions: Array<string | StringsFunction>) {
-		return this.#curry(chalk.bold.whiteBright, ...topicsOrFunctions);
+	get chalk() {
+		return chalk;
+	}
+
+	addMargin(string: string, spaces: number = 2) {
+		const margin = ' '.repeat(spaces);
+		return string
+			.split('\n')
+			.map((line) => margin + line)
+			.join('\n');
 	}
 
 	bytes(n: number) {
 		return `${n} bytes`;
 	}
-
-	cyan(...topicsOrFunctions: Array<string | StringsFunction>) {
-		return this.#curry(chalk.cyan, ...topicsOrFunctions);
-	}
-
 	duration(start: number, end: number = Date.now()) {
 		const ms = end - start;
 		return `${ms}ms`;
@@ -69,21 +72,28 @@ class Strings {
 		return `... ${process}`;
 	}
 
-	green(...topicsOrFunctions: Array<string | StringsFunction>) {
-		return this.#curry(chalk.green, ...topicsOrFunctions);
+	indent(level: number = 1, char: string = '  ') {
+		return char.repeat(level);
 	}
 
 	inflect(count: number, singular: string, plural: string) {
 		const word = count === 1 ? singular : plural;
-		const str = `${count} ${word}`;
-		return count > 0 ? chalk.bold.whiteBright(str) : chalk.dim(str);
+		return `${count} ${word}`;
 	}
+
+	join(char: string, ...topicsOrFunctions: Array<string | StringsFunction>) {
+		const toPrint = topicsOrFunctions
+			.map((t) => (typeof t === 'string' ? t : t(this)))
+			.join(char);
+		return toPrint;
+	}
+
 	json(obj: unknown, indent: number = 2) {
 		return JSON.stringify(obj, null, indent);
 	}
 
-	magenta(...topicsOrFunctions: Array<string | StringsFunction>) {
-		return this.#curry(chalk.magenta, ...topicsOrFunctions);
+	padStart(str: string, length: number) {
+		return str.padStart(length);
 	}
 
 	parens(topicOrFunction: string | StringsFunction) {
@@ -110,10 +120,6 @@ class Strings {
 		return segments.join(chalk.bold.whiteBright('/'));
 	}
 
-	red(...topicsOrFunctions: Array<string | StringsFunction>) {
-		return this.#curry(chalk.red, ...topicsOrFunctions);
-	}
-
 	relative(to: string | URL, from: string | URL = process.cwd()) {
 		const fromUrl = typeof from === 'string' ? from : fileURLToPath(from);
 		const toUrl = typeof to === 'string' ? to : fileURLToPath(to);
@@ -128,28 +134,27 @@ class Strings {
 		const url = new URL(u);
 		return url.toString();
 	}
-
-	yellow(...topicsOrFunctions: Array<string | StringsFunction>) {
-		return this.#curry(chalk.yellow, ...topicsOrFunctions);
-	}
-
-	#curry(
-		brush: (s: string) => string,
-		...topicsOrFunctions: Array<string | StringsFunction>
-	) {
-		const toPrint = topicsOrFunctions
-			.map((t) => (typeof t === 'string' ? t : t(this)))
-			.join(' ');
-		return brush(toPrint);
-	}
 }
 
-class Chalks {
-	#strings = new Strings();
-}
+// class Chalks {
+// 	#strings = new Strings();
+// }
 
 class Output {
 	#strings = new Strings();
+
+	append(...topicsOrFunctions: Array<string | StringsFunction>) {
+		const toPrint = topicsOrFunctions
+			.map((t) => (typeof t === 'string' ? t : t(this.#strings)))
+			.join(' ');
+		process.stdout.write(toPrint);
+
+		return this;
+	}
+
+	asTap<T>(): IdentityFn<T> {
+		return identity;
+	}
 
 	log(...topicsOrFunctions: Array<string | StringsFunction>) {
 		const toPrint = topicsOrFunctions
@@ -159,11 +164,88 @@ class Output {
 
 		return this;
 	}
+
+	returning<T>(value: T) {
+		return value;
+	}
 }
 
-function run() {
-	const output = new Output();
+const output = new Output();
 
+const saveOffers =
+	(
+		driver: string,
+		outputPath: URL,
+		overallStart: number,
+		driverStart: number,
+	) =>
+	(
+		{ errors, offers }: { errors: Error[]; offers: AnyOffer[] },
+		json: string = JSON.stringify(
+			offers.sort((a, b) => a.type.localeCompare(b.type)),
+			null,
+			2,
+		),
+		saveStart: number = Date.now(),
+	): Promise<void> =>
+		writeFile(outputPath, json, 'utf-8')
+			.catch((e) => ({
+				errors: [...errors, e],
+				offers,
+			}))
+			.then(() => {
+				output.log((o) => o.chalk.yellow(driver));
+
+				if (errors.length) {
+					output.log(
+						(o) => o.indent(1),
+						(o) => o.chalk.bold.red('ERROR'),
+						(o) =>
+							o
+								.addMargin(
+									errors
+										.map(
+											(e) =>
+												e.stack ??
+												e.message ??
+												'Unknown error',
+										)
+										.join('\n\n'),
+									3,
+								)
+								.trimStart(),
+					);
+				}
+
+				output
+					.log(
+						(o) => o.indent(1),
+						'Fetched',
+						(o) =>
+							o.chalk.blue(
+								o.inflect(offers.length, 'offer', 'offers'),
+							),
+						'in',
+						(o) => o.chalk.green(o.duration(driverStart)),
+					)
+					.log(
+						(o) => o.indent(1),
+						'Wrote',
+						(o) => o.chalk.blue(o.bytes(json.length)),
+						'in',
+						(o) => o.chalk.green(o.duration(saveStart)),
+						'to',
+						(o) => o.relative(outputPath),
+					)
+					.log(
+						(o) => o.indent(1),
+						driver,
+						'took',
+						(o) => o.chalk.green(o.duration(overallStart)),
+					);
+			});
+
+function run() {
 	const overallStart = Date.now();
 	const angularJsonPath = findUp('angular.json');
 	if (!angularJsonPath) {
@@ -171,7 +253,7 @@ function run() {
 	}
 
 	const vendorDir = new URL(
-		'./projects/bradkovach.github.io/src/app/routes/choice-gas/data/vendors/json/',
+		'./projects/choice-gas/src/app/data/vendors/json/',
 		pathToFileURL(angularJsonPath),
 	);
 
@@ -182,41 +264,39 @@ function run() {
 				_idx,
 				_drivers,
 				outputPath = new URL(`./${driver}.json`, vendorDir),
-				start = Date.now(),
+				driverStart = Date.now(),
 			) =>
 				import(`./choice-gas/${driver}`)
 					.then(({ run }: OfferDriver) => run())
-					.catch(<E extends Error>(e: E) => {
-						output
-							.log('Error running', (o) => o.yellow(driver))
-							.log('    ', (o) => o.red(e.message));
-						return [];
-					})
-					.then((offers, json = JSON.stringify(offers, null, 2)) =>
-						writeFile(outputPath, json, 'utf-8').then(() => {
-							output
-								.log(
-									'... wrote',
-									(o) =>
-										o.inflect(
-											offers.length,
-											'offer',
-											'offers',
-										),
-									(o) => o.magenta('in', o.duration(start)),
-									(o) => o.parens(o.bytes(json.length)),
-								)
-								.log('to', (o) => o.relative(outputPath));
-						}),
+					.then((offers) => ({ errors: [], offers }))
+					.catch(
+						<E extends Error>(e: E) =>
+							({ errors: [e], offers: [] }) as {
+								errors: Error[];
+								offers: AnyOffer[];
+							},
+					)
+					.then(
+						saveOffers(
+							driver,
+							outputPath,
+							overallStart,
+							driverStart,
+						),
 					),
 		),
-	).then(() => Date.now() - overallStart);
+	).then((result) => {
+		output.log(
+			'Refreshed',
+			(o) => o.inflect(result.length, 'driver', 'drivers'),
+			'in',
+			(o) => o.chalk.green(o.duration(overallStart)),
+		);
+
+		return result;
+	});
 }
 
-run()
-	.then((timeElapsed) => {
-		console.log('Refreshed all data in', timeElapsed, 'ms');
-	})
-	.catch((e) => {
-		console.error('Error running all drivers:', e);
-	});
+run().catch((e) => {
+	console.error('Error running all drivers:', e);
+});
