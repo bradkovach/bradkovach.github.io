@@ -17,7 +17,7 @@ import type { OfferType } from '../../schema/offer.z';
 
 import { BillTotalComponent } from '../../components/bill-total/bill-total.component';
 import { marketLabels } from '../../data/data.current';
-import { Series, SeriesKeys, SeriesLabels } from '../../data/data.default';
+import { Series, SeriesLabels } from '../../data/data.default';
 import {
 	Heatmap,
 	HeatmapScheme,
@@ -76,62 +76,93 @@ const offerOrder: OfferType[] = [
 	templateUrl: './explorer.component.html',
 })
 export class ExplorerComponent {
-	readonly enabledColumns = storageSignal<Record<ExplorerColumn, boolean>>(
-		Setting.ShowColumns,
-		{
-			[ExplorerColumn.Average]: true,
-			[ExplorerColumn.CommmodityCharge]: true,
-			[ExplorerColumn.ConfirmationCode]: true,
-			[ExplorerColumn.Month]: true,
-			[ExplorerColumn.Name]: true,
-			[ExplorerColumn.Term]: true,
-		},
-	);
+	readonly Strings = {
+		explorerColumnLabels,
+		footnoteExplanations,
+		footnoteSymbols,
+		heatmapSchemeLabels,
+		heatmapSchemePalettes: heatmapSchemePalettes,
+		heatmapsLabels,
+		marketLabels,
+		monthLabels,
+		monthLabelsAbbr,
+		offerTypeLabels: offerTypeLabels,
+		seriesLabels: SeriesLabels,
+	};
 
-	readonly ExplorerColumns = extractKeys(explorerColumnLabels);
+	readonly EnumArrays = {
+		ExplorerColumns: extractKeys(this.Strings.explorerColumnLabels),
+		Heatmaps: extractKeys(this.Strings.heatmapsLabels),
+		HeatmapSchemes: extractKeys(this.Strings.heatmapSchemeLabels),
+		Markets: extractKeys(this.Strings.marketLabels),
+		Months: extractKeys(this.Strings.monthLabels),
+		OfferTypes: Object.keys(this.Strings.offerTypeLabels) as OfferType[],
+		SeriesKeys: extractKeys(this.Strings.seriesLabels),
+	};
 
-	readonly enabledColumnsArray = computed(() =>
-		this.ExplorerColumns.filter((column) => this.enabledColumns()[column]),
-	);
-
-	// #region Storage Signals
-	readonly enabledOfferTypes = storageSignal<Record<OfferType, boolean>>(
-		Setting.EnabledOfferTypes,
-		{
-			best: true,
-			blended: true,
-			custom: true,
-			fpm: true,
-			fpt: true,
-			market: true,
-		},
-	);
-	readonly enabledSeries = storageSignal<Record<Series, boolean>>(
-		Setting.ShowSeries,
-		{
+	readonly storageSignals = {
+		Columns: storageSignal<Record<ExplorerColumn, boolean>>(
+			Setting.ShowColumns,
+			{
+				[ExplorerColumn.Average]: true,
+				[ExplorerColumn.CommmodityCharge]: true,
+				[ExplorerColumn.ConfirmationCode]: true,
+				[ExplorerColumn.Month]: true,
+				[ExplorerColumn.Name]: true,
+				[ExplorerColumn.Term]: true,
+			},
+		),
+		Heatmaps: storageSignal<Record<Heatmap, boolean>>(
+			Setting.EnabledHeatmaps,
+			{
+				[Heatmap.Averages]: true,
+				[Heatmap.Series]: true,
+				[Heatmap.Totals]: true,
+			},
+		),
+		// 	readonly scheme = storageSignal<HeatmapScheme>(
+		// 	Setting.Scheme,
+		// 	HeatmapScheme.GreenWhiteRed,
+		// 	{},
+		// );
+		HeatmapScheme: storageSignal<HeatmapScheme>(
+			Setting.Scheme,
+			HeatmapScheme.GreenWhiteRed,
+		),
+		HighDensityTable: storageSignal<boolean>(
+			Setting.EnableHighDensityTable,
+			false,
+		),
+		OfferTypes: storageSignal<Record<OfferType, boolean>>(
+			Setting.EnabledOfferTypes,
+			{
+				best: true,
+				blended: true,
+				custom: true,
+				fpm: true,
+				fpt: true,
+				market: true,
+			},
+		),
+		Series: storageSignal<Record<Series, boolean>>(Setting.ShowSeries, {
 			[Series.CIG]: false,
 			[Series.GCA]: false,
 			[Series.TemperatureHigh]: false,
 			[Series.TemperatureLow]: true,
 			[Series.Usage]: true,
-		},
+		}),
+		StripedTable: storageSignal<boolean>(Setting.EnableStripedTable, true),
+	};
+
+	readonly enabledColumnsArray = computed(() =>
+		this.EnumArrays.ExplorerColumns.filter(
+			(column) => this.storageSignals.Columns()[column],
+		),
 	);
 
-	readonly enableHighDensityTable = storageSignal<boolean>(
-		Setting.EnableHighDensityTable,
-		false,
-	);
-
-	readonly enableStripedTable = storageSignal<boolean>(
-		Setting.EnableStripedTable,
-		true,
-	);
-
-	// readonly EnrollmentField = EnrollmentField;
 	readonly #dataService = inject(DataService);
 
 	readonly enrollmentFields = this.#dataService.enrollmentFields;
-	// #endregion
 
 	readonly Enums = {
 		ChargeType,
@@ -140,89 +171,33 @@ export class ExplorerComponent {
 		Footnote,
 		Heatmap,
 		HeatmapScheme,
+		Market,
+		Month,
+		Series,
 	};
-	readonly ExplorerColumnLabels = explorerColumnLabels;
-
-	readonly footnoteExplanations = footnoteExplanations;
-	readonly footnoteSymbols = footnoteSymbols;
-
-	readonly HeatmapLabels: Record<Heatmap, string> = heatmapsLabels;
-	readonly Heatmaps = extractKeys(heatmapsLabels);
-	readonly HeatmapSchemeLabels: Record<HeatmapScheme, string> =
-		heatmapSchemeLabels;
-
-	readonly HeatmapSchemes = extractKeys(heatmapSchemeLabels);
-
-	readonly heatmapsEnabled = storageSignal<Record<Heatmap, boolean>>(
-		Setting.EnabledHeatmaps,
-		{
-			[Heatmap.Averages]: true,
-			[Heatmap.Series]: true,
-			[Heatmap.Totals]: true,
-		},
-	);
 
 	readonly offerAverages = signal<number[]>([]);
 
-	// #region Computed Signals
 	readonly highest = computed(() => {
 		const avgs = this.offerAverages();
 		return avgs.length > 0 ? avgs[avgs.length - 1] : Number.MIN_VALUE;
 	});
 
-	// #endregion
-	readonly Keys = {};
-
-	readonly Labels = {
-		explorerColumnLabels,
-	};
-
 	readonly lastUpdated = new Date(lastUpdated);
+
 	readonly lowest = computed(() =>
 		this.offerAverages().length > 0
 			? this.offerAverages()[0]
 			: Number.MAX_VALUE,
 	);
 
-	// #region Market
-	readonly Market = Market;
-
-	readonly MarketLabels = marketLabels;
-
-	readonly Markets = Object.keys(marketLabels) as unknown as Market[];
-
-	// #region Month
-	readonly Month = Month;
-
-	readonly MonthLabels = monthLabels;
-
-	readonly monthLabelsAbbr = monthLabelsAbbr;
-
-	readonly Months = Object.keys(monthLabels) as unknown as Month[];
-
-	// #region OfferType
-	readonly OfferTypeLabels: Record<OfferType, string> = offerTypeLabels;
-
-	readonly OfferTypes = Object.keys(
-		offerTypeLabels,
-	) as unknown as OfferType[];
-
-	readonly palette = computed(() => heatmapSchemePalettes[this.scheme()]);
-	// #endregion
-
-	readonly scheme = storageSignal<HeatmapScheme>(
-		Setting.Scheme,
-		HeatmapScheme.GreenWhiteRed,
-		{},
+	readonly palette = computed(
+		() => heatmapSchemePalettes[this.storageSignals.HeatmapScheme()],
 	);
-
-	// Series does not have a single/plural so the use of Keys and Labels suffixes is required here
-	// #region Series
-	readonly Series = Series;
 
 	readonly seriesAverages = computed(() => {
 		const values = this.#dataService.series();
-		return SeriesKeys.reduce<Record<Series, number>>(
+		return this.EnumArrays.SeriesKeys.reduce<Record<Series, number>>(
 			(avgs, key) => {
 				const series = values[key];
 				avgs[key] =
@@ -247,18 +222,13 @@ export class ExplorerComponent {
 		[Series.TemperatureLow]: -1,
 		[Series.Usage]: 1,
 	};
-	//#endregions
 
-	readonly SeriesKeys = SeriesKeys;
-
-	readonly SeriesLabels = SeriesLabels;
-
-	showSettings = signal(false);
+	readonly showSettings = signal(false);
 	readonly valueTotals = signal<number[]>([]);
 
 	readonly vm$ = combineLatest({
 		charges: this.#dataService.charges$,
-		enabledOfferTypes: toObservable(this.enabledOfferTypes),
+		enabledOfferTypes: toObservable(this.storageSignals.OfferTypes),
 		series: this.#dataService.series$,
 		vendors: this.#dataService.vendors$,
 	}).pipe(
@@ -272,7 +242,10 @@ export class ExplorerComponent {
 								offerOrder.indexOf(a.type) -
 								offerOrder.indexOf(b.type),
 						)
-						.filter((offer) => this.enabledOfferTypes()[offer.type])
+						.filter(
+							(offer) =>
+								this.storageSignals.OfferTypes()[offer.type],
+						)
 						.map((offer) => ({
 							average: 0,
 							bills: vm.series[Series.Usage]
@@ -358,21 +331,21 @@ export class ExplorerComponent {
 		}),
 	);
 
-	private readonly title = inject(Title);
+	readonly #title = inject(Title);
 
 	constructor() {
-		this.title.setTitle('Choice Gas - Price Explorer');
+		this.#title.setTitle('Choice Gas - Price Explorer');
 	}
 
 	resetRefiners() {
-		this.enabledSeries.set({
+		this.storageSignals.Series.set({
 			[Series.CIG]: false,
 			[Series.GCA]: false,
 			[Series.TemperatureHigh]: false,
 			[Series.TemperatureLow]: false,
 			[Series.Usage]: true,
 		});
-		this.enabledOfferTypes.set({
+		this.storageSignals.OfferTypes.set({
 			best: true,
 			blended: true,
 			custom: true,
@@ -380,7 +353,7 @@ export class ExplorerComponent {
 			fpt: true,
 			market: true,
 		});
-		this.enabledColumns.set({
+		this.storageSignals.Columns.set({
 			[ExplorerColumn.Average]: true,
 			[ExplorerColumn.CommmodityCharge]: true,
 			[ExplorerColumn.ConfirmationCode]: true,
@@ -388,7 +361,7 @@ export class ExplorerComponent {
 			[ExplorerColumn.Name]: true,
 			[ExplorerColumn.Term]: true,
 		});
-		this.heatmapsEnabled.set({
+		this.storageSignals.Heatmaps.set({
 			[Heatmap.Averages]: true,
 			[Heatmap.Series]: true,
 			[Heatmap.Totals]: true,
@@ -396,29 +369,29 @@ export class ExplorerComponent {
 	}
 
 	setColumn(column: ExplorerColumn, enabled: boolean) {
-		this.enabledColumns.set({
-			...this.enabledColumns(),
+		this.storageSignals.Columns.set({
+			...this.storageSignals.Columns(),
 			[column]: enabled,
 		});
 	}
 
 	setHeatmap(heatmap: Heatmap, enabled: boolean) {
-		this.heatmapsEnabled.set({
-			...this.heatmapsEnabled(),
+		this.storageSignals.Heatmaps.set({
+			...this.storageSignals.Heatmaps(),
 			[heatmap]: enabled,
 		});
 	}
 
 	setOfferType(offerType: OfferType, enabled: boolean) {
-		this.enabledOfferTypes.set({
-			...this.enabledOfferTypes(),
+		this.storageSignals.OfferTypes.set({
+			...this.storageSignals.OfferTypes(),
 			[offerType]: enabled,
 		});
 	}
 
 	setSeries(series: Series, enabled: boolean) {
-		this.enabledSeries.set({
-			...this.enabledSeries(),
+		this.storageSignals.Series.set({
+			...this.storageSignals.Series(),
 			[series]: enabled,
 		});
 	}

@@ -1,1 +1,114 @@
-[]
+[
+  {
+    "confirmationCode": "91012",
+    "id": "archer-pro-1",
+    "name": "ArcherPro",
+    "offers": [
+      [
+        1,
+        {
+          "rate": 0.599,
+          "type": "fpt"
+        }
+      ],
+      [
+        2,
+        {
+          "market": 0,
+          "rate": 0.179,
+          "type": "market"
+        }
+      ]
+    ],
+    "term": 1,
+    "type": "blended"
+  },
+  {
+    "confirmationCode": "91015",
+    "id": "archer-pro-2",
+    "name": "ArcherPro",
+    "offers": [
+      [
+        1,
+        {
+          "rate": 0.609,
+          "type": "fpt"
+        }
+      ],
+      [
+        2,
+        {
+          "market": 0,
+          "rate": 0.179,
+          "type": "market"
+        }
+      ]
+    ],
+    "term": 2,
+    "type": "blended"
+  },
+  {
+    "id": "flatbill-cashback-fpm-1",
+    "name": "FlatBill+Cashback",
+    "rate": 0,
+    "term": 1,
+    "type": "fpm"
+  },
+  {
+    "id": "flatbill-cashback-fpm-2",
+    "name": "FlatBill+Cashback",
+    "rate": 0,
+    "term": 2,
+    "type": "fpm"
+  },
+  {
+    "confirmationCode": "91002",
+    "id": "ratelock-1",
+    "name": "RateLock",
+    "rate": 0.559,
+    "term": 1,
+    "type": "fpt"
+  },
+  {
+    "confirmationCode": "91016",
+    "id": "green-gas-1",
+    "name": "GreenGas",
+    "rate": 0.569,
+    "term": 1,
+    "type": "fpt"
+  },
+  {
+    "confirmationCode": "91005",
+    "id": "ratelock-2",
+    "name": "RateLock",
+    "rate": 0.569,
+    "term": 2,
+    "type": "fpt"
+  },
+  {
+    "confirmationCode": "91017",
+    "id": "green-gas-2",
+    "name": "GreenGas",
+    "rate": 0.579,
+    "term": 2,
+    "type": "fpt"
+  },
+  {
+    "confirmationCode": "91006",
+    "id": "pass-thru-1",
+    "market": 0,
+    "name": "Pass-Through",
+    "rate": 0.179,
+    "term": 1,
+    "type": "market"
+  },
+  {
+    "confirmationCode": "91009",
+    "id": "pass-thru-2",
+    "market": 0,
+    "name": "Pass-Through",
+    "rate": 0.179,
+    "term": 2,
+    "type": "market"
+  }
+]

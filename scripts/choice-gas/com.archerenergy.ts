@@ -1,6 +1,7 @@
 import * as cheerio from 'cheerio';
 
 import type { BlendedOffer } from '../../projects/choice-gas/src/app/schema/blended-offer.z';
+import type { FixedPerMonthOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-month.z';
 import type { FixedPerThermOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-therm-offer.z';
 import type { MarketOffer } from '../../projects/choice-gas/src/app/schema/market-offer.z';
 import type { OfferBase } from '../../projects/choice-gas/src/app/schema/offer-base.z';
@@ -68,6 +69,18 @@ export const run = (): Promise<AnyOffer[]> =>
 							};
 							return [offer];
 						}
+						case 'FlatBill+Cashback': {
+							// fixed per month
+							return [
+								{
+									id: `flatbill-cashback-fpm-${term}`,
+									name: plan,
+									rate: 0,
+									term,
+									type: 'fpm',
+								} as FixedPerMonthOffer,
+							];
+						}
 						case 'GreenGas': {
 							const offer: FixedPerThermOffer & OfferBase = {
 								confirmationCode,
@@ -112,6 +125,11 @@ export const run = (): Promise<AnyOffer[]> =>
 						}
 						default: {
 							console.info('Skipping unknown plan type', plan);
+							console.log({
+								confirmationCode,
+								plan,
+								priceText,
+							});
 						}
 					}
 					return [];

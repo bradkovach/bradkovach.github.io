@@ -1,5 +1,32 @@
 @let Heatmap = Enums.Heatmap;
 @let EnrollmentField = Enums.EnrollmentField;
+@let Series = Enums.Series;
+@let Month = Enums.Month;
+
+@let Heatmaps = EnumArrays.Heatmaps;
+@let HeatmapSchemes = EnumArrays.HeatmapSchemes;
+@let ExplorerColumns = EnumArrays.ExplorerColumns;
+@let SeriesKeys = EnumArrays.SeriesKeys;
+@let Months = EnumArrays.Months;
+@let OfferTypes = EnumArrays.OfferTypes;
+
+@let footnoteExplanations = Strings.footnoteExplanations;
+@let footnoteSymbols = Strings.footnoteSymbols;
+@let HeatmapLabels = Strings.heatmapsLabels;
+@let HeatmapSchemeLabels = Strings.heatmapSchemeLabels;
+@let ExplorerColumnLabels = Strings.explorerColumnLabels;
+@let SeriesLabels = Strings.seriesLabels;
+@let monthLabelsAbbr = Strings.monthLabelsAbbr;
+@let MarketLabels = Strings.marketLabels;
+@let OfferTypeLabels = Strings.offerTypeLabels;
+
+@let heatmapsEnabled = storageSignals.Heatmaps;
+@let scheme = storageSignals.HeatmapScheme;
+@let enabledColumns = storageSignals.Columns;
+@let enabledOfferTypes = storageSignals.OfferTypes;
+@let enabledSeries = storageSignals.Series;
+@let enableHighDensityTable = storageSignals.HighDensityTable;
+@let enableStripedTable = storageSignals.StripedTable;
 
 @if (vm$ | async; as vm) {
 	@if ((vm.series[Series.Usage] | average) === 0) {

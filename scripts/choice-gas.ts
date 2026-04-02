@@ -11,15 +11,15 @@ const drivers = [
 	// 'com.unclefrankenergy',
 
 	// WORKING
-	'com.archerenergy', // 2026-03-30 rate not published yet
-	'com.choicegas',
-	'com.choosebhes', // pricing available 2026-04-02
-	'com.legacynaturalgas.www', // 2026-04-02
-	'com.symmetryenergy', // closed until 4/2
-	'com.vistaenergymarketing', // "Pricing is no longer availalble for this account."
+	// 'com.archerenergy', // 2026-03-30 rate not published yet
+	// 'com.choicegas',
+	// 'com.choosebhes', // pricing available 2026-04-02
+	// 'com.legacynaturalgas.www', // 2026-04-02
+	// 'com.symmetryenergy', // closed until 4/2
+	// 'com.vistaenergymarketing', // "Pricing is no longer availalble for this account."
 	'com.woodriverenergy', // no pricing data available 3/30
-	'com.wp-ca', // 3/30 no prices in table
-	'org.wyomingcommunitygas',
+	// 'com.wp-ca', // 3/30 no prices in table
+	// 'org.wyomingcommunitygas',
 ];
 
 export type OfferDriver = { run: () => Promise<AnyOffer[]> };
