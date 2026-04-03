@@ -1,5 +1,21 @@
 [
   {
+    "confirmationCode": "25830",
+    "id": "fpm-1",
+    "name": "Fixed Monthly Bill",
+    "rate": 0,
+    "term": 1,
+    "type": "fpm"
+  },
+  {
+    "confirmationCode": "25860",
+    "id": "fpm-2",
+    "name": "Fixed Monthly Bill",
+    "rate": 0,
+    "term": 2,
+    "type": "fpm"
+  },
+  {
     "confirmationCode": "19158",
     "id": "fpt-1",
     "name": "Fixed Price",

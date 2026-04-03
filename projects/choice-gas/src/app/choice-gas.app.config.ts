@@ -8,6 +8,7 @@ import {
 } from '@angular/router';
 
 import { routes } from './choice-gas.routes';
+import { provideTemplatedTitle } from './pages/main/main.component';
 
 export const appConfig: ApplicationConfig = {
 	providers: [
@@ -20,5 +21,6 @@ export const appConfig: ApplicationConfig = {
 				scrollPositionRestoration: 'enabled',
 			}),
 		),
+		provideTemplatedTitle('{0} - United Way of Albany County'),
 	],
 };

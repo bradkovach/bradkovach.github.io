@@ -88,7 +88,7 @@ export class DataEditorComponent {
 	private readonly title = inject(Title);
 
 	constructor() {
-		this.title.setTitle('Choice Gas - Data Editor');
+		this.title.setTitle('Data Editor');
 	}
 
 	addCharge(charges: Charge[]) {

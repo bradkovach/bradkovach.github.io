@@ -105,18 +105,7 @@ export const run = (): Promise<AnyOffer[]> =>
 		.then((premise_or_account_num) => getOfferPage(premise_or_account_num))
 		.then((response) => response.text())
 		.then((html) => prettier.format(html, { parser: 'html' }))
-		// .then((formattedHtml) => {
-		// 	const debugHtmlFile = new URL('./debug.html', import.meta.url);
-
-		// 	mkdirSync(dirname(fileURLToPath(debugHtmlFile)), {
-		// 		recursive: true,
-		// 	});
-		// 	writeFileSync(debugHtmlFile, formattedHtml, 'utf-8');
-		// 	console.log(`Formatted HTML written to ${debugHtmlFile}`);
-
-		// 	return formattedHtml;
-		// })
-		.then((fmtHtml) => cheerio.load(fmtHtml))
+		.then((formattedHtml) => cheerio.load(formattedHtml))
 		.then(($) => {
 			// article:has(header):has(section):has(footer)
 			const article = $('article:has(header):has(section):has(footer)');

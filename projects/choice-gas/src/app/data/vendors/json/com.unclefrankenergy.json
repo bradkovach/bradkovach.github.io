@@ -1,34 +1,36 @@
 [
 	{
-		"confirmationCode": "10559",
-		"id": "cig-1",
+		"type": "market",
 		"market": 0,
-		"name": "Fixed Index Adder (1 year)",
-		"rate": 0.069,
+		"name": "Market Index Rate",
 		"term": 1,
-		"type": "market"
+		"rate": 0.3,
+		"confirmationCode": "10600",
+		"id": "market-1"
 	},
 	{
-		"confirmationCode": "10558",
-		"id": "green-cig-1",
+		"type": "market",
 		"market": 0,
-		"name": "Fixed Green Index Adder (1 Year)",
-		"rate": 0.4,
+		"name": "Market Index Green Gas",
 		"term": 1,
-		"type": "market"
+		"rate": 0.3,
+		"confirmationCode": "10620",
+		"id": "market-green-gas-1"
 	},
 	{
-		"type": "fpt",
-		"confirmationCode": "11560",
-		"id": "fpt-1",
-		"name": "Fixed Rate Per Therm (1 Year)",
-		"rate": 1.1
+		"type": "fixed",
+		"name": "Fixed Rate",
+		"term": 1,
+		"rate": 1.2,
+		"confirmationCode": "11200",
+		"id": "fixed-1"
 	},
 	{
-		"type": "fpt",
-		"name": "Fixed Green 1 Year (1 Year)",
-		"confirmationCode": "11559",
-		"id": "fpt-green-1",
-		"rate": 1.2
+		"type": "fixed",
+		"name": "Fixed Rate Green Gas",
+		"term": 1,
+		"rate": 1.2,
+		"confirmationCode": "11220",
+		"id": "fixed-green-gas-1"
 	}
 ]

@@ -6,7 +6,7 @@
       [
         0.5,
         {
-          "rate": 0.425,
+          "rate": 0.424,
           "type": "fpt"
         }
       ],
@@ -14,7 +14,7 @@
         0.5,
         {
           "market": 0,
-          "rate": 0.092,
+          "rate": 0.093,
           "type": "market"
         }
       ]
@@ -29,7 +29,7 @@
       [
         0.5,
         {
-          "rate": 0.441,
+          "rate": 0.442,
           "type": "fpt"
         }
       ],
@@ -37,7 +37,7 @@
         0.5,
         {
           "market": 0,
-          "rate": 0.092,
+          "rate": 0.093,
           "type": "market"
         }
       ]
@@ -64,14 +64,14 @@
   {
     "id": "ratelock-1",
     "name": "Rate Lock",
-    "rate": 0.425,
+    "rate": 0.424,
     "term": 1,
     "type": "fpt"
   },
   {
     "id": "ratelock-2",
     "name": "Rate Lock",
-    "rate": 0.441,
+    "rate": 0.442,
     "term": 2,
     "type": "fpt"
   },
@@ -79,7 +79,7 @@
     "id": "market-1",
     "market": 0,
     "name": "Market Index",
-    "rate": 0.092,
+    "rate": 0.093,
     "term": 1,
     "type": "market"
   },
@@ -87,7 +87,7 @@
     "id": "market-2",
     "market": 0,
     "name": "Market Index",
-    "rate": 0.092,
+    "rate": 0.093,
     "term": 2,
     "type": "market"
   }

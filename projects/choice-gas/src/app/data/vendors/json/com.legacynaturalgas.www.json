@@ -1,1 +1,52 @@
-[]
+[
+  {
+    "confirmationCode": "20513",
+    "id": "fixed-bill-1",
+    "name": "Fixed Bill",
+    "rate": 0,
+    "term": 1,
+    "type": "fpm"
+  },
+  {
+    "confirmationCode": "20514",
+    "id": "fixed-bill-2",
+    "name": "Fixed Bill",
+    "rate": 0,
+    "term": 2,
+    "type": "fpm"
+  },
+  {
+    "confirmationCode": "20339",
+    "id": "fixed-1",
+    "name": "Fixed Price",
+    "rate": 0.47,
+    "term": 1,
+    "type": "fpt"
+  },
+  {
+    "confirmationCode": "20372",
+    "id": "fixed-2",
+    "name": "Fixed Price",
+    "rate": 0.48,
+    "term": 2,
+    "type": "fpt"
+  },
+  {
+    "confirmationCode": "20479",
+    "id": "index-1",
+    "market": 0,
+    "name": "Index Price",
+    "rate": 0.14,
+    "term": 1,
+    "type": "market"
+  },
+  {
+    "confirmationCode": "20483",
+    "id": "index-2",
+    "market": 0,
+    "name": "Index Price",
+    "rate": 0.14,
+    "term": 2,
+    "type": "market"
+  }
+]

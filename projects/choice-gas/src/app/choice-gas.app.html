@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand border-bottom mb-3">
-	<div class="container-fluid px-0">
+	<div class="container-fluid">
 		<a class="navbar-brand" [routerLink]="['/choice-gas']"
 			>Choice Gas Guide</a
 		>
@@ -124,14 +124,19 @@
 
 <aside class="container-fluid">
 	<div class="row">
-		<div class="col">
-			<div class="alert alert-info" role="alert">
-				<strong>FREE Tax Preparation</strong> United Way of Albany
-				County offers FREE tax preparation for households with income at
-				or under $75,000 per year.*
-				<a href="https://unitedwayalbanycounty.org/book" target="_blank"
-					>Learn more and schedule an appointment</a
-				>
+		<div class="col mb-3 pb-3 border-bottom">
+			<div class="text-primary text-center" role="alert">
+				<span>
+					United Way of Albany County offers FREE tax preparation for
+					households with income at or under $75,000 per year.* </span
+				><br />
+				<strong>
+					<a
+						href="https://unitedwayalbanycounty.org/book"
+						target="_blank"
+						>Learn more and schedule an appointment</a
+					>
+				</strong>
 			</div>
 		</div>
 	</div>
@@ -142,8 +147,49 @@
 </main>
 
 <footer>
-	<p>
-		* Some restrictions apply. United Way of Albany County VITA is subject
-		to IRS regulations regarding permitted scope of service.
-	</p>
+	<p></p>
 </footer>
+
+<aside class="container-fluid">
+	<div class="row">
+		<div
+			class="col py-3 border-top text-primary"
+			style="font-size: 0.875em"
+			role="alert">
+			<ul class="">
+				<li>
+					United Way of Albany County provides this Choice Gas Guide
+					as a resource to help customers understand the Choice Gas
+					program and make informed decisions. We do not endorse any
+					particular supplier or rate offer, and we encourage
+					customers to shop around and compare offers before making a
+					selection.
+				</li>
+				<li>
+					United Way of Albany County is not affiliated with Black
+					Hills Energy or any Choice Gas Supplier. We do not receive
+					any compensation from suppliers for providing this
+					information.
+				</li>
+				<li>
+					No claims are made regarding the accuracy or completeness of
+					the information provided on this site. Customers should
+					verify all information with suppliers before making a
+					selection.
+				</li>
+			</ul>
+			<ul class="list-unstyled">
+				<li>
+					* Some restrictions apply. United Way of Albany County VITA
+					is subject to IRS regulations regarding permitted scope of
+					service.
+					<a
+						href="https://unitedwayalbanycounty.org/book"
+						target="_blank"
+						>Learn more and schedule an appointment</a
+					>.
+				</li>
+			</ul>
+		</div>
+	</div>
+</aside>

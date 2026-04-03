@@ -79,7 +79,7 @@ export class ImportComponent {
 	private readonly title = inject(Title);
 
 	constructor() {
-		this.title.setTitle('Choice Gas - Import Data');
+		this.title.setTitle('Import Data');
 		const query = new URLSearchParams();
 		const fpmOffer: FixedPerMonthOffer & OfferBase = {
 			id: '185',

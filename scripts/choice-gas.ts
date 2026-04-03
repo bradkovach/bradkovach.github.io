@@ -1,249 +1,36 @@
-import chalk from 'chalk';
-import { existsSync } from 'fs';
 import { writeFile } from 'fs/promises';
-import path from 'node:path';
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { pathToFileURL } from 'node:url';
 
 import type { AnyOffer } from '../projects/choice-gas/src/app/schema/offer.z';
+import type { Strings } from './Strings';
 
-const drivers = [
-	// NOT WORKING
-	// 'com.unclefrankenergy',
+import { findUp, saveOffers } from './choice-gas/util';
+import { Output } from './Output';
 
+const drivers: string[] = [
 	// WORKING
-	// 'com.archerenergy', // 2026-03-30 rate not published yet
-	// 'com.choicegas',
-	// 'com.choosebhes', // pricing available 2026-04-02
-	// 'com.legacynaturalgas.www', // 2026-04-02
-	// 'com.symmetryenergy', // closed until 4/2
-	// 'com.vistaenergymarketing', // "Pricing is no longer availalble for this account."
-	'com.woodriverenergy', // no pricing data available 3/30
-	// 'com.wp-ca', // 3/30 no prices in table
-	// 'org.wyomingcommunitygas',
+	'com.archerenergy',
+	'com.choicegas',
+	'com.choosebhes',
+	'com.vistaenergymarketing',
+	'com.woodriverenergy',
+	'com.wp-ca',
+	'org.wyomingcommunitygas',
+	'com.symmetryenergy',
+	// ----- -----
+	// Site seems to be down due to high traffic
+	'com.legacynaturalgas.www', // 2026-04-02
+	// NOT WORKING; hard-coded again
+	// 'com.unclefrankenergy',
 ];
+
+export type IdentityFn<T> = (x: T) => T;
 
 export type OfferDriver = { run: () => Promise<AnyOffer[]> };
 
-// naive implementation of findUp
-export const findUp = (filename: string, startDir: string = process.cwd()) => {
-	// security first
-	// if file or startDir includes .., throw error
-	if (filename.includes('..') || startDir.includes('..')) {
-		throw new Error('Invalid path');
-	}
+export type StringsFunction = (w: Strings) => string;
 
-	while (startDir !== '/') {
-		const filePath = path.join(startDir, filename);
-		if (existsSync(filePath)) {
-			return filePath;
-		}
-		startDir = path.dirname(startDir);
-	}
-};
-
-type IdentityFn<T> = (x: T) => T;
-
-const identity = <T>(x: T): T => x;
-
-type StringsFunction = (w: Strings) => string;
-
-class Strings {
-	get chalk() {
-		return chalk;
-	}
-
-	addMargin(string: string, spaces: number = 2) {
-		const margin = ' '.repeat(spaces);
-		return string
-			.split('\n')
-			.map((line) => margin + line)
-			.join('\n');
-	}
-
-	bytes(n: number) {
-		return `${n} bytes`;
-	}
-	duration(start: number, end: number = Date.now()) {
-		const ms = end - start;
-		return `${ms}ms`;
-	}
-
-	eventually(process: string) {
-		return `... ${process}`;
-	}
-
-	indent(level: number = 1, char: string = '  ') {
-		return char.repeat(level);
-	}
-
-	inflect(count: number, singular: string, plural: string) {
-		const word = count === 1 ? singular : plural;
-		return `${count} ${word}`;
-	}
-
-	join(char: string, ...topicsOrFunctions: Array<string | StringsFunction>) {
-		const toPrint = topicsOrFunctions
-			.map((t) => (typeof t === 'string' ? t : t(this)))
-			.join(char);
-		return toPrint;
-	}
-
-	json(obj: unknown, indent: number = 2) {
-		return JSON.stringify(obj, null, indent);
-	}
-
-	padStart(str: string, length: number) {
-		return str.padStart(length);
-	}
-
-	parens(topicOrFunction: string | StringsFunction) {
-		const toPrint =
-			typeof topicOrFunction === 'string'
-				? topicOrFunction
-				: topicOrFunction(this);
-		return chalk.dim(`(${toPrint})`);
-	}
-
-	path(pathLike: string) {
-		const p = pathLike.split(path.sep).join(path.posix.sep);
-
-		const segments = p
-			.split('/')
-			.filter((s) => s.length > 0)
-			.map((segment, idx, segments) => {
-				if (idx === segments.length - 1) {
-					return chalk.bold.whiteBright(segment);
-				}
-				return segment;
-			});
-
-		return segments.join(chalk.bold.whiteBright('/'));
-	}
-
-	relative(to: string | URL, from: string | URL = process.cwd()) {
-		const fromUrl = typeof from === 'string' ? from : fileURLToPath(from);
-		const toUrl = typeof to === 'string' ? to : fileURLToPath(to);
-		return this.path(path.relative(fromUrl, toUrl));
-	}
-
-	result(topic: string) {
-		return `... ${topic}`;
-	}
-
-	url(u: string | URL) {
-		const url = new URL(u);
-		return url.toString();
-	}
-}
-
-// class Chalks {
-// 	#strings = new Strings();
-// }
-
-class Output {
-	#strings = new Strings();
-
-	append(...topicsOrFunctions: Array<string | StringsFunction>) {
-		const toPrint = topicsOrFunctions
-			.map((t) => (typeof t === 'string' ? t : t(this.#strings)))
-			.join(' ');
-		process.stdout.write(toPrint);
-
-		return this;
-	}
-
-	asTap<T>(): IdentityFn<T> {
-		return identity;
-	}
-
-	log(...topicsOrFunctions: Array<string | StringsFunction>) {
-		const toPrint = topicsOrFunctions
-			.map((t) => (typeof t === 'string' ? t : t(this.#strings)))
-			.join(' ');
-		console.log(toPrint);
-
-		return this;
-	}
-
-	returning<T>(value: T) {
-		return value;
-	}
-}
-
-const output = new Output();
-
-const saveOffers =
-	(
-		driver: string,
-		outputPath: URL,
-		overallStart: number,
-		driverStart: number,
-	) =>
-	(
-		{ errors, offers }: { errors: Error[]; offers: AnyOffer[] },
-		json: string = JSON.stringify(
-			offers.sort((a, b) => a.type.localeCompare(b.type)),
-			null,
-			2,
-		),
-		saveStart: number = Date.now(),
-	): Promise<void> =>
-		writeFile(outputPath, json, 'utf-8')
-			.catch((e) => ({
-				errors: [...errors, e],
-				offers,
-			}))
-			.then(() => {
-				output.log((o) => o.chalk.yellow(driver));
-
-				if (errors.length) {
-					output.log(
-						(o) => o.indent(1),
-						(o) => o.chalk.bold.red('ERROR'),
-						(o) =>
-							o
-								.addMargin(
-									errors
-										.map(
-											(e) =>
-												e.stack ??
-												e.message ??
-												'Unknown error',
-										)
-										.join('\n\n'),
-									3,
-								)
-								.trimStart(),
-					);
-				}
-
-				output
-					.log(
-						(o) => o.indent(1),
-						'Fetched',
-						(o) =>
-							o.chalk.blue(
-								o.inflect(offers.length, 'offer', 'offers'),
-							),
-						'in',
-						(o) => o.chalk.green(o.duration(driverStart)),
-					)
-					.log(
-						(o) => o.indent(1),
-						'Wrote',
-						(o) => o.chalk.blue(o.bytes(json.length)),
-						'in',
-						(o) => o.chalk.green(o.duration(saveStart)),
-						'to',
-						(o) => o.relative(outputPath),
-					)
-					.log(
-						(o) => o.indent(1),
-						driver,
-						'took',
-						(o) => o.chalk.green(o.duration(overallStart)),
-					);
-			});
+export const output = new Output();
 
 function run() {
 	const overallStart = Date.now();
@@ -256,6 +43,8 @@ function run() {
 		'./projects/choice-gas/src/app/data/vendors/json/',
 		pathToFileURL(angularJsonPath),
 	);
+
+	const vendorIdToOfferIds = new Map<string, Set<string>>();
 
 	return Promise.all(
 		drivers.map(
@@ -276,6 +65,14 @@ function run() {
 								offers: AnyOffer[];
 							},
 					)
+					.then(({ errors, offers }) => {
+						vendorIdToOfferIds.set(
+							driver,
+							new Set(offers.map((o) => o.id.toString())),
+						);
+
+						return { errors, offers };
+					})
 					.then(
 						saveOffers(
 							driver,
@@ -293,7 +90,56 @@ function run() {
 			(o) => o.chalk.green(o.duration(overallStart)),
 		);
 
-		return result;
+		// use vendorIdToOfferIds to generate routes.txt
+		const routes: string[] = ['/', '/vendors', '/explorer'];
+		const vendorOfferTuples: [string, string][] = [];
+		for (const [vendorId, offerIds] of vendorIdToOfferIds.entries()) {
+			routes.push(`/vendors/${vendorId}`);
+			routes.push(`/vendors/${vendorId}/offers`);
+			for (const offerId of offerIds) {
+				routes.push(`/vendors/${vendorId}/offers/${offerId}`);
+				vendorOfferTuples.push([vendorId, offerId.toString()]);
+			}
+		}
+
+		const routesPath = new URL(
+			'./projects/choice-gas/routes.txt',
+			pathToFileURL(angularJsonPath),
+		);
+		const routesContent = routes.join('\n') + '\n';
+		const tuplePath = new URL(
+			'./projects/choice-gas/routes.json',
+			pathToFileURL(angularJsonPath),
+		);
+		const tupleContent = JSON.stringify(vendorOfferTuples, null, 2);
+		return writeFile(routesPath, routesContent, 'utf-8')
+			.then(() => {
+				output.log(
+					'Wrote',
+					(o) =>
+						o.chalk.blue(
+							o.inflect(routes.length, 'route', 'routes'),
+						),
+					'to',
+					(o) => o.relative(routesPath),
+				);
+			})
+			.then(() => writeFile(tuplePath, tupleContent, 'utf-8'))
+			.then(() => {
+				output.log(
+					'Wrote',
+					(o) =>
+						o.chalk.blue(
+							o.inflect(
+								vendorOfferTuples.length,
+								'vendor-offer tuple',
+								'vendor-offer tuples',
+							),
+						),
+					'to',
+					(o) => o.relative(tuplePath),
+				);
+			});
 	});
 }
 

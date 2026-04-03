@@ -11,6 +11,6 @@ import { Title } from '@angular/platform-browser';
 export class DevelopersComponent {
 	private readonly title: Title = inject(Title);
 	constructor() {
-		this.title.setTitle('Choice Gas - Developers');
+		this.title.setTitle('Developers');
 	}
 }

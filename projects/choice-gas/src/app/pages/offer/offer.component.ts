@@ -128,9 +128,7 @@ export class OfferComponent {
 			const vendor = this.vendor();
 			const offer = this.offer();
 			this.title.setTitle(
-				`Choice Gas - ${vendor?.name ?? 'Vendor'} - ${
-					offer?.name ?? 'Offer'
-				}`,
+				`${vendor?.name ?? 'Vendor'} - ${offer?.name ?? 'Offer'}`,
 			);
 		});
 	}

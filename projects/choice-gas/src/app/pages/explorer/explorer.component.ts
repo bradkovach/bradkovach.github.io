@@ -334,7 +334,7 @@ export class ExplorerComponent {
 	readonly #title = inject(Title);
 
 	constructor() {
-		this.#title.setTitle('Choice Gas - Price Explorer');
+		this.#title.setTitle('Price Explorer');
 	}
 
 	resetRefiners() {

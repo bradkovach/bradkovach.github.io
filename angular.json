@@ -146,6 +146,9 @@
 					},
 					"configurations": {
 						"production": {
+							"prerender": {
+								"routesFile": "projects/choice-gas/routes.txt"
+							},
 							"budgets": [
 								{
 									"type": "initial",
