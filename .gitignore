@@ -45,3 +45,4 @@ update-prices.sh
 projects/choice-gas/routes.json
 projects/choice-gas/routes.txt
 deploy.sh
+scripts/choice-gas/update.sh

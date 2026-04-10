@@ -41,7 +41,7 @@ export const run = (): Promise<AnyOffer[]> =>
 					'form[action=/AccountDetail/UpdatePricing] .card-grid-product',
 				)
 					.toArray()
-					.map((product: cheerio.Element): AnyOffer => {
+					.map((product): AnyOffer => {
 						const $product = $(product);
 
 						// year and cc in .uk-card-header.uk-text-center.uk-text-bold
