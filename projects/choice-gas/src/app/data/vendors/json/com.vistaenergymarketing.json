@@ -16,18 +16,18 @@
     "type": "fpm"
   },
   {
-    "confirmationCode": "77653",
+    "confirmationCode": "77657",
     "id": "fpt-1",
     "name": "Go Pokes Fixed Price",
-    "rate": 0.422,
+    "rate": 0.418,
     "term": 1,
     "type": "fpt"
   },
   {
-    "confirmationCode": "76718",
+    "confirmationCode": "76724",
     "id": "fpt-2",
     "name": "Go Pokes Fixed Price",
-    "rate": 0.443,
+    "rate": 0.437,
     "term": 2,
     "type": "fpt"
   },
