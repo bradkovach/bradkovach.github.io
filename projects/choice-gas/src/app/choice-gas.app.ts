@@ -3,6 +3,8 @@ import { Component, computed, DOCUMENT, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink, RouterOutlet } from '@angular/router';
 
+import { toSignal } from '@angular/core/rxjs-interop';
+import { interval, map } from 'rxjs';
 import { lastUpdated } from './data/last-updated';
 import { DataService, EnrollmentField } from './services/data/data.service';
 
@@ -35,8 +37,26 @@ export class ChoiceGasApp {
 	});
 
 	showNotes = signal(false);
+	navExpanded = signal(false);
 
 	readonly updated = lastUpdated;
+
+	readonly announcements = [
+		{
+			endDate: new Date('2026-04-11T09:00:00-06:00'),
+			classes: ['text-primary', 'text-center'],
+			text: 'United Way of Albany County offers FREE tax preparation for households with income at or under $75,000 per year.*',
+			link: {
+				href: 'https://unitedwayalbanycounty.org/book',
+				text: 'Learn more and schedule an appointment',
+			},
+		},
+	];
+	// readonly vitaDeadline = new Date('2026-04-09T09:41:00-06:00');
+
+	readonly now = toSignal(interval(1000).pipe(map(() => new Date())), {
+		initialValue: new Date(),
+	});
 
 	#document = inject(DOCUMENT);
 
@@ -59,5 +79,9 @@ export class ChoiceGasApp {
 
 	toggleNotes() {
 		this.showNotes.update((current) => !current);
+	}
+
+	toggleNav() {
+		this.navExpanded.update((current) => !current);
 	}
 }

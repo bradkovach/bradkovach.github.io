@@ -1,4 +1,4 @@
-import { AsyncPipe, DecimalPipe } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import {
 	ChangeDetectionStrategy,
 	Component,
@@ -6,16 +6,13 @@ import {
 	inject,
 	signal,
 } from '@angular/core';
-import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { storageSignal } from 'ngx-oneforall/signals/storage-signal';
-import { combineLatest, map, tap } from 'rxjs';
 
-import type { OfferType } from '../../schema/offer.z';
+import type { AnyOffer, OfferType } from '../../schema/offer.z';
 
-import { BillTotalComponent } from '../../components/bill-total/bill-total.component';
 import { marketLabels } from '../../data/data.current';
 import { Series, SeriesLabels } from '../../data/data.default';
 import {
@@ -33,20 +30,18 @@ import {
 import { Setting } from '../../data/enum/settings.enum';
 import { lastUpdated } from '../../data/last-updated';
 import { Market } from '../../data/Market';
+import type { Bill } from '../../entity/Bill';
 import { ChargeType } from '../../entity/ChargeType';
+import { Vendor } from '../../entity/Vendor';
 import { createBill } from '../../helpers/create-bill/create-bill';
 import { AveragePipe } from '../../pipes/average/average.pipe';
-import { EnrollmentLinkPipe } from '../../pipes/enrollment-link/enrollment-link.pipe';
 import { HeatPipe } from '../../pipes/heat/heat.pipe';
-import { PhonePipe } from '../../pipes/phone/phone.pipe';
 import { SortPipe } from '../../pipes/sort/sort.pipe';
 import { DataService, EnrollmentField } from '../../services/data/data.service';
 import { ExplorerColumn, explorerColumnLabels } from './ExplorerColumn';
+import { extractKeys } from './extractKeys';
 import { Footnote, footnoteExplanations, footnoteSymbols } from './Footnote';
-
-const extractKeys = <T extends number | string>(
-	enumRecord: Record<T, unknown>,
-) => Object.keys(enumRecord).map((key) => Number(key) as unknown as T);
+import { VendorSection } from './vendor-section/vendor-section.component';
 
 const offerOrder: OfferType[] = [
 	'market',
@@ -57,19 +52,48 @@ const offerOrder: OfferType[] = [
 	'custom',
 ];
 
+export type Stat = {
+	high: number;
+	low: number;
+	average: number;
+	count: number;
+};
+
+export type Averages = {
+	high: number;
+	low: number;
+};
+
+export type OfferWithBills = {
+	offer: AnyOffer;
+	statistics: Stat;
+	bills: Bill[];
+};
+
+export type VendorWithOfferRows = {
+	vendor: Vendor;
+	statistics: Stat;
+	vendorAverages: Averages;
+	offersWithBills: OfferWithBills[];
+};
+
+export type ExplorerViewModel = {
+	vendorsWithOfferRows: VendorWithOfferRows[];
+	statistics: Stat;
+	globalAverages: Averages;
+	series: Record<Series, number[]>;
+};
+
 @Component({
 	changeDetection: ChangeDetectionStrategy.OnPush,
 	imports: [
 		FormsModule,
 		DecimalPipe,
-		AsyncPipe,
 		RouterLink,
 		AveragePipe,
-		PhonePipe,
 		HeatPipe,
 		SortPipe,
-		BillTotalComponent,
-		EnrollmentLinkPipe,
+		VendorSection,
 	],
 	selector: 'app-choice-gas-calculator',
 	styleUrls: [`./explorer.component.scss`],
@@ -160,6 +184,18 @@ export class ExplorerComponent {
 		),
 	);
 
+	readonly enabledColumnsSet = computed(
+		() =>
+			new Set(
+				this.EnumArrays.ExplorerColumns.filter(
+					(column) => this.storageSignals.Columns()[column],
+				),
+			),
+		{
+			equal: (prev, next) => false,
+		},
+	);
+
 	readonly #dataService = inject(DataService);
 
 	readonly enrollmentFields = this.#dataService.enrollmentFields;
@@ -226,110 +262,201 @@ export class ExplorerComponent {
 	readonly showSettings = signal(false);
 	readonly valueTotals = signal<number[]>([]);
 
-	readonly vm$ = combineLatest({
-		charges: this.#dataService.charges$,
-		enabledOfferTypes: toObservable(this.storageSignals.OfferTypes),
-		series: this.#dataService.series$,
-		vendors: this.#dataService.vendors$,
-	}).pipe(
-		map((vm) => {
-			return {
-				...vm,
-				vendors: vm.vendors.map((vendor) => {
-					const offers = [...vendor.offers.values()]
-						.sort(
-							(a, b) =>
-								offerOrder.indexOf(a.type) -
-								offerOrder.indexOf(b.type),
-						)
-						.filter(
-							(offer) =>
-								this.storageSignals.OfferTypes()[offer.type],
-						)
-						.map((offer) => ({
-							average: 0,
-							bills: vm.series[Series.Usage]
-								.map((_, i) =>
-									createBill(
-										offer,
-										i,
-										vm.series[Series.Usage],
-										vm.charges,
-										vm.series,
-									),
-								)
-								.map((bill) => ({ bill, rankInYear: -1 }))
-								// sort by total, ascending
-								.sort((a, b) => a.bill.total - b.bill.total)
-								// project to include rank
-								.map((ranked, i) => {
-									return { bill: ranked.bill, rank: i + 1 };
-								})
-								// sort by bill month, ascending
-								.sort((a, b) => a.bill.month - b.bill.month),
-							offer,
-						}))
-						.map((vendorGroup) => {
-							const yearTotal = vendorGroup.bills.reduce(
-								(sum, { bill }) => sum + bill.total,
-								0,
-							);
-							vendorGroup.average =
-								yearTotal / vendorGroup.bills.length;
-							return vendorGroup;
-						});
-					// .sort((a, b) => a.average - b.average);
+	readonly viewModel = computed<ExplorerViewModel>(() => {
+		const vendors = this.#dataService.vendors().map((vendor) => {
+			const offers = vendor
+				.getOffersArray()
+				.filter((offer) => this.storageSignals.OfferTypes()[offer.type])
+				.map((offer) => {
+					const bills = this.#dataService
+						.series()
+						[
+							Series.Usage
+						].map((_, i) => createBill(offer, i, this.#dataService.series()[Series.Usage], this.#dataService.charges(), this.#dataService.series()));
 
 					return {
-						offers,
-						vendor: vendor,
+						offer,
+						bills,
+						statistics: {
+							high: Math.max(...bills.map((bill) => bill.total)),
+							low: Math.min(...bills.map((bill) => bill.total)),
+							average:
+								bills.reduce(
+									(sum, bill) => sum + bill.total,
+									0,
+								) / bills.length,
+							count: bills.length,
+						},
 					};
-				}),
+				});
+
+			const vendorBillTotals = offers.flatMap((offer) =>
+				offer.bills.map((bill) => bill.total),
+			);
+
+			return {
+				vendor,
+				offersWithBills: offers,
+				vendorAverages: {
+					high: Math.max(...offers.map((o) => o.statistics.average)),
+					low: Math.min(...offers.map((o) => o.statistics.average)),
+				},
+				statistics: {
+					high: Math.max(...vendorBillTotals),
+					low: Math.min(...vendorBillTotals),
+					average:
+						vendorBillTotals.reduce(
+							(sum, total) => sum + total,
+							0,
+						) / vendorBillTotals.length,
+					count: vendorBillTotals.length,
+				},
 			};
-		}),
-		tap((vm) => {
-			this.valueTotals.set(
-				vm.vendors.flatMap((vendor) =>
-					vendor.offers
-						.filter((o) => {
-							if (o.offer.type === 'fpm' && o.offer.rate === 0) {
-								return false;
-							}
-							return true;
-						})
-						.flatMap((offer) =>
-							offer.bills.flatMap((b) => b.bill.total),
-						)
-						// ascending
-						.sort((a, b) => a - b),
-				),
-			);
+		});
 
-			// console.log(
-			// 	'rows',
-			// 	vm.vendors.flatMap((vendor) => vendor.offers).length,
-			// );
+		const globalBillTotals = vendors.flatMap((vendor) =>
+			vendor.offersWithBills.flatMap((offer) =>
+				offer.bills.map((bill) => bill.total),
+			),
+		);
 
-			this.offerAverages.set(
-				vm.vendors
-					.flatMap((vendor) =>
-						vendor.offers
-							.filter((o) => {
-								if (
-									o.offer.type === 'fpm' &&
-									o.offer.rate === 0
-								) {
-									return false;
-								}
-								return true;
-							})
-							.map((offer) => offer.average),
-					)
-					// ascending
-					.sort((a, b) => a - b),
-			);
-		}),
-	);
+		return {
+			series: this.#dataService.series(),
+			vendorsWithOfferRows: vendors,
+			globalAverages: {
+				high: Math.max(...vendors.map((v) => v.statistics.average)),
+				low: Math.min(...vendors.map((v) => v.statistics.average)),
+			},
+			statistics: {
+				high: Math.max(...globalBillTotals),
+				low: Math.min(...globalBillTotals),
+				average:
+					globalBillTotals.reduce((sum, total) => sum + total, 0) /
+					globalBillTotals.length,
+				count: globalBillTotals.length,
+			},
+		};
+	});
+
+	readonly tableColumnCount = computed(() => {
+		let columns = 0;
+
+		const enabledColumns = this.storageSignals.Columns();
+
+		if (enabledColumns[ExplorerColumn.Name]) columns++;
+		if (enabledColumns[ExplorerColumn.CommmodityCharge]) columns++;
+		if (enabledColumns[ExplorerColumn.Term]) columns++;
+		if (enabledColumns[ExplorerColumn.ConfirmationCode]) columns++;
+		if (enabledColumns[ExplorerColumn.Average]) columns++;
+		if (enabledColumns[ExplorerColumn.Month]) columns += 12;
+
+		return columns;
+	});
+
+	// readonly #vm$ = combineLatest({
+	// 	charges: this.#dataService.charges$,
+	// 	enabledOfferTypes: toObservable(this.storageSignals.OfferTypes),
+	// 	series: this.#dataService.series$,
+	// 	vendors: this.#dataService.vendors$,
+	// }).pipe(
+	// 	map((vm) => {
+	// 		return {
+	// 			...vm,
+	// 			vendors: vm.vendors.map((vendor) => {
+	// 				const offers = [...vendor.offers.values()]
+	// 					.sort(
+	// 						(a, b) =>
+	// 							offerOrder.indexOf(a.type) -
+	// 							offerOrder.indexOf(b.type),
+	// 					)
+	// 					.filter(
+	// 						(offer) =>
+	// 							this.storageSignals.OfferTypes()[offer.type],
+	// 					)
+	// 					.map((offer) => ({
+	// 						average: 0,
+	// 						bills: vm.series[Series.Usage]
+	// 							.map((_, i) =>
+	// 								createBill(
+	// 									offer,
+	// 									i,
+	// 									vm.series[Series.Usage],
+	// 									vm.charges,
+	// 									vm.series,
+	// 								),
+	// 							)
+	// 							.map((bill) => ({ bill, rankInYear: -1 }))
+	// 							// sort by total, ascending
+	// 							.sort((a, b) => a.bill.total - b.bill.total)
+	// 							// project to include rank
+	// 							.map((ranked, i) => {
+	// 								return { bill: ranked.bill, rank: i + 1 };
+	// 							})
+	// 							// sort by bill month, ascending
+	// 							.sort((a, b) => a.bill.month - b.bill.month),
+	// 						offer,
+	// 					}))
+	// 					.map((vendorGroup) => {
+	// 						const yearTotal = vendorGroup.bills.reduce(
+	// 							(sum, { bill }) => sum + bill.total,
+	// 							0,
+	// 						);
+	// 						vendorGroup.average =
+	// 							yearTotal / vendorGroup.bills.length;
+	// 						return vendorGroup;
+	// 					});
+	// 				// .sort((a, b) => a.average - b.average);
+
+	// 				return {
+	// 					offers,
+	// 					vendor: vendor,
+	// 				};
+	// 			}),
+	// 		};
+	// 	}),
+	// 	tap((vm) => {
+	// 		this.valueTotals.set(
+	// 			vm.vendors.flatMap((vendor) =>
+	// 				vendor.offers
+	// 					.filter((o) => {
+	// 						if (o.offer.type === 'fpm' && o.offer.rate === 0) {
+	// 							return false;
+	// 						}
+	// 						return true;
+	// 					})
+	// 					.flatMap((offer) =>
+	// 						offer.bills.flatMap((b) => b.bill.total),
+	// 					)
+	// 					// ascending
+	// 					.sort((a, b) => a - b),
+	// 			),
+	// 		);
+
+	// 		// console.log(
+	// 		// 	'rows',
+	// 		// 	vm.vendors.flatMap((vendor) => vendor.offers).length,
+	// 		// );
+
+	// 		this.offerAverages.set(
+	// 			vm.vendors
+	// 				.flatMap((vendor) =>
+	// 					vendor.offers
+	// 						.filter((o) => {
+	// 							if (
+	// 								o.offer.type === 'fpm' &&
+	// 								o.offer.rate === 0
+	// 							) {
+	// 								return false;
+	// 							}
+	// 							return true;
+	// 						})
+	// 						.map((offer) => offer.average),
+	// 				)
+	// 				// ascending
+	// 				.sort((a, b) => a - b),
+	// 		);
+	// 	}),
+	// );
 
 	readonly #title = inject(Title);
 

@@ -42,3 +42,6 @@ testem.log
 Thumbs.db
 .env
 update-prices.sh
+projects/choice-gas/routes.json
+projects/choice-gas/routes.txt
+deploy.sh

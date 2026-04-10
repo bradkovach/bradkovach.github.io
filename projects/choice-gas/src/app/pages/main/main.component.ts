@@ -62,6 +62,6 @@ export class MainComponent {
 	}
 	private readonly title: Title = inject(Title);
 	constructor() {
-		this.title.setTitle(`${this.lastUpdated.getFullYear()} Guide`);
+		this.title.setTitle(`Program Information`);
 	}
 }

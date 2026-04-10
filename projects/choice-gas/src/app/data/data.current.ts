@@ -1,4 +1,4 @@
-export const currentCigRate = 0.37;
+export const currentCigRate = 0.267;
 
 import type { FixedPerThermOffer } from '../schema/fixed-per-therm-offer.z';
 

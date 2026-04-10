@@ -10,6 +10,8 @@ import {
 import { routes } from './choice-gas.routes';
 import { provideTemplatedTitle } from './pages/main/main.component';
 
+const now = new Date();
+
 export const appConfig: ApplicationConfig = {
 	providers: [
 		provideHttpClient(withFetch()),
@@ -21,6 +23,12 @@ export const appConfig: ApplicationConfig = {
 				scrollPositionRestoration: 'enabled',
 			}),
 		),
-		provideTemplatedTitle('{0} - United Way of Albany County'),
+		provideTemplatedTitle(
+			[
+				'{0}',
+				`${now.getFullYear()} Choice Gas Guide`,
+				'United Way of Albany County',
+			].join(' - '),
+		),
 	],
 };

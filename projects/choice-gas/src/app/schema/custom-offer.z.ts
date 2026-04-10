@@ -66,21 +66,24 @@ import { OfferBaseSchema } from './offer-base.z';
 // 	term: number;
 // 	type: 'custom';
 // }
+
+export const CustomOfferSansBase = z.object({
+	addendMonth: z.number().optional(),
+	addendRate: z.number().optional(),
+	addendTherm: z.number().optional(),
+	coefMonth: z.number().optional(),
+	coefRate: z.number().optional(),
+	coefTherm: z.number().optional(),
+	market: z.nativeEnum(Market).optional(),
+	term: z.number(),
+	type: z.literal('custom'),
+});
+
+export type CustomOfferSansBase = z.infer<typeof CustomOfferSansBase>;
+
 export const CustomOffer = z
 	.object({})
 	.merge(OfferBaseSchema)
-	.merge(
-		z.object({
-			addendMonth: z.number().optional(),
-			addendRate: z.number().optional(),
-			addendTherm: z.number().optional(),
-			coefMonth: z.number().optional(),
-			coefRate: z.number().optional(),
-			coefTherm: z.number().optional(),
-			market: z.nativeEnum(Market).optional(),
-			term: z.number(),
-			type: z.literal('custom'),
-		}),
-	);
+	.merge(CustomOfferSansBase);
 
 export type CustomOffer = z.infer<typeof CustomOffer>;

@@ -1,16 +1,32 @@
 import z from 'zod';
 
-import { CompoundOffer } from './compound-offer.z';
-import { CustomOffer } from './custom-offer.z';
-import { FixedPerMonthOffer } from './fixed-per-month.z';
-import { FixedPerThermOffer } from './fixed-per-therm-offer.z';
-import { SimpleOffer } from './simple-offer.z';
-
-export const AnyOffer = z.union([
+import { BestOffer, BestOfferSansBase } from './best-offer.z';
+import { BlendedOffer, BlendedOfferSansBase } from './blended-offer.z';
+import { CustomOffer, CustomOfferSansBase } from './custom-offer.z';
+import { FixedPerMonthOffer, FixedPerMonthSansBase } from './fixed-per-month.z';
+import {
 	FixedPerThermOffer,
+	FixedPerThermSansBase,
+} from './fixed-per-therm-offer.z';
+import { MarketOffer, MarketOfferSansBase } from './market-offer.z';
+
+export const AnyOfferSansBase = z.discriminatedUnion('type', [
+	MarketOfferSansBase,
+	FixedPerMonthSansBase,
+	FixedPerThermSansBase,
+	BlendedOfferSansBase,
+	BestOfferSansBase,
+	CustomOfferSansBase,
+]);
+
+export type AnyOfferSansBase = z.infer<typeof AnyOfferSansBase>;
+
+export const AnyOffer = z.discriminatedUnion('type', [
+	MarketOffer,
 	FixedPerMonthOffer,
-	SimpleOffer,
-	CompoundOffer,
+	FixedPerThermOffer,
+	BlendedOffer,
+	BestOffer,
 	CustomOffer,
 ]);
 

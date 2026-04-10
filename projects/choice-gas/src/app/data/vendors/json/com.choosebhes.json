@@ -6,7 +6,7 @@
       [
         0.5,
         {
-          "rate": 0.424,
+          "rate": 0.427,
           "type": "fpt"
         }
       ],
@@ -29,7 +29,7 @@
       [
         0.5,
         {
-          "rate": 0.442,
+          "rate": 0.447,
           "type": "fpt"
         }
       ],
@@ -64,14 +64,14 @@
   {
     "id": "ratelock-1",
     "name": "Rate Lock",
-    "rate": 0.424,
+    "rate": 0.427,
     "term": 1,
     "type": "fpt"
   },
   {
     "id": "ratelock-2",
     "name": "Rate Lock",
-    "rate": 0.442,
+    "rate": 0.447,
     "term": 2,
     "type": "fpt"
   },

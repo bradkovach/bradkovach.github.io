@@ -1,14 +1,13 @@
 const eslint = require('@eslint/js');
 const angular = require('angular-eslint');
+const eslintConfigPrettier = require('eslint-config-prettier');
 const perfectionist = require('eslint-plugin-perfectionist');
-const path = require('node:path');
 const tseslint = require('typescript-eslint');
 
 module.exports = tseslint.config(
 	// only add "root-level" configs here if the config can apply to all files.
 	eslint.configs.recommended,
 	{
-		ignores: ['**/*.html'],
 		extends: [perfectionist.configs['recommended-natural']],
 		ignores: ['**/*.html'],
 		rules: {
@@ -141,4 +140,5 @@ module.exports = tseslint.config(
 			'no-undef': ['off'],
 		},
 	},
+	eslintConfigPrettier,
 );

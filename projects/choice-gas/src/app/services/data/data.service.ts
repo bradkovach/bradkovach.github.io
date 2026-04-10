@@ -1,4 +1,4 @@
-import { computed, Injectable } from '@angular/core';
+import { computed, Injectable, type Signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { storageSignal } from 'ngx-oneforall/signals/storage-signal';
 import { z } from 'zod';
@@ -16,6 +16,7 @@ import {
 import { Setting } from '../../data/enum/settings.enum';
 import { vendors } from '../../data/vendors';
 import { ChargeType } from '../../entity/ChargeType';
+import type { Vendor } from '../../entity/Vendor';
 
 const ChargeSchema = z.object({
 	name: z.string(),
@@ -112,10 +113,10 @@ export class DataService {
 	});
 
 	readonly series$ = toObservable(this.series);
-	readonly vendors = computed(() =>
+	readonly vendors: Signal<Vendor[]> = computed(() =>
 		vendors.map((vendor) => {
-			const newVendor = { ...vendor };
-			newVendor.offers = new Map(
+			// apply rate overrides for FPM offers
+			vendor.offers = new Map(
 				[...vendor.offers.entries()].map(([id, offer]) => {
 					const newOffer = { ...offer } as AnyOffer;
 					if (newOffer.type === 'fpm') {
@@ -127,7 +128,8 @@ export class DataService {
 					return [id, newOffer];
 				}),
 			);
-			return newVendor;
+
+			return vendor;
 		}),
 	);
 

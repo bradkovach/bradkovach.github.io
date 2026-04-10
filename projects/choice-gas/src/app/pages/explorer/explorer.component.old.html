@@ -1,0 +1,595 @@
+@let Heatmap = Enums.Heatmap; @let EnrollmentField = Enums.EnrollmentField; @let
+Series = Enums.Series; @let Month = Enums.Month; @let Heatmaps =
+EnumArrays.Heatmaps; @let HeatmapSchemes = EnumArrays.HeatmapSchemes; @let
+ExplorerColumns = EnumArrays.ExplorerColumns; @let SeriesKeys =
+EnumArrays.SeriesKeys; @let Months = EnumArrays.Months; @let OfferTypes =
+EnumArrays.OfferTypes; @let footnoteExplanations = Strings.footnoteExplanations;
+@let footnoteSymbols = Strings.footnoteSymbols; @let HeatmapLabels =
+Strings.heatmapsLabels; @let HeatmapSchemeLabels = Strings.heatmapSchemeLabels;
+@let ExplorerColumnLabels = Strings.explorerColumnLabels; @let SeriesLabels =
+Strings.seriesLabels; @let monthLabelsAbbr = Strings.monthLabelsAbbr; @let
+MarketLabels = Strings.marketLabels; @let OfferTypeLabels =
+Strings.offerTypeLabels; @let heatmapsEnabled = storageSignals.Heatmaps; @let
+scheme = storageSignals.HeatmapScheme; @let enabledColumns =
+storageSignals.Columns; @let enabledOfferTypes = storageSignals.OfferTypes; @let
+enabledSeries = storageSignals.Series; @let enableHighDensityTable =
+storageSignals.HighDensityTable; @let enableStripedTable =
+storageSignals.StripedTable; @let vm = viewModel(); @if
+((vm.series[Series.Usage] | average) === 0) {
+<div class="alert alert-warning" role="alert">
+	You haven't entered any usage data. Go to the
+	<a [routerLink]="['..', 'data-editor']">Data Editor</a> to enter your usage.
+</div>
+}
+
+<h3>Price Explorer</h3>
+<p>
+	The following table shows the estimated cost of each offer, based on the
+	usage and rates you've entered. Hover over each value to see a summary of
+	charges. Click on the cost to see more details about the offer. Click on a
+	Confirmation Code to enroll in the offer.
+</p>
+
+@if ( enrollmentFields()[EnrollmentField.AccountNumber] === '' ||
+enrollmentFields()[EnrollmentField.ControlNumber] === '' ) {
+<div class="alert alert-warning" role="alert">
+	You haven't entered your Account Number or Control Number. Provide your
+	enrollment information to enable one-click enrollment links. Open Notes to
+	enter your account information.
+</div>
+}
+
+<div
+	class="offcanvas offcanvas-start"
+	[class.show]="showSettings()"
+	tabindex="-1"
+	id="offcanvas"
+	aria-labelledby="offcanvasLabel">
+	<div class="offcanvas-header">
+		<h4 class="offcanvas-title" id="offcanvasLabel">Display Settings</h4>
+		<button
+			type="button"
+			class="btn-close"
+			data-bs-dismiss="offcanvas"
+			(click)="setShowSettings(false)"
+			aria-label="Close"></button>
+	</div>
+	<div class="offcanvas-body">
+		<p>
+			Customize the Price Explorer to show only the data you want to see.
+		</p>
+
+		<div class="my-3">
+			<h5>Heatmaps</h5>
+			<p>
+				Heatmaps provide a visual representation of the data in the
+				table. Enable or disable heatmaps for additional context.
+			</p>
+			<ul class="list-group">
+				@for (hm of Heatmaps; track $index) {
+				<li class="list-group-item">
+					<input
+						type="checkbox"
+						class="form-check-input me-2"
+						id="heatmap-{{ $index }}"
+						[ngModel]="heatmapsEnabled()[hm]"
+						(ngModelChange)="setHeatmap(hm, $event)" />
+					<label
+						for="heatmap-{{ $index }}"
+						class="form-check-label stretched-link"
+						>{{ HeatmapLabels[hm] }}</label
+					>
+				</li>
+				}
+			</ul>
+		</div>
+
+		<div class="my-3">
+			<h5>Heatmap Colors</h5>
+			<p>
+				Select a color scheme for the heatmaps. The color scheme will be
+				applied to the entire table.
+			</p>
+			<select id="palette" class="form-select my-0" [(ngModel)]="scheme">
+				@for (s of HeatmapSchemes; track s) {
+				<option [value]="s">{{ HeatmapSchemeLabels[s] }}</option>
+				}
+			</select>
+		</div>
+
+		<div class="my-3">
+			<h5>Table Settings</h5>
+			<p>
+				Adjust display of the table to make it easier to read. High
+				density shows more data at once. Stripes make it easier to read
+				across rows.
+			</p>
+
+			<ul class="list-group">
+				<li class="list-group-item">
+					<input
+						type="checkbox"
+						class="form-check-input me-2"
+						id="density-normal"
+						name="density"
+						[(ngModel)]="enableHighDensityTable" />
+					<label for="density-normal" class="form-check-label"
+						>Enable High-Density Table</label
+					>
+				</li>
+				<li class="list-group-item">
+					<input
+						type="checkbox"
+						class="form-check-input me-2"
+						id="enableTableStripes"
+						[(ngModel)]="enableStripedTable" /><label
+						for="enableTableStripes"
+						class="form-check-label"
+						>Enable Table Stripes</label
+					>
+				</li>
+			</ul>
+		</div>
+
+		<div class="my-3">
+			<h5>Show Columns</h5>
+
+			<p>
+				Enable or disable columns. Disabling monthly data can make the
+				table easier to scroll on smaller screens.
+			</p>
+			<ul class="list-group">
+				@for (s of ExplorerColumns; track $index) {
+				<li class="list-group-item">
+					<input
+						type="checkbox"
+						class="form-check-input me-2"
+						id="enabledColumns-{{ $index }}"
+						[ngModel]="enabledColumns()[s]"
+						(ngModelChange)="setColumn(s, $event)" />
+					<label
+						for="enabledColumns-{{ $index }}"
+						class="form-check-label stretched-link"
+						>{{ ExplorerColumnLabels[s] }}</label
+					>
+				</li>
+				}
+			</ul>
+		</div>
+
+		<div class="my-3">
+			<h5>Offer Types</h5>
+			<p>Filter offers by type.</p>
+			<ul class="list-group">
+				@for (ot of OfferTypes; track $index) {
+				<li class="list-group-item">
+					<input
+						type="checkbox"
+						class="form-check-input me-2"
+						id="offerType-{{ $index }}"
+						[ngModel]="enabledOfferTypes()[ot]"
+						(ngModelChange)="setOfferType(ot, $event)" />
+					<label
+						for="offerType-{{ $index }}"
+						class="form-check-label stretched-link"
+						>{{ OfferTypeLabels[ot] }}</label
+					>
+				</li>
+				}
+			</ul>
+		</div>
+
+		<div class="my-3">
+			<h5>{{ HeatmapLabels[Heatmap.Series] }}</h5>
+			<p>
+				Add additional data to the table header for additional context
+				about prices and market conditions.
+			</p>
+			<ul class="list-group">
+				@for (s of SeriesKeys; track $index) {
+				<li class="list-group-item">
+					<input
+						type="checkbox"
+						class="form-check-input me-2"
+						id="enabledSeries-{{ $index }}"
+						[ngModel]="enabledSeries()[s]"
+						(ngModelChange)="setSeries(s, $event)" />
+					<label
+						for="enabledSeries-{{ $index }}"
+						class="form-check-label stretched-link"
+						>{{ SeriesLabels[s] }}</label
+					>
+				</li>
+				}
+			</ul>
+		</div>
+
+		<div class="my-3">
+			<h5>Reset</h5>
+			<p>
+				Reset the Price Explorer to the default settings. This will show
+				all columns, offer types, and therm usage. Heatmap color scheme
+				will not be reset.
+			</p>
+			<p>
+				<button
+					class="btn btn-primary"
+					type="reset"
+					(click)="resetRefiners()">
+					Reset Settings
+				</button>
+			</p>
+		</div>
+	</div>
+</div>
+
+<p>
+	<button
+		class="btn btn-outline-primary btn-xl"
+		(click)="setShowSettings(true)">
+		Display Settings
+	</button>
+</p>
+
+<div class="">
+	<table
+		class="table"
+		[class.table-striped]="enableStripedTable()"
+		[class.table-sm]="enableHighDensityTable()">
+		<thead style="position: sticky; top: 0; z-index: 1" class="headings">
+			<tr>
+				@for (col of enabledColumnsArray(); track col) { @if (col ==
+				ExplorerColumn.Average) {
+				<th class="text-end">{{ ExplorerColumnLabels[col] }}</th>
+				} @else if (col == ExplorerColumn.ConfirmationCode) {
+				<th class="text-center">{{ ExplorerColumnLabels[col] }}</th>
+				} @else if (col == ExplorerColumn.Month) { @for (month of
+				Months; track $index) {
+				<th scope="col" class="text-end">
+					{{ monthLabelsAbbr[month] }}
+				</th>
+				} } @else {
+				<th>{{ ExplorerColumnLabels[col] }}</th>
+				} }
+			</tr>
+			@for (series of SeriesKeys; track $index) { @if
+			(enabledSeries()[series]) {
+			<tr>
+				@for (col of enabledColumnsArray(); track col) { @if (col ==
+				ExplorerColumn.Name) {
+				<th scope="row">{{ SeriesLabels[series] }}</th>
+				} @else if (col == ExplorerColumn.Average) {
+				<td class="text-end">
+					{{ seriesAverages()[series] | number: '1.0-0' }}
+				</td>
+				} @else if (col == ExplorerColumn.Month) { @for ( month of
+				Months; track monthIndex; let monthIndex = $index ) {
+				<td
+					scope="col"
+					class="text-end"
+					[style]="
+											heatmapsEnabled()[Heatmap.Series]
+												? (vm.series[series][month]
+													| heat
+														: (vm.series[series]
+																| sort
+																	: SeriesDirections[
+																			series
+																	  ])
+														: palette())
+												: undefined
+										">
+					{{ vm.series[series][month] | number: '1.0-2' }}
+				</td>
+				} } @else {
+				<td>&nbsp;</td>
+				} }
+			</tr>
+			} }
+		</thead>
+		@let globalHigh = viewModel().statistics.high; @let globalLow =
+		viewModel().statistics.low; @let globalAverage =
+		viewModel().statistics.average; @for ( vendorWithOfferRows of
+		viewModel().vendorsWithOfferRows; track $index ) {
+		<tbody
+			[vendorWithOfferRows]="vendorWithOfferRows"
+			[tableColumnCount]="tableColumnCount()"
+			[enabledColumns]="enabledColumnsSet()"></tbody>
+		<tbody>
+			<tr>
+				<th>
+					{{ vendorWithOfferRows.vendor.name }} @if
+					(vendorWithOfferRows.vendor.automated) {
+					<span class="footnotes">
+						<span class="footnote">
+							<a
+								[routerLink]="[]"
+								class="footnote-link"
+								fragment="footnote-automated"
+								title="{{
+											footnoteExplanations[
+												Footnote.Automated
+											]
+										}}">
+								{{ footnoteSymbols[Footnote.Automated] }}
+							</a>
+						</span>
+					</span>
+					}
+				</th>
+				@if (enabledColumnsArray().length > 1) {
+				<td>{{ vendorWithOfferRows.vendor.phone | phone }}</td>
+				} @if (enabledColumnsArray().length > 2) {
+				<td [attr.colspan]="tableColumnCount() - 2">
+					<a
+						href="{{ vendorWithOfferRows.vendor.website }}"
+						target="_blank"
+						title="Open {{
+									vendorWithOfferRows.vendor.name
+								}} website in a new tab/window"
+						>{{ vendorWithOfferRows.vendor.website }}</a
+					>
+				</td>
+				}
+			</tr>
+			@for ( offerWithBills of vendorWithOfferRows.offersWithBills; track
+			offerIndex; let offerIndex = $index ) {
+			<tr
+				[offerWithBills]="offerWithBills"
+				[enabledColumns]="enabledColumnsSet()"></tr>
+			<tr>
+				@if (enabledColumns()[ExplorerColumn.Name]) {
+				<td>
+					<a
+						[routerLink]="[
+										'/vendors',
+										vendorWithOfferRows.vendor.id,
+										'offers',
+										offerWithBills.offer.id,
+									]">
+						{{ offerWithBills.offer.name }}
+					</a>
+					<span class="footnotes">
+						@if (offerWithBills.offer.isSpecial) {
+						<!-- Star Emoji in a span with a hover message -->
+						<span class="footnote">
+							<a
+								[routerLink]="[]"
+								class="footnote-link"
+								fragment="footnote-special"
+								title="{{
+													footnoteExplanations[
+														Footnote.SpecialRate
+													]
+												}}">
+								{{ footnoteSymbols[ Footnote.SpecialRate ] }}
+							</a>
+						</span>
+						} @if ( offerWithBills.statistics.low === globalLow ) {
+						<span class="footnote">
+							<!-- asterisk in a a with a hover message -->
+							<a
+								[routerLink]="[]"
+								class="footnote-link"
+								fragment="footnote-lowest"
+								title="{{
+													footnoteExplanations[
+														Footnote
+															.LowestAverageRate
+													]
+												}}">
+								{{ footnoteSymbols[ Footnote .LowestAverageRate
+								] }}
+							</a>
+						</span>
+						} @if ( offerWithBills.statistics.average === highest()
+						) {
+						<span class="footnote">
+							<!-- barb in a a with a hover message -->
+							<a
+								[routerLink]="[]"
+								class="footnote-link"
+								fragment="footnote-highest"
+								title="{{
+													footnoteExplanations[
+														Footnote
+															.HighestAverageRate
+													]
+												}}">
+								{{ footnoteSymbols[ Footnote .HighestAverageRate
+								] }}
+							</a>
+						</span>
+						} @if (offerWithBills.offer.type === 'fpm') {
+						<span class="footnote">
+							<a
+								[routerLink]="[]"
+								class="footnote-link"
+								fragment="footnote-fpm"
+								title="{{
+													footnoteExplanations[
+														Footnote.FixedPerMonth
+													]
+												}}">
+								{{ footnoteSymbols[ Footnote.FixedPerMonth ] }}
+							</a>
+						</span>
+						}
+					</span>
+				</td>
+				} @if ( enabledColumns()[ExplorerColumn.CommmodityCharge] ) {
+				<td>
+					@if (offerWithBills.offer.type === 'fpm') { @if
+					(offerWithBills.offer.rate === 0) {
+					<a
+						[routerLink]="[
+												'/vendors',
+												vendorWithOfferRows.vendor.id,
+												'offers',
+												offerWithBills.offer.id,
+											]"
+						class="link-danger"
+						>Edit Rate</a
+					>
+					} @else { ${{ offerWithBills.offer.rate | number: '1.2-4'
+					}}/month } } @else if ( offerWithBills.offer.type === 'fpt'
+					) { ${{ offerWithBills.offer.rate | number: '1.2-4' }}/therm
+					} @else if ( offerWithBills.offer.type === 'market' ) { {{
+					MarketLabels[ offerWithBills.offer.market ] }} ${{
+					vm.series[offerWithBills.offer.market][ Month.January ] |
+					number: '1.2-4' }} @if (offerWithBills.offer.rate > 0) { +
+					${{ offerWithBills.offer.rate | number: '1.2-4' }} } @else
+					if (offerWithBills.offer.rate < 0) { - ${{
+					offerWithBills.offer.rate * -1 | number: '1.2-4' }} } @else
+					{} } @else if ( offerWithBills.offer.type === 'blended' ) {
+					Blended } @else if ( offerWithBills.offer.type === 'best' )
+					{ Best }
+				</td>
+				} @if (enabledColumns()[ExplorerColumn.Term]) {
+				<td>{{ offerWithBills.offer.term }} yr</td>
+				} @if ( enabledColumns()[ExplorerColumn.ConfirmationCode] ) {
+				<td class="text-center">
+					@if (!offerWithBills.offer.confirmationCode) { - - -&nbsp;
+					<span class="footnotes">
+						<span class="footnote">
+							<a
+								[routerLink]="[]"
+								class="footnote-link"
+								fragment="footnote-no-cc"
+								title="{{
+													footnoteExplanations[
+														Footnote
+															.NoConfirmationCode
+													]
+												}}">
+								{{ footnoteSymbols[ Footnote .NoConfirmationCode
+								] }}
+							</a>
+						</span>
+					</span>
+					} @else { @if ( enrollmentFields()[
+					EnrollmentField.AccountNumber ] && enrollmentFields()[
+					EnrollmentField.ControlNumber ] ) {
+					<a
+						href="{{
+												enrollmentFields()
+													| enrollmentLink
+														: offerWithBills.offer
+																.confirmationCode
+											}}"
+						target="_blank"
+						>{{ offerWithBills.offer .confirmationCode }}</a
+					>
+					} @else { {{ offerWithBills.offer .confirmationCode }} } }
+				</td>
+				} @if (enabledColumns()[ExplorerColumn.Average]) { @if (
+				offerWithBills.offer.type === 'fpm' && offerWithBills.offer.rate
+				=== 0 ) {
+				<td class="text-end">- - -</td>
+				} @else {
+				<td
+					class="text-end"
+					[class.highest]="
+										offerWithBills.statistics.average ===
+										highest()
+									"
+					[class.lowest]="
+										offerWithBills.statistics.average ===
+										lowest()
+									"
+					[class.heat--enabled]="
+										heatmapsEnabled()[Heatmap.Averages]
+									"
+					[style]="
+										heatmapsEnabled()[Heatmap.Averages]
+											? (offerWithBills.statistics.average
+												| heat
+													: offerAverages()
+													: palette())
+											: undefined
+									">
+					${{ offerWithBills.statistics.average | number: '1.2-2' }}
+				</td>
+				} } @if (enabledColumns()[ExplorerColumn.Month]) { @for (month
+				of Months; track month) { @let bill =
+				offerWithBills.bills[month];
+				<td
+					class="text-end bill__total"
+					[class.heat--enabled]="
+										heatmapsEnabled()[Heatmap.Totals]
+									"
+					[style]="
+										heatmapsEnabled()[Heatmap.Totals]
+											? (bill.total
+												| heat
+													: (valueTotals() | sort)
+													: palette())
+											: undefined
+									">
+					<app-bill-total
+						[bill]="bill"
+						[offer]="
+											offerWithBills.offer
+										"></app-bill-total>
+				</td>
+				} }
+			</tr>
+			} @empty {
+			<tr>
+				<td [attr.colspan]="tableColumnCount()">
+					No offers available at this time. Check back soon.
+				</td>
+			</tr>
+			}
+		</tbody>
+		} @let ExplorerColumn = Enums.ExplorerColumn; @let Footnote =
+		Enums.Footnote;
+		<tfoot>
+			<tr>
+				<td [attr.colspan]="tableColumnCount()">
+					<ul id="footnotes" class="list-unstyled small">
+						<li id="footnote-lowest">
+							<em>
+								{{ footnoteSymbols[Footnote.LowestAverageRate]
+								}} {{ footnoteExplanations[
+								Footnote.LowestAverageRate ] }}
+							</em>
+						</li>
+						<li id="footnote-highest">
+							<em>
+								{{ footnoteSymbols[Footnote.HighestAverageRate]
+								}} {{ footnoteExplanations[
+								Footnote.HighestAverageRate ] }}
+							</em>
+						</li>
+						<li id="footnote-automated">
+							<em>
+								{{ footnoteSymbols[Footnote.Automated] }} {{
+								footnoteExplanations[Footnote.Automated] }}
+							</em>
+						</li>
+						<li id="footnote-special">
+							<em>
+								{{ footnoteSymbols[Footnote.SpecialRate] }} {{
+								footnoteExplanations[Footnote.SpecialRate] }}
+							</em>
+						</li>
+						<li id="footnote-fpm">
+							<em>
+								{{ footnoteSymbols[Footnote.FixedPerMonth] }} {{
+								footnoteExplanations[Footnote.FixedPerMonth] }}
+							</em>
+						</li>
+						<li id="footnote-no-cc">
+							<em>
+								{{ footnoteSymbols[Footnote.NoConfirmationCode]
+								}} {{ footnoteExplanations[
+								Footnote.NoConfirmationCode ] }}
+							</em>
+						</li>
+					</ul>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
