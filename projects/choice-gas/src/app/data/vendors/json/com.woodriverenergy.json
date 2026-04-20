@@ -2,14 +2,12 @@
   {
     "id": "fpm-1",
     "name": "Secure Fixed Price — Fixed Monthly Bill",
-    "rate": 0,
     "term": 1,
     "type": "fpm"
   },
   {
     "id": "fpm-2",
     "name": "Secure Fixed Price — Fixed Monthly Bill",
-    "rate": 0,
     "term": 2,
     "type": "fpm"
   },

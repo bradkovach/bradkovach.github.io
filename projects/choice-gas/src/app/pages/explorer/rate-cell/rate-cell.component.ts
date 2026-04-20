@@ -1,4 +1,5 @@
 import { Component, input, Pipe, type PipeTransform } from '@angular/core';
+import { RouterLink } from '@angular/router';
 
 import type { AnyOffer, AnyOfferSansBase } from '../../../schema/offer.z';
 
@@ -40,13 +41,16 @@ export class RateDetailPipe implements PipeTransform {
 				].join('\n');
 			}
 			case 'fpm':
-				return `$${offer.rate.toFixed(4)}/month`;
+				if (!offer.rate) {
+					return '- - -';
+				}
+				return `$${offer.rate.toFixed(2)}/month`;
 			case 'fpt':
-				return `$${offer.rate.toFixed(4)}/therm`;
+				return `$${offer.rate.toFixed(3)}/therm`;
 			case 'market': {
 				const marketLabel = marketLabels[offer.market];
 				const plusOrMinus = offer.rate < 0 ? '-' : '+';
-				return `${marketLabel} ${plusOrMinus} $${Math.abs(offer.rate).toFixed(4)}`;
+				return `${marketLabel} ${plusOrMinus} $${Math.abs(offer.rate).toFixed(3)}`;
 			}
 		}
 
@@ -68,17 +72,17 @@ export class RateSummaryPipe implements PipeTransform {
 				return 'Blended';
 			}
 			case 'fpm': {
-				if (offer.rate === 0) {
+				if (!offer.rate) {
 					return '- - -';
 				}
-				return `$${offer.rate.toFixed(4)}/month`;
+				return `$${offer.rate.toFixed(2)}/month`;
 			}
 			case 'fpt':
-				return `$${offer.rate.toFixed(4)}/therm`;
+				return `$${offer.rate.toFixed(3)}/therm`;
 			case 'market': {
 				const marketLabel = marketLabels[offer.market];
 				const plusOrMinus = offer.rate < 0 ? '-' : '+';
-				return `${marketLabel} ${plusOrMinus} $${Math.abs(offer.rate).toFixed(4)}`;
+				return `${marketLabel} ${plusOrMinus} $${Math.abs(offer.rate).toFixed(3)}`;
 			}
 		}
 
@@ -87,7 +91,7 @@ export class RateSummaryPipe implements PipeTransform {
 }
 
 @Component({
-	imports: [RateDetailPipe, RateSummaryPipe],
+	imports: [RateDetailPipe, RateSummaryPipe, RouterLink],
 	selector: 'td[rateCell], th[rateCell]',
 	styles: `
 		.has-tooltip {
@@ -97,11 +101,29 @@ export class RateSummaryPipe implements PipeTransform {
 	`,
 	template: `
 		@let Offer = offer();
-		<span title="{{ Offer | rateDetail }}" class="has-tooltip">
-			{{ Offer | rateSummary }}
-		</span>
+		@let detail = Offer | rateDetail;
+		@let summary = Offer | rateSummary;
+		@if (Offer.type === 'fpm' && !Offer.rate) {
+			<a
+				class="text-danger"
+				[routerLink]="[
+					'../vendors',
+					Offer.vendor_id,
+					'offers',
+					Offer.id,
+				]"
+				>Edit Rate</a
+			>
+		} @else if (Offer.type === 'market' && Offer.rate == 0) {
+			{{ marketLabels[Offer.market] }}
+		} @else {
+			<span title="{{ detail }}" [class.has-tooltip]="detail !== summary">
+				{{ summary }}
+			</span>
+		}
 	`,
 })
 export class RateCell {
+	readonly marketLabels = marketLabels;
 	readonly offer = input.required<AnyOffer>();
 }

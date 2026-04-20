@@ -75,7 +75,7 @@ export const run = (): Promise<AnyOffer[]> =>
 								{
 									id: `flatbill-cashback-fpm-${term}`,
 									name: plan,
-									rate: 0,
+									// rate: 0,
 									term,
 									type: 'fpm',
 								} as FixedPerMonthOffer,

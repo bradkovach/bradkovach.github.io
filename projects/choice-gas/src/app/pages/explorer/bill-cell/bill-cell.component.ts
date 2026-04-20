@@ -52,10 +52,15 @@ export class BillDetailPipe implements PipeTransform {
 		@let bills = offerWithBills().bills;
 		@let offer = offerWithBills().offer;
 		@let bill = bills[month()];
+
 		<a
 			[routerLink]="['../vendors', offer.vendor_id, 'offers', offer.id]"
 			title="{{ bill | billDetail }}">
-			{{ bill.total | number: '1.2-2' }}
+			@if (offer.type === 'fpm' && !offer.rate) {
+				<span title="Edit offer to see bill calculation">- - -</span>
+			} @else {
+				{{ bill.total | number: '1.2-2' }}
+			}
 		</a>
 	`,
 })

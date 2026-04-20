@@ -8,7 +8,7 @@ export const symmetryEnergySolutions = new Vendor(
 	'Symmetry Energy Solutions',
 	'https://symmetryenergy.com/choice',
 	'8882003788',
-	false,
+	true,
 );
 
 for (const offer of offers as AnyOffer[]) {

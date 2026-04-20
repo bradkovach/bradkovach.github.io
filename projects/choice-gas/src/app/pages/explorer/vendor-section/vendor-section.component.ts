@@ -1,22 +1,28 @@
-import { Component, computed, input } from '@angular/core';
+import { Component, computed, inject, input } from '@angular/core';
+
 import { PhonePipe } from '../../../pipes/phone/phone.pipe';
-import type { Averages, VendorWithOfferRows } from '../explorer.component';
+import { FootnoteComponent } from '../../../services/footnote/footnote.service';
+import { type MinMax, type VendorWithOfferRows } from '../explorer.component';
 import { ExplorerColumn } from '../ExplorerColumn';
 import { OfferRow } from '../offer-row/offer-row.component';
+import { PreferencesService } from '../preferences.service';
 
 @Component({
 	// imports: [RouterLink],
-	imports: [PhonePipe, OfferRow],
-	selector: 'tbody[vendorWithOfferRows]',
+	imports: [PhonePipe, OfferRow, FootnoteComponent],
+	selector: 'tbody[vendorSection]',
 	styles: ``,
 	template: `
 		@let vendor = vendorWithOfferRows().vendor;
-		@let vendorAverages = vendorWithOfferRows().vendorAverages;
+		@let vendorAverages = vendorWithOfferRows().billAverages;
 		@let offersWithBills = vendorWithOfferRows().offersWithBills;
-		@let columnSet = enabledColumns();
+		@let columnSet = preferences.enabledColumns();
 		<tr>
 			<th>
 				{{ vendor.name }}
+				@if (vendor.automated) {
+					<footnote [text]="messages.automated"></footnote>
+				}
 			</th>
 
 			@if (columnSet.has(ExplorerColumn.CommmodityCharge)) {
@@ -35,13 +41,15 @@ import { OfferRow } from '../offer-row/offer-row.component';
 
 		@for (offerWithBills of offersWithBills; track $index) {
 			<tr
+				offerRow
 				[offerWithBills]="offerWithBills"
-				[enabledColumns]="enabledColumns()"
 				[vendorAverages]="vendorAverages"
-				[globalAverages]="globalAverages()"></tr>
+				[globalAverages]="globalAverages()"
+				[globalExtremes]="globalExtremes()"
+				[values]="values()"></tr>
 		} @empty {
 			<tr>
-				<td [attr.colspan]="tableColumnCount()">
+				<td [attr.colspan]="preferences.tableColumnCount()">
 					<em
 						>There are no offers matching these filter criteria from
 						{{ vendor.name }} at this time.</em
@@ -52,16 +60,22 @@ import { OfferRow } from '../offer-row/offer-row.component';
 	`,
 })
 export class VendorSection {
+	readonly ExplorerColumn = ExplorerColumn;
+	readonly globalAverages = input.required<MinMax>();
+	readonly globalExtremes = input.required<MinMax>();
+	readonly messages = {
+		automated: ["This vendor's offers are automatically updated."].join(
+			' ',
+		),
+	};
+	readonly preferences = inject(PreferencesService);
+	readonly values = input.required<number[]>();
 	readonly vendorWithOfferRows = input.required<VendorWithOfferRows>();
-	readonly tableColumnCount = input.required<number>();
-	readonly enabledColumns = input.required<Set<ExplorerColumn>>();
-
-	readonly globalAverages = input.required<Averages>();
 
 	readonly websiteColumnSpan = computed(() => {
-		let colspan = this.tableColumnCount();
+		let colspan = this.preferences.tableColumnCount();
 
-		const enabledColumns = this.enabledColumns();
+		const enabledColumns = this.preferences.enabledColumns();
 		if (enabledColumns.has(ExplorerColumn.Name)) {
 			colspan--;
 		}
@@ -71,17 +85,4 @@ export class VendorSection {
 
 		return colspan;
 	});
-
-	readonly ExplorerColumn = ExplorerColumn;
 }
-
-@Component({
-	selector: 'tbody[extraSeries]',
-	styles: ``,
-	template: `
-		<tr>
-			<th>Extra Series</th>
-		</tr>
-	`,
-})
-export class ExtraSeriesSection {}

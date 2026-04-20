@@ -6,6 +6,7 @@ import { z } from 'zod';
 import type { Series } from '../../data/data.default';
 import type { Charge } from '../../entity/Charge';
 import type { FixedArray } from '../../entity/FixedArray';
+import type { Vendor } from '../../entity/Vendor';
 import type { AnyOffer } from '../../schema/offer.z';
 
 import {
@@ -16,7 +17,6 @@ import {
 import { Setting } from '../../data/enum/settings.enum';
 import { vendors } from '../../data/vendors';
 import { ChargeType } from '../../entity/ChargeType';
-import type { Vendor } from '../../entity/Vendor';
 
 const ChargeSchema = z.object({
 	name: z.string(),

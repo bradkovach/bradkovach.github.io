@@ -3,7 +3,6 @@
     "confirmationCode": "76741",
     "id": "fpm-1",
     "name": "Go Pokes Fixed Bill",
-    "rate": 0,
     "term": 1,
     "type": "fpm"
   },
@@ -11,15 +10,14 @@
     "confirmationCode": "76743",
     "id": "fpm-2",
     "name": "Go Pokes Fixed Bill",
-    "rate": 0,
     "term": 2,
     "type": "fpm"
   },
   {
-    "confirmationCode": "77657",
+    "confirmationCode": "77658",
     "id": "fpt-1",
     "name": "Go Pokes Fixed Price",
-    "rate": 0.418,
+    "rate": 0.417,
     "term": 1,
     "type": "fpt"
   },

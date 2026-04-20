@@ -72,7 +72,7 @@ export const run = (): Promise<AnyOffer[]> =>
 								id: `fpm-${term}`,
 								name: 'Go Pokes Fixed Bill',
 								// rate: Number(priceText.slice(1)),
-								rate: 0,
+								// rate: 0,
 								term,
 								type: 'fpm',
 							} as FixedPerMonthOffer;

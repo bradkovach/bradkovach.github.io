@@ -3,7 +3,6 @@
     "confirmationCode": "25830",
     "id": "fpm-1",
     "name": "Fixed Monthly Bill",
-    "rate": 0,
     "term": 1,
     "type": "fpm"
   },
@@ -11,41 +10,40 @@
     "confirmationCode": "25860",
     "id": "fpm-2",
     "name": "Fixed Monthly Bill",
-    "rate": 0,
     "term": 2,
     "type": "fpm"
   },
   {
-    "confirmationCode": "19165",
+    "confirmationCode": "19186",
     "id": "fpt-1",
     "name": "Fixed Price",
-    "rate": 0.469,
+    "rate": 0.423,
     "term": 1,
     "type": "fpt"
   },
   {
-    "confirmationCode": "19224",
+    "confirmationCode": "19246",
     "id": "fpt-2",
     "name": "Fixed Price",
-    "rate": 0.479,
+    "rate": 0.439,
     "term": 2,
     "type": "fpt"
   },
   {
-    "confirmationCode": "28612",
+    "confirmationCode": "28649",
     "id": "market-1",
     "market": 0,
     "name": "Market Index",
-    "rate": 0.139,
+    "rate": 0.10400000000000001,
     "term": 1,
     "type": "market"
   },
   {
-    "confirmationCode": "28707",
+    "confirmationCode": "28730",
     "id": "market-2",
     "market": 0,
     "name": "Market Index",
-    "rate": 0.13,
+    "rate": 0.105,
     "term": 2,
     "type": "market"
   }

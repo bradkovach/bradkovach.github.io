@@ -8,11 +8,11 @@
     "type": "fpt"
   },
   {
-    "confirmationCode": "43434",
+    "confirmationCode": "43440",
     "id": "fpt-2",
     "name": "Fixed Rate Per Therm (2 Year)",
     "term": 2,
-    "rate": 0.495,
+    "rate": 0.489,
     "type": "fpt"
   },
   {

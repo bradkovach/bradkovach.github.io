@@ -119,7 +119,7 @@ export function run(): Promise<AnyOffer[]> {
 								confirmationCode,
 								id: 'winterguard-' + o.term,
 								name: 'WinterGuard',
-								rate: 0,
+								// rate: 0,
 								term: o.term,
 								type: 'fpm',
 							};

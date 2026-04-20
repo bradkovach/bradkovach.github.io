@@ -57,9 +57,19 @@ export const createBill = (
 			line(`[Fixed Per-Therm] Commodity Charge`, bill.therms, offer.rate),
 		);
 	} else if (offer.type === 'fpm') {
-		bill.lines[ChargeType.PerMonth].push(
-			line(`[Fixed Per-Month] Commodity Charge`, 1, offer.rate),
-		);
+		if (offer.rate) {
+			bill.lines[ChargeType.PerMonth].push(
+				line(`[Fixed Per-Month] Commodity Charge`, 1, offer.rate),
+			);
+		} else {
+			bill.lines[ChargeType.PerMonth].push(
+				line(
+					`[Fixed Per-Month] Edit rate to see commodity charge calculation`,
+					1,
+					0,
+				),
+			);
+		}
 	} else if (offer.type === 'market') {
 		const market = offer.market;
 		const marketRate = marketRates[market][month];

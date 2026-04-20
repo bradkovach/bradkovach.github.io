@@ -50,14 +50,12 @@
   {
     "id": "flatbill-cashback-fpm-1",
     "name": "FlatBill+Cashback",
-    "rate": 0,
     "term": 1,
     "type": "fpm"
   },
   {
     "id": "flatbill-cashback-fpm-2",
     "name": "FlatBill+Cashback",
-    "rate": 0,
     "term": 2,
     "type": "fpm"
   },

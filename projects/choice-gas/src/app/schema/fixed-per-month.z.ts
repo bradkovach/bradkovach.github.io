@@ -3,7 +3,7 @@ import z from 'zod';
 import { OfferBaseSchema } from './offer-base.z';
 
 export const FixedPerMonthSansBase = z.object({
-	rate: z.number(),
+	rate: z.number().optional().nullable(),
 	type: z.literal('fpm'),
 });
 

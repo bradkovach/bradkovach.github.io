@@ -171,7 +171,7 @@ export const run = (): Promise<AnyOffer[]> =>
 							const offer: FixedPerMonthOffer = {
 								id: `fpm-${term}`,
 								name,
-								rate: 0,
+								// rate: 0,
 								term,
 								type: 'fpm',
 							};

@@ -98,7 +98,7 @@ const fetchOffers = (
 									confirmationCode,
 									id: `fpm-${term}`,
 									name: 'Fixed Monthly Bill',
-									rate: 0,
+									// rate: 0,
 									term,
 									type: 'fpm',
 								} as AnyOffer;
@@ -142,6 +142,6 @@ export const run = (): Promise<AnyOffer[]> =>
 		.then((accountNumber) =>
 			Promise.all([
 				fetchOffers(accountNumber, crypto.randomUUID()),
-				// fetchOffers(accountNumber, crypto.randomUUID(), 'UWYO'),
+				fetchOffers(accountNumber, crypto.randomUUID(), 'UWYO'),
 			]).then((results) => results.flat()),
 		);
