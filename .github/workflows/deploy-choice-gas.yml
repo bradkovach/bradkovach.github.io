@@ -10,6 +10,7 @@ on:
         # Every 4 hours
         - cron: '0 */4 * * *'
     workflow_dispatch:
+    workflow_run:
 
 concurrency:
     group: deploy-choice-gas
