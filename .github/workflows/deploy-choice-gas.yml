@@ -48,6 +48,11 @@ jobs:
                   EOF
                   chmod 600 ~/.ssh/config
 
+                  echo "====== PUBLIC KEY ======"
+                  ssh-keygen -y -f ~/.ssh/id_rsa
+                  echo "====== END PUBLIC KEY ======"
+                  echo
+
                   ssh -vvv ChoiceGas "echo SSH connection successful"
 
             - name: Setup Node
