@@ -1,10 +1,10 @@
-import type { StringLevel } from '../../../../types/StringLevel';
-import type { StringMemberRow } from '../../../../types/StringMemberRow';
-import type { StringPuzzle } from '../../../../types/StringPuzzle';
-
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+
+import type { StringLevel } from '../../../../types/StringLevel';
+import type { StringMemberRow } from '../../../../types/StringMemberRow';
+import type { StringPuzzle } from '../../../../types/StringPuzzle';
 
 import { PuzzleHelpers } from '../../../helpers/puzzle-helpers';
 import { shuffleImmutable } from '../../../puzzle/puzzle.component';

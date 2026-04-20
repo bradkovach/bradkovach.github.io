@@ -1,0 +1,16 @@
+export const currentCigRate = 0.267;
+
+import type { FixedPerThermOffer } from '../schema/fixed-per-therm-offer.z';
+
+import { Market } from './Market';
+import gasCostAdjustment from './vendors/json/com.choicegas.json';
+
+const [offer] = gasCostAdjustment as FixedPerThermOffer[];
+export const currentGcaRate = offer?.rate ?? 0;
+
+export const marketLabels: Record<Market, string> = {
+	[Market.CIG]: 'CIG',
+	[Market.GCA]: 'GCA',
+};
+
+export const Markets = Object.keys(marketLabels) as unknown as Market[];

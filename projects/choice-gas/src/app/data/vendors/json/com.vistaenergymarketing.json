@@ -1,0 +1,59 @@
+[
+  {
+    "confirmationCode": "76741",
+    "id": "fpm-1",
+    "name": "Go Pokes Fixed Bill",
+    "term": 1,
+    "type": "fpm"
+  },
+  {
+    "confirmationCode": "76743",
+    "id": "fpm-2",
+    "name": "Go Pokes Fixed Bill",
+    "term": 2,
+    "type": "fpm"
+  },
+  {
+    "confirmationCode": "77658",
+    "id": "fpt-1",
+    "name": "Go Pokes Fixed Price",
+    "rate": 0.417,
+    "term": 1,
+    "type": "fpt"
+  },
+  {
+    "confirmationCode": "76724",
+    "id": "fpt-2",
+    "name": "Go Pokes Fixed Price",
+    "rate": 0.437,
+    "term": 2,
+    "type": "fpt"
+  },
+  {
+    "confirmationCode": "76737",
+    "id": "index-1",
+    "market": 0,
+    "name": "Go Pokes Index Price",
+    "rate": 0.071,
+    "term": 1,
+    "type": "market"
+  },
+  {
+    "confirmationCode": "76739",
+    "id": "index-2",
+    "market": 0,
+    "name": "Go Pokes Index Price",
+    "rate": 0.072,
+    "term": 2,
+    "type": "market"
+  },
+  {
+    "confirmationCode": "76745",
+    "id": "gltgca-1",
+    "market": 1,
+    "name": "Guaranteed Lower Than Gas Cost Adjustment",
+    "rate": -0.01,
+    "term": 1,
+    "type": "market"
+  }
+]

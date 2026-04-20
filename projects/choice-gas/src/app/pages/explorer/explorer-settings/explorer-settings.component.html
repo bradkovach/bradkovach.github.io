@@ -1,0 +1,212 @@
+@let heatmapsEnabled = preferences.Heatmaps;
+@let enabledOfferTypes = preferences.OfferTypes;
+@let enabledSeries = preferences.Series;
+@let enableHighDensityTable = preferences.HighDensityTable;
+@let enableStripedTable = preferences.StripedTable;
+@let enabledColumns = preferences.enabledColumns;
+
+<div
+	class="offcanvas offcanvas-start"
+	[class.show]="showSettings()"
+	tabindex="-1"
+	id="offcanvas"
+	aria-labelledby="offcanvasLabel">
+	<div class="offcanvas-header">
+		<h4 class="offcanvas-title" id="offcanvasLabel">Display Settings</h4>
+		<button
+			type="button"
+			class="btn-close"
+			data-bs-dismiss="offcanvas"
+			(click)="setShowSettings(false)"
+			aria-label="Close"></button>
+	</div>
+	<div class="offcanvas-body">
+		<p>
+			Customize the Price Explorer to show only the data you want to see.
+		</p>
+
+		<div class="my-3">
+			<h5>Heatmaps</h5>
+			<p>
+				Heatmaps provide a visual representation of the data in the
+				table. Enable or disable heatmaps for additional context.
+			</p>
+			<ul class="list-group">
+				@for (hm of Heatmaps; track $index) {
+					<li class="list-group-item">
+						<input
+							type="checkbox"
+							class="form-check-input me-2"
+							id="heatmap-{{ $index }}"
+							[ngModel]="heatmapsEnabled()[hm]"
+							(ngModelChange)="
+								preferences.setHeatmap(hm, $event)
+							" />
+						<label
+							for="heatmap-{{ $index }}"
+							class="form-check-label stretched-link"
+							>{{ HeatmapLabels[hm] }}</label
+						>
+					</li>
+				}
+			</ul>
+		</div>
+
+		<div class="my-3">
+			<h5>Heatmap Colors</h5>
+			<p>
+				Select a color scheme for the heatmaps. The color scheme will be
+				applied to the entire table.
+			</p>
+			<select
+				id="palette"
+				class="form-select my-0"
+				[ngModel]="scheme()"
+				(ngModelChange)="setScheme($event)">
+				@for (s of HeatmapSchemes; track s) {
+					<option [value]="s">
+						{{ HeatmapSchemeLabels[s] }}
+					</option>
+				}
+			</select>
+		</div>
+
+		<div class="my-3">
+			<h5>Table Settings</h5>
+			<p>
+				Adjust display of the table to make it easier to read. High
+				density shows more data at once. Stripes make it easier to read
+				across rows.
+			</p>
+
+			<ul class="list-group">
+				<li class="list-group-item">
+					<input
+						type="checkbox"
+						class="form-check-input me-2"
+						id="density-normal"
+						name="density"
+						[(ngModel)]="enableHighDensityTable" />
+					<label for="density-normal" class="form-check-label"
+						>Enable High-Density Table</label
+					>
+				</li>
+				<li class="list-group-item">
+					<input
+						type="checkbox"
+						class="form-check-input me-2"
+						id="enableTableStripes"
+						[(ngModel)]="enableStripedTable" /><label
+						for="enableTableStripes"
+						class="form-check-label"
+						>Enable Table Stripes</label
+					>
+				</li>
+			</ul>
+		</div>
+
+		<div class="my-3">
+			<h5>Show Columns</h5>
+
+			<p>
+				Enable or disable columns. Disabling monthly data can make the
+				table easier to scroll on smaller screens.
+			</p>
+			<ul class="list-group">
+				@for (s of ExplorerColumns; track $index) {
+					<li class="list-group-item">
+						<input
+							type="checkbox"
+							class="form-check-input me-2"
+							id="enabledColumns-{{ $index }}"
+							[ngModel]="enabledColumns().has(s)"
+							(ngModelChange)="
+								preferences.setColumn(s, $event)
+							" />
+						<label
+							for="enabledColumns-{{ $index }}"
+							class="form-check-label stretched-link"
+							>{{ ExplorerColumnLabels[s] }}</label
+						>
+					</li>
+				}
+			</ul>
+		</div>
+
+		<div class="my-3">
+			<h5>Offer Types</h5>
+			<p>Filter offers by type.</p>
+			<ul class="list-group">
+				@for (ot of OfferTypes; track $index) {
+					<li class="list-group-item">
+						<input
+							type="checkbox"
+							class="form-check-input me-2"
+							id="offerType-{{ $index }}"
+							[ngModel]="enabledOfferTypes()[ot]"
+							(ngModelChange)="
+								preferences.setOfferType(ot, $event)
+							" />
+						<label
+							for="offerType-{{ $index }}"
+							class="form-check-label stretched-link"
+							>{{ OfferTypeLabels[ot] }}</label
+						>
+					</li>
+				}
+			</ul>
+		</div>
+
+		<div class="my-3">
+			<h5>{{ HeatmapLabels[Heatmap.Series] }}</h5>
+			<p>
+				Add additional data to the table header for additional context
+				about prices and market conditions.
+			</p>
+			<ul class="list-group">
+				@for (s of SeriesKeys; track s) {
+					<li class="list-group-item">
+						<input
+							type="checkbox"
+							class="form-check-input me-2"
+							id="enabledSeries-{{ $index }}"
+							[ngModel]="enabledSeries()[s]"
+							(ngModelChange)="
+								preferences.setSeries(s, $event)
+							" />
+						<label
+							for="enabledSeries-{{ $index }}"
+							class="form-check-label stretched-link"
+							>{{ SeriesLabels[s] }}</label
+						>
+					</li>
+				}
+			</ul>
+		</div>
+
+		<div class="my-3">
+			<h5>Reset</h5>
+			<p>
+				Reset the Price Explorer to the default settings. This will show
+				all columns, offer types, and therm usage. Heatmap color scheme
+				will not be reset.
+			</p>
+			<p>
+				<button
+					class="btn btn-primary"
+					type="reset"
+					(click)="preferences.resetRefiners()">
+					Reset Settings
+				</button>
+			</p>
+		</div>
+	</div>
+</div>
+
+<p>
+	<button
+		class="btn btn-outline-primary btn-xl"
+		(click)="setShowSettings(true)">
+		Display Settings
+	</button>
+</p>

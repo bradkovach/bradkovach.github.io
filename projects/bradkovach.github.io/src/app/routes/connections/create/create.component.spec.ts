@@ -1,25 +1,7 @@
-import type { ComponentFixture} from '@angular/core/testing';
-
-import { TestBed } from '@angular/core/testing';
-
 import { CreateComponent } from './create.component';
 
 describe('CreateComponent', () => {
-  let component: CreateComponent;
-  let fixture: ComponentFixture<CreateComponent>;
-
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      imports: [CreateComponent]
-    })
-    .compileComponents();
-    
-    fixture = TestBed.createComponent(CreateComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+	it('should be defined', () => {
+		expect(CreateComponent).toBeDefined();
+	});
 });

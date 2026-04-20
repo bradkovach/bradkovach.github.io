@@ -1,0 +1,53 @@
+@let Series = Enums.Series;
+
+@let vm = viewModel();
+
+@if ((vm.series[Series.Usage] | average) === 0) {
+	<div class="alert alert-warning" role="alert">
+		You haven't entered any usage data. Go to the
+		<a [routerLink]="['..', 'data-editor']">Data Editor</a> to enter your
+		usage.
+	</div>
+}
+
+<h3>Price Explorer</h3>
+<p>
+	The following table shows the estimated cost of each offer, based on the
+	usage and rates you've entered. Hover over each value to see a summary of
+	charges. Click on the cost to see more details about the offer.
+</p>
+
+<app-explorer-settings></app-explorer-settings>
+
+<div class="">
+	<table
+		class="table"
+		[class.table-striped]="preferences.StripedTable()"
+		[class.table-sm]="preferences.HighDensityTable()">
+		<thead
+			seriesSection
+			style="position: sticky; top: 0; z-index: 1"
+			class="headings"
+			[seriesValues]="vm.series"></thead>
+
+		@for (
+			vendorWithOfferRows of viewModel().vendorsWithOfferRows;
+			track $index
+		) {
+			<tbody
+				vendorSection
+				[vendorWithOfferRows]="vendorWithOfferRows"
+				[globalAverages]="viewModel().billAverages"
+				[globalExtremes]="viewModel().billTotals"
+				[values]="viewModel().totals"></tbody>
+		}
+
+		<tfoot>
+			<tr>
+				<td [attr.colspan]="preferences.tableColumnCount()">
+					<footnotes></footnotes>
+				</td>
+			</tr>
+		</tfoot>
+	</table>
+</div>
