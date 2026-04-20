@@ -48,23 +48,6 @@ jobs:
                   EOF
                   chmod 600 ~/.ssh/config
 
-                  echo "<<<<< ls -l ~/.ssh"
-                  ls -l ~/.ssh
-                  echo "<<<<< ls -l ~/.ssh"
-
-                  echo "<<<<< PUBLIC KEY"
-                  ssh-keygen -y -f ~/.ssh/id_rsa
-                  echo "<<<<< PUBLIC KEY"
-                  echo
-
-                  echo "<<<<< SSH Config"
-                  cat ~/.ssh/config
-                  echo "<<<<< SSH Config"
-
-                  echo "<<<<< ~/.ssh/known_hosts"
-                  cat ~/.ssh/known_hosts
-                  echo "<<<<< ~/.ssh/known_hosts"
-
                   ssh -vvv ChoiceGas "echo SSH connection successful"
 
             - name: Setup Node
