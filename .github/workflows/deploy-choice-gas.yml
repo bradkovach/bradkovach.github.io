@@ -42,7 +42,10 @@ jobs:
               run: |
                   npm run choice-gas
                   npm run update-last-updated
-                  npm run choice-gas:build:prod
+                  npm run choice-gas:build:production
+              env:
+                  BHES_ACCOUNT_NUMBER: ${{ secrets.BHES_ACCOUNT_NUMBER }}
+                  BHE_PREMISE_ID: ${{ secrets.BHE_PREMISE_ID }}
 
             - name: Configure SSH
               run: |
