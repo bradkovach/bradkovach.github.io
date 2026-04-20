@@ -1,7 +1,7 @@
 import { Component, computed, inject, input } from '@angular/core';
 
+import { FootnoteComponent } from '../../../components/footnote/footnote.component';
 import { PhonePipe } from '../../../pipes/phone/phone.pipe';
-import { FootnoteComponent } from '../../../services/footnote/footnote.service';
 import { type MinMax, type VendorWithOfferRows } from '../explorer.component';
 import { ExplorerColumn } from '../ExplorerColumn';
 import { OfferRow } from '../offer-row/offer-row.component';

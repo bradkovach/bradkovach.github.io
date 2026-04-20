@@ -3,13 +3,13 @@ import { Component, computed, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import chroma from 'chroma-js';
 
+import { FootnoteComponent } from '../../../components/footnote/footnote.component';
 import { monthLabels } from '../../../data/enum/month.enum';
 import { HeatDirective } from '../../../directives/heat/heat.directive';
 import {
 	DataService,
 	EnrollmentField,
 } from '../../../services/data/data.service';
-import { FootnoteComponent } from '../../../services/footnote/footnote.service';
 import { HeatmapManager } from '../../../services/heatmap-manager/heatmap-manager.service';
 import { BillCell } from '../bill-cell/bill-cell.component';
 import { type MinMax, type OfferWithBills } from '../explorer.component';

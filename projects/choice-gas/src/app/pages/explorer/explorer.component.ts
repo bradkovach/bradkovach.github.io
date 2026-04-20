@@ -11,12 +11,12 @@ import type { Bill } from '../../entity/Bill';
 import type { Vendor } from '../../entity/Vendor';
 import type { AnyOffer } from '../../schema/offer.z';
 
+import { FootnotesComponent } from '../../components/footnotes/footnotes.component';
 import { Series } from '../../data/data.default';
 import { lastUpdated } from '../../data/last-updated';
 import { createBill } from '../../helpers/create-bill/create-bill';
 import { AveragePipe } from '../../pipes/average/average.pipe';
 import { DataService, EnrollmentField } from '../../services/data/data.service';
-import { FootnotesComponent } from '../../services/footnote/footnote.service';
 import { ExplorerSettingsComponent } from './explorer-settings/explorer-settings.component';
 import { PreferencesService } from './preferences.service';
 import { SeriesSectionComponent } from './series-section/series-section.component';
