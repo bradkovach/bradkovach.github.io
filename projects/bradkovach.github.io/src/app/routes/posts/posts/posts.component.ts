@@ -2,8 +2,8 @@ import { AsyncPipe } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, Injectable } from '@angular/core';
 import hljs from 'highlight.js';
-import markdownit from 'markdown-it';
-import replaceLink from 'markdown-it-replace-link';
+import markdownit, { type PluginWithOptions } from 'markdown-it';
+import replaceLink, { type ReplaceLinkOptions } from 'markdown-it-replace-link';
 import { map } from 'rxjs';
 
 @Injectable({
@@ -40,16 +40,24 @@ export class PostsComponent {
 			if (lang && hljs.getLanguage(lang)) {
 				try {
 					return hljs.highlight(str, { language: lang }).value;
-				} catch (__) {}
+				} catch {
+					// ignore
+					// return str;
+				}
 			}
 
 			return ''; // use external default escaping
 		},
-	}).use<any>(replaceLink as any, {
-		replaceLink: (link: string) => {
-			return '/blog/' + link.replace(/\.md$/, '').replace(/^\.\/?/, '');
+	}).use<ReplaceLinkOptions>(
+		replaceLink as PluginWithOptions<ReplaceLinkOptions>,
+		{
+			replaceLink: (link: string) => {
+				return (
+					'/blog/' + link.replace(/\.md$/, '').replace(/^\.\/?/, '')
+				);
+			},
 		},
-	});
+	);
 	private postsService = inject(PostsService);
 
 	posts$ = this.postsService.getPostIndex().pipe(

@@ -1,29 +1,28 @@
-import type {
-	BlendedOffer,
-	FixedPerThermOffer,
-	MarketOffer,
-	Offer,
-	OfferBase,
-} from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
-
 import * as cheerio from 'cheerio';
 
-import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/Market';
+import type { BlendedOffer } from '../../projects/choice-gas/src/app/schema/blended-offer.z';
+import type { FixedPerMonthOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-month.z';
+import type { FixedPerThermOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-therm-offer.z';
+import type { MarketOffer } from '../../projects/choice-gas/src/app/schema/market-offer.z';
+import type { OfferBase } from '../../projects/choice-gas/src/app/schema/offer-base.z';
+import type { AnyOffer } from '../../projects/choice-gas/src/app/schema/offer.z';
+
+import { Market } from '../../projects/choice-gas/src/app/data/Market';
 
 const url = 'https://www.archerenergy.com/shop/black-hills';
 
-export const run = (): Promise<Offer[]> =>
+export const run = (): Promise<AnyOffer[]> =>
 	fetch(url)
 		.then((response) => response.text())
 		.then((text) => cheerio.load(text))
-		.then(($): Offer[] => {
+		.then(($): AnyOffer[] => {
 			const $accordionItem = $(
 				'#blackHillsRates > .accordion-item:nth-of-type(1)',
 			);
 			return $accordionItem
 				.find('.table > tbody > tr')
 				.toArray()
-				.flatMap((tr, rowIdx): Offer[] => {
+				.flatMap((tr, rowIdx): AnyOffer[] => {
 					const tds = $(tr).find('td');
 					const [plan, priceText, confirmationCode] = tds
 						.toArray()
@@ -37,12 +36,14 @@ export const run = (): Promise<Offer[]> =>
 							const rx = /CIG\+\s*\$([\d.]+)\s*\/\s*\$([\d.]+)/;
 							const matches = priceText.match(rx);
 							if (!matches) {
-								throw Error(`No match for ${priceText}`);
+								throw Error(
+									`Unable to extract price from '${priceText}'`,
+								);
 							}
 							const [mktRate, fptRate] = matches
 								.slice(1)
 								.map(Number);
-							const offer: BlendedOffer & OfferBase = {
+							const offer: BlendedOffer = {
 								confirmationCode,
 								id: `archer-pro-${term}`,
 								name: plan,
@@ -68,6 +69,18 @@ export const run = (): Promise<Offer[]> =>
 							};
 							return [offer];
 						}
+						case 'FlatBill+Cashback': {
+							// fixed per month
+							return [
+								{
+									id: `flatbill-cashback-fpm-${term}`,
+									name: plan,
+									// rate: 0,
+									term,
+									type: 'fpm',
+								} as FixedPerMonthOffer,
+							];
+						}
 						case 'GreenGas': {
 							const offer: FixedPerThermOffer & OfferBase = {
 								confirmationCode,
@@ -83,7 +96,9 @@ export const run = (): Promise<Offer[]> =>
 							const rx = /CIG\+\s*\$([\d.]+)/;
 							const matches = priceText.match(rx);
 							if (!matches) {
-								throw Error(`No match for ${priceText}`);
+								throw Error(
+									`Unable to extract price from '${priceText}'`,
+								);
 							}
 							const mktRate = Number(matches[1]);
 							const offer: MarketOffer & OfferBase = {
@@ -110,6 +125,11 @@ export const run = (): Promise<Offer[]> =>
 						}
 						default: {
 							console.info('Skipping unknown plan type', plan);
+							console.log({
+								confirmationCode,
+								plan,
+								priceText,
+							});
 						}
 					}
 					return [];

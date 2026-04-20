@@ -1,6 +1,6 @@
-import type { Offer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
+import type { AnyOffer } from '../../projects/choice-gas/src/app/schema/offer.z';
 
-import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/Market';
+import { Market } from '../../projects/choice-gas/src/app/data/Market';
 
 interface GetQuotePricesResponse {
 	PriceOptions: PriceOption[];
@@ -33,11 +33,15 @@ const headers = {
 
 const checkIPUrl = 'https://ifconfig.io/ip';
 
-const CheckAccountNumberUrl = (custOrAcctNumber: string) =>
-	`https://enrollment.legacynaturalgas.com/api/Signup/CheckAccountNumber?custOrAcctNumber=${custOrAcctNumber}`;
+const CheckAccountNumberUrl = (custOrAcctNumber: string, clientIp: string) =>
+	`https://www.legacynaturalgas.com/api/Signup/CheckAccountNumber?custOrAcctNumber=${custOrAcctNumber}&clientIP=${clientIp}`;
 
-const GetQuotePricesUrl = (addressOrMeter: string, clientIP: string) =>
-	`https://enrollment.legacynaturalgas.com/api/Signup/GetQuotePrices?addressOrMeter=${addressOrMeter}&clientIP=${clientIP}`;
+const GetQuotePricesUrl = (
+	addressOrMeter: string,
+	clientIP: string,
+	authUser: string = 'tngadmin',
+) =>
+	`https://www.legacynaturalgas.com/api/Signup/GetQuotePrices?addressOrMeter=${addressOrMeter}&clientIP=${clientIP}&authUser=${authUser}`;
 
 const checkIp = () =>
 	fetch(checkIPUrl)
@@ -56,15 +60,18 @@ type MeterNumber = {
 	MeterNumber: string;
 };
 
-const checkAccountNumber = (custOrAcctNumber: string): Promise<string> =>
-	fetch(CheckAccountNumberUrl(custOrAcctNumber), {
+const checkAccountNumber = (
+	custOrAcctNumber: string,
+	clientIp: string,
+): Promise<string> =>
+	fetch(CheckAccountNumberUrl(custOrAcctNumber, clientIp), {
 		credentials: 'omit',
 		headers,
 		method: 'GET',
 		mode: 'cors',
 		referrer: 'https://www.legacynaturalgas.com/',
 	})
-		.then((r) => r.json() as unknown as CheckAccountNumberResponse[])
+		.then((r) => r.json() as Promise<CheckAccountNumberResponse[]>)
 		.then((r) => {
 			if (r.length === 0) {
 				throw new Error('No account found');
@@ -100,17 +107,19 @@ const getQuotePrices = (
 		referrer: 'https://www.legacynaturalgas.com/',
 	}).then((response) => response.json() as unknown as GetQuotePricesResponse);
 
-export function run(): Promise<Offer[]> {
+export function run(): Promise<AnyOffer[]> {
 	const accountNumber = process.env.BHES_ACCOUNT_NUMBER;
 	if (!accountNumber) {
 		throw new Error('BHES_ACCOUNT_NUMBER not set');
 	}
-	return Promise.all([checkIp(), checkAccountNumber(accountNumber)])
-		.then(([clientIP, addressOrMeter]: [string, string]) =>
-			getQuotePrices(addressOrMeter, clientIP),
+	return checkIp()
+		.then((ip) =>
+			checkAccountNumber(accountNumber, ip).then((addressOrMeter) =>
+				getQuotePrices(addressOrMeter, ip),
+			),
 		)
 		.then((quote) =>
-			quote.PriceOptions.flatMap((priceOption): Offer[] => {
+			quote.PriceOptions.flatMap((priceOption): AnyOffer[] => {
 				if (priceOption.Term === '12 Month') {
 					return [
 						{
@@ -134,7 +143,7 @@ export function run(): Promise<Offer[]> {
 							confirmationCode: priceOption.FixedBillCode,
 							id: `fixed-bill-1`,
 							name: 'Fixed Bill',
-							rate: 0,
+							// rate: 0,
 							term: 1,
 							type: 'fpm',
 						},
@@ -162,7 +171,7 @@ export function run(): Promise<Offer[]> {
 							confirmationCode: priceOption.FixedBillCode,
 							id: `fixed-bill-2`,
 							name: 'Fixed Bill',
-							rate: 0,
+							// rate: 0,
 							term: 2,
 							type: 'fpm',
 						},

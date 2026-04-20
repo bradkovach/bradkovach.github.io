@@ -1,37 +1,37 @@
 // get all the *.md files in /projects/bradkovach.github.io/src/assets/posts/**/*.ts
 
-import { globSync } from "glob";
-import path from "path";
+import { globSync } from 'glob';
+import path from 'path';
 
 const assets = path.join(
-  process.cwd(),
-  "projects/bradkovach.github.io/src/assets",
+	process.cwd(),
+	'projects/bradkovach.github.io/src/assets',
 );
-const postsDir = path.join(assets, "posts");
-const pagesDir = path.join(assets, "pages");
+const postsDir = path.join(assets, 'posts');
+const pagesDir = path.join(assets, 'pages');
 
-const posts = globSync(path.join(postsDir, "**/*.md"));
+const posts = globSync(path.join(postsDir, '**/*.md'));
 
 // get all the *.md files in /projects/bradkovach.github.io/src/app/pages/**/*.md
 
-const pages = globSync(path.join(pagesDir, "**/*.md"));
+const pages = globSync(path.join(pagesDir, '**/*.md'));
 
 const routes = new Set<string>([
-  ...posts.map(
-    (post) => "/blog/" + path.relative(postsDir, post).replace(/.md$/, ""),
-  ),
+	...pages.map(
+		(page) => '/' + path.relative(pagesDir, page).replace(/.md$/, ''),
+	),
 
-  ...pages.map(
-    (page) => "/" + path.relative(pagesDir, page).replace(/.md$/, ""),
-  ),
+	...posts.map(
+		(post) => '/blog/' + path.relative(postsDir, post).replace(/.md$/, ''),
+	),
 ]);
 
-routes.delete("/index");
+routes.delete('/index');
 
 console.log([...routes]);
 
 // write to routes.txt
-import fs from "node:fs";
-fs.writeFileSync("routes.txt", [...routes].join("\n") + "\n");
+import fs from 'node:fs';
+fs.writeFileSync('routes.txt', [...routes].join('\n') + '\n');
 
 console.log(`Wrote ${routes.size} routes to routes.txt`);

@@ -1,8 +1,8 @@
-import type { Offer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
-
 import * as crypto from 'crypto';
 
-import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/Market';
+import type { AnyOffer } from '../../projects/choice-gas/src/app/schema/offer.z';
+
+import { Market } from '../../projects/choice-gas/src/app/data/Market';
 import { getEnvAsync } from '../getEnvAsync';
 
 export interface Account {
@@ -46,7 +46,7 @@ const fetchOffers = (
 	accountNumber: string,
 	correlationId?: string,
 	promoCode?: string,
-): Promise<Offer[]> => {
+): Promise<AnyOffer[]> => {
 	const url = new URL(
 		'https://w.ptsrvs.com/api/blackhills/prices/account/' + accountNumber,
 	);
@@ -76,11 +76,11 @@ const fetchOffers = (
 		referrer: 'https://www.wyomingcommunitygas.org/',
 	})
 		.then((response) => response.json() as Promise<Root>)
-		.then((root) => {
-			return root.accounts
-				.flatMap((account) => {
-					return account.premises.flatMap((premise) => {
-						return premise.prices.map((price) => {
+		.then((root) =>
+			root.accounts
+				.flatMap((account) =>
+					account.premises.flatMap((premise) =>
+						premise.prices.map((price) => {
 							const term = Number(price.term[0]);
 							const confirmationCode = price.priceCode.toString();
 							if (price.priceOption === 'FIXED') {
@@ -92,16 +92,16 @@ const fetchOffers = (
 									rate,
 									term,
 									type: 'fpt',
-								} as Offer;
+								} as AnyOffer;
 							} else if (price.priceOption === 'FMB') {
 								return {
 									confirmationCode,
 									id: `fpm-${term}`,
 									name: 'Fixed Monthly Bill',
-									rate: 0,
+									// rate: 0,
 									term,
 									type: 'fpm',
-								} as Offer;
+								} as AnyOffer;
 							} else if (price.priceOption === 'INDEX') {
 								const rate = price.price / 100;
 								return {
@@ -112,7 +112,7 @@ const fetchOffers = (
 									rate,
 									term,
 									type: 'market',
-								} as Offer;
+								} as AnyOffer;
 							} else {
 								throw new Error(
 									`Unknown price option: ${JSON.stringify(
@@ -120,9 +120,9 @@ const fetchOffers = (
 									)}`,
 								);
 							}
-						});
-					});
-				})
+						}),
+					),
+				)
 				.map((offer) => ({
 					...offer,
 					id: offer.id + (promoCode ? '-' + promoCode : ''),
@@ -130,11 +130,11 @@ const fetchOffers = (
 					name: promoCode
 						? offer.name + ' - Promo Code ' + promoCode
 						: offer.name,
-				}));
-		});
+				})),
+		);
 };
 
-export const run = (): Promise<Offer[]> =>
+export const run = (): Promise<AnyOffer[]> =>
 	getEnvAsync('BHES_ACCOUNT_NUMBER')
 		.catch(() => {
 			throw new Error('BHES_ACCOUNT_NUMBER not set');

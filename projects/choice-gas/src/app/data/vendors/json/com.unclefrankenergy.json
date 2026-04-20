@@ -1,0 +1,36 @@
+[
+	{
+		"type": "market",
+		"market": 0,
+		"name": "Market Index Rate",
+		"term": 1,
+		"rate": 0.3,
+		"confirmationCode": "10600",
+		"id": "market-1"
+	},
+	{
+		"type": "market",
+		"market": 0,
+		"name": "Market Index Green Gas",
+		"term": 1,
+		"rate": 0.3,
+		"confirmationCode": "10620",
+		"id": "market-green-gas-1"
+	},
+	{
+		"type": "fixed",
+		"name": "Fixed Rate",
+		"term": 1,
+		"rate": 1.2,
+		"confirmationCode": "11200",
+		"id": "fixed-1"
+	},
+	{
+		"type": "fixed",
+		"name": "Fixed Rate Green Gas",
+		"term": 1,
+		"rate": 1.2,
+		"confirmationCode": "11220",
+		"id": "fixed-green-gas-1"
+	}
+]

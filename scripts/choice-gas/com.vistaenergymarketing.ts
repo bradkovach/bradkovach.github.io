@@ -1,17 +1,14 @@
-import type {
-	FixedPerMonthOffer,
-	FixedPerThermOffer,
-	MarketOffer,
-	Offer,
-	OfferBase,
-} from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
-
 import * as cheerio from 'cheerio';
 
-import { Market } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/data/Market';
+import type { FixedPerMonthOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-month.z';
+import type { FixedPerThermOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-therm-offer.z';
+import type { MarketOffer } from '../../projects/choice-gas/src/app/schema/market-offer.z';
+import type { AnyOffer } from '../../projects/choice-gas/src/app/schema/offer.z';
+
+import { Market } from '../../projects/choice-gas/src/app/data/Market';
 import { getEnvAsync } from '../getEnvAsync';
 
-export const run = (): Promise<Offer[]> =>
+export const run = (): Promise<AnyOffer[]> =>
 	getEnvAsync('BHE_PREMISE_ID').then((premiseId) =>
 		fetch(
 			'https://customers.vistaenergymarketing.com/AccountDetail/NavigateToAccountDetail_Customerv2',
@@ -44,7 +41,7 @@ export const run = (): Promise<Offer[]> =>
 					'form[action=/AccountDetail/UpdatePricing] .card-grid-product',
 				)
 					.toArray()
-					.map((product: cheerio.Element): Offer => {
+					.map((product): AnyOffer => {
 						const $product = $(product);
 
 						// year and cc in .uk-card-header.uk-text-center.uk-text-bold
@@ -75,10 +72,10 @@ export const run = (): Promise<Offer[]> =>
 								id: `fpm-${term}`,
 								name: 'Go Pokes Fixed Bill',
 								// rate: Number(priceText.slice(1)),
-								rate: 0,
+								// rate: 0,
 								term,
 								type: 'fpm',
-							} as FixedPerMonthOffer & OfferBase;
+							} as FixedPerMonthOffer;
 						} else if (
 							'per therm' === typeText &&
 							priceText.startsWith('+') &&
@@ -100,7 +97,7 @@ export const run = (): Promise<Offer[]> =>
 									) / 1000,
 								term,
 								type: 'market',
-							} as MarketOffer & OfferBase;
+							} as MarketOffer;
 						} else if ('per therm' === typeText) {
 							// price is cents in decimal followed by cents character
 							// rate = priceWithoutCents / 100
@@ -117,7 +114,7 @@ export const run = (): Promise<Offer[]> =>
 									) / 1000,
 								term,
 								type: 'fpt',
-							} as FixedPerThermOffer & OfferBase;
+							} as FixedPerThermOffer;
 						} else if ('price varies' === typeText) {
 							// the GLTGCA is a market rate of the GCA mkt - 0.01
 							return {
@@ -128,7 +125,7 @@ export const run = (): Promise<Offer[]> =>
 								rate: -0.01,
 								term,
 								type: 'market',
-							} as MarketOffer & OfferBase;
+							} as MarketOffer;
 						} else {
 							throw new Error(`Unknown offer type: ${typeText}`);
 						}

@@ -1,7 +1,7 @@
-const path = require('node:path');
-
+// @ts-check
 const eslint = require('@eslint/js');
 const angular = require('angular-eslint');
+const eslintConfigPrettier = require('eslint-config-prettier');
 const perfectionist = require('eslint-plugin-perfectionist');
 const tseslint = require('typescript-eslint');
 
@@ -11,74 +11,74 @@ module.exports = tseslint.config(
 	{
 		ignores: ['**/*.html'],
 		extends: [perfectionist.configs['recommended-natural']],
-		// rules: {
-		// 	'perfectionist/sort-imports': [
-		// 		'error',
-		// 		{
-		// 			/**
-		// 			 * These groups will match in the order they are defined.
-		// 			 * `perfectionist` itself does not allow the groups to be in any
-		// 			 * arbitrary order, but will leave arrays of entries as-is.
-		// 			 *
-		// 			 * By using entries => object, these can be in an arbitrary order.
-		// 			 */
-		// 			customGroups: {
-		// 				type: Object.fromEntries([
-		// 					['app-type', ['^@app/.+$']],
-		// 					['material-type', ['^@angular/material.*$']],
-		// 					['angular-type', ['^@angular/.+$']],
-		// 				]),
-		// 				value: Object.fromEntries([
-		// 					['rxjs', ['^rxjs$']],
-		// 					['tod', ['^@tod/']],
+		rules: {
+			'perfectionist/sort-imports': [
+				'error',
+				// {
+				// 	/**
+				// 	 * These groups will match in the order they are defined.
+				// 	 * `perfectionist` itself does not allow the groups to be in any
+				// 	 * arbitrary order, but will leave arrays of entries as-is.
+				// 	 *
+				// 	 * By using entries => object, these can be in an arbitrary order.
+				// 	 */
+				// 	customGroups: {
+				// 		type: Object.fromEntries([
+				// 			['app-type', ['^@app/.+$']],
+				// 			['material-type', ['^@angular/material.*$']],
+				// 			['angular-type', ['^@angular/.+$']],
+				// 		]),
+				// 		value: Object.fromEntries([
+				// 			['rxjs', ['^rxjs$']],
+				// 			['tod', ['^@tod/']],
 
-		// 					// material needs to match first
-		// 					['material', ['^@angular/material.*$']],
-		// 					['angular', ['^@angular/.+$']],
+				// 			// material needs to match first
+				// 			['material', ['^@angular/material.*$']],
+				// 			['angular', ['^@angular/.+$']],
 
-		// 					// order of matching is important.
-		// 					['app-component', ['^@app/.+/.+\\.component$']],
-		// 					['app-service', ['^@app/.+/.+\\.service$']],
-		// 					['app-form', ['^@app/.+/.+\\.form$']],
-		// 					['app', ['^@app/.+$']],
+				// 			// order of matching is important.
+				// 			['app-component', ['^@app/.+/.+\\.component$']],
+				// 			['app-service', ['^@app/.+/.+\\.service$']],
+				// 			['app-form', ['^@app/.+/.+\\.form$']],
+				// 			['app', ['^@app/.+$']],
 
-		// 					['component', ['components/.+/.+\\.component$']],
-		// 					['service', ['services/.+/.+\\.service$']],
-		// 					['form', ['forms/.+/.+\\.form$']],
-		// 				]),
-		// 			},
-		// 			groups: [
-		// 				'type',
-		// 				'angular-type',
-		// 				'material-type',
-		// 				'external-type',
-		// 				'internal-type',
-		// 				'app-type',
-		// 				['parent-type', 'sibling-type', 'index-type'],
+				// 			['component', ['components/.+/.+\\.component$']],
+				// 			['service', ['services/.+/.+\\.service$']],
+				// 			['form', ['forms/.+/.+\\.form$']],
+				// 		]),
+				// 	},
+				// 	groups: [
+				// 		'type',
+				// 		'angular-type',
+				// 		'material-type',
+				// 		'external-type',
+				// 		'internal-type',
+				// 		'app-type',
+				// 		['parent-type', 'sibling-type', 'index-type'],
 
-		// 				'builtin',
-		// 				'angular',
-		// 				'material',
-		// 				'rxjs',
-		// 				'external',
-		// 				'tod',
-		// 				'internal',
-		// 				'app',
-		// 				'app-service',
-		// 				'app-component',
-		// 				'app-form',
-		// 				'service',
-		// 				'component',
-		// 				'form',
-		// 				['parent', 'sibling', 'index'],
-		// 				'object',
-		// 				'unknown',
-		// 			],
-		// 			internalPattern: ['^@(app)/.+$'],
-		// 			type: 'natural',
-		// 		},
-		// 	],
-		// },
+				// 		'builtin',
+				// 		'angular',
+				// 		'material',
+				// 		'rxjs',
+				// 		'external',
+				// 		'tod',
+				// 		'internal',
+				// 		'app',
+				// 		'app-service',
+				// 		'app-component',
+				// 		'app-form',
+				// 		'service',
+				// 		'component',
+				// 		'form',
+				// 		['parent', 'sibling', 'index'],
+				// 		'object',
+				// 		'unknown',
+				// 	],
+				// 	internalPattern: ['^@(app)/.+$'],
+				// 	type: 'natural',
+				// },
+			],
+		},
 	},
 	// ignores go first
 	{
@@ -141,4 +141,5 @@ module.exports = tseslint.config(
 			'no-undef': ['off'],
 		},
 	},
+	eslintConfigPrettier,
 );

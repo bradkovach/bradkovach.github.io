@@ -2,6 +2,7 @@ import type { SafeHtml } from '@angular/platform-browser';
 import type { Observable } from 'rxjs';
 
 import { AsyncPipe } from '@angular/common';
+
 import { HttpClient } from '@angular/common/http';
 import { Component, inject, Injectable } from '@angular/core';
 import { Title } from '@angular/platform-browser';

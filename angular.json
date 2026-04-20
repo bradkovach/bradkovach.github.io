@@ -105,11 +105,91 @@
 					}
 				}
 			}
+		},
+		"choice-gas": {
+			"projectType": "application",
+			"schematics": {
+				"@schematics/angular:component": {
+					"style": "scss"
+				}
+			},
+			"root": "projects/choice-gas",
+			"sourceRoot": "projects/choice-gas/src",
+			"prefix": "app",
+			"architect": {
+				"build": {
+					"builder": "@angular/build:application",
+					"options": {
+						"browser": "projects/choice-gas/src/main.ts",
+						"tsConfig": "projects/choice-gas/tsconfig.app.json",
+						"inlineStyleLanguage": "scss",
+						"assets": [
+							{
+								"glob": "**/*",
+								"input": "projects/choice-gas/public"
+							}
+						],
+						"styles": [
+							"projects/choice-gas/src/styles.scss",
+
+							"node_modules/bootstrap/dist/css/bootstrap.min.css",
+							"node_modules/highlight.js/styles/github.css"
+						],
+						"server": "projects/choice-gas/src/main.server.ts",
+						"outputMode": "server",
+						"security": {
+							"allowedHosts": []
+						},
+						"ssr": {
+							"entry": "projects/choice-gas/src/server.ts"
+						}
+					},
+					"configurations": {
+						"production": {
+							"prerender": {
+								"routesFile": "projects/choice-gas/routes.txt"
+							},
+							"budgets": [
+								{
+									"type": "initial",
+									"maximumWarning": "500kB",
+									"maximumError": "1MB"
+								},
+								{
+									"type": "anyComponentStyle",
+									"maximumWarning": "4kB",
+									"maximumError": "8kB"
+								}
+							],
+							"outputHashing": "all"
+						},
+						"development": {
+							"optimization": false,
+							"extractLicenses": false,
+							"sourceMap": true
+						}
+					},
+					"defaultConfiguration": "production"
+				},
+				"serve": {
+					"builder": "@angular/build:dev-server",
+					"configurations": {
+						"production": {
+							"buildTarget": "choice-gas:build:production"
+						},
+						"development": {
+							"buildTarget": "choice-gas:build:development"
+						}
+					},
+					"defaultConfiguration": "development"
+				},
+				"test": {
+					"builder": "@angular/build:unit-test"
+				}
+			}
 		}
 	},
-	"cli": {
-		"schematicCollections": ["angular-eslint"]
-	},
+
 	"schematics": {
 		"@schematics/angular:component": {
 			"type": "component"
@@ -135,5 +215,8 @@
 		"@schematics/angular:resolver": {
 			"typeSeparator": "."
 		}
+	},
+	"cli": {
+		"analytics": false
 	}
 }

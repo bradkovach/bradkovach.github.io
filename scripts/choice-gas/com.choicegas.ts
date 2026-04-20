@@ -1,8 +1,7 @@
-import type { Offer } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
-
 import * as cheerio from 'cheerio';
 
-import { FixedPerThermOfferSchema } from '../../projects/bradkovach.github.io/src/app/routes/choice-gas/entity/Offer';
+import type { FixedPerThermOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-therm-offer.z';
+import type { AnyOffer } from '../../projects/choice-gas/src/app/schema/offer.z';
 
 const url =
 	'https://www.blackhillsenergy.com/services/choice-gas-program/wyoming-choice-gas-customers/black-hills-wyoming-gas-llc-utility-gas';
@@ -46,7 +45,7 @@ const url =
 	</div>
 
 */
-export const run = (): Promise<Offer[]> =>
+export const run = (): Promise<AnyOffer[]> =>
 	fetch(url)
 		.then((response) => response.text())
 		.then((text) => cheerio.load(text))
@@ -61,16 +60,18 @@ export const run = (): Promise<Offer[]> =>
 						.toArray()
 						.map((td) => $(td).text().trim());
 
-					return FixedPerThermOfferSchema.parse({
+					const rate = Number.parseFloat(priceText.slice(1));
+
+					return {
 						confirmationCode,
-						id: `gca-${division}`,
+						id: `gca-${division}`.toLowerCase(),
 						name: `Gas Cost Adjustment - ${division} Division`,
-						rate: Number(priceText.slice(1)),
+						rate,
 						term: 1,
 						type: 'fpt',
-					});
+					} as FixedPerThermOffer;
 				})
 				// Some day, this tool will allow you to see prices in many divisions.
-				// For now, we only care about Casper.
-				.filter((o) => o.id === 'gca-Casper'),
+				// including other divisions will cause issues with GCA-based pricing.
+				.filter((o) => o.id === 'gca-casper'),
 		);
