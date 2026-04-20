@@ -10,16 +10,16 @@ if (process.env.npm_lifecycle_event !== 'update-last-updated') {
 	process.exit(1);
 }
 
-// write contents to 'projects/bradkovach.github.io/src/app/routes/choice-gas/data/last-updated.ts'
-import fs from 'node:fs';
-import path from 'node:path';
+import fs from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
-// /home/bkovach/github/bradkovach.github.io/projects/choice-gas/src/app/data/last-updated.ts
-const filePath = new URL(
-	'../projects/choice-gas/src/app/data/last-updated.ts',
+
+const dirPath = new URL(
+	'../projects/choice-gas/src/app/data/',
 	import.meta.url,
 );
-console.log(filePath.toString());
-fs.mkdirSync(path.dirname(fileURLToPath(filePath)), { recursive: true });
 
-fs.writeFileSync(filePath, contents);
+const filePath = new URL('./last-updated.ts', dirPath);
+
+fs.mkdir(fileURLToPath(dirPath), { recursive: true })
+	.then(() => fs.writeFile(filePath, contents))
+	.then(() => console.log(`Wrote last updated timestamp to ${filePath}`));

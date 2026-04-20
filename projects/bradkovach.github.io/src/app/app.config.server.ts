@@ -3,45 +3,10 @@ import { provideServerRendering } from '@angular/ssr';
 
 import { mergeApplicationConfig } from '@angular/core';
 
-import { HeatmapScheme } from '../../../choice-gas/src/app/moved/data/enum/heatmap.enum';
-import { Setting } from '../../../choice-gas/src/app/moved/data/enum/settings.enum';
-import {
-	STORAGE,
-	WINDOW,
-} from '../../../choice-gas/src/app/moved/pages/explorer/localStorageSignal';
 import { appConfig } from './app.config';
 
-class MemoryStorage implements Storage {
-	[name: string]: any;
-	get length(): number {
-		return this.store.size;
-	}
-	private store = new Map<string, any>([
-		[Setting.Scheme, HeatmapScheme.None],
-	]);
-	clear(): void {
-		this.store.clear();
-	}
-	getItem(key: string): null | string {
-		return this.store.get(key) || null;
-	}
-	key(index: number): null | string {
-		return Array.from(this.store.keys())[index] || null;
-	}
-	removeItem(key: string): void {
-		this.store.delete(key);
-	}
-	setItem(key: string, value: string): void {
-		this.store.set(key, value);
-	}
-}
-
 const serverConfig: ApplicationConfig = {
-	providers: [
-		provideServerRendering(),
-		{ provide: STORAGE, useClass: MemoryStorage },
-		{ provide: WINDOW, useValue: null },
-	],
+	providers: [provideServerRendering()],
 };
 
 export const config = mergeApplicationConfig(appConfig, serverConfig);

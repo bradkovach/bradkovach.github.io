@@ -1,0 +1,321 @@
+<p>data works!</p>
+<h3>Import Vendors</h3>
+
+@for (vendor of vendors$ | async; track $index) {
+  <pre>{{ vendor | json }}</pre>
+} @empty {
+  <p>No vendors imported</p>
+}
+
+<h3>Import Offers</h3>
+<table>
+  <tr>
+    <td></td>
+    <td>Type</td>
+    <td title="Confirmation Code">CC</td>
+    <td>Name</td>
+    <td>+ $/therm</td>
+    <td>$/therm</td>
+    <td>$/month</td>
+  </tr>
+  @for (offer of offers$ | async; track $index) {
+    @switch (offer.offer.type) {
+      @case ("fpt") {
+        <tr>
+          <ng-container
+            *ngTemplateOutlet="
+              fpt;
+              context: { $implicit: offer.offer, import: offer.import }
+            "
+          ></ng-container>
+        </tr>
+      }
+      @case ("fpm") {
+        <tr>
+          <ng-container
+            *ngTemplateOutlet="
+              fpm;
+              context: { $implicit: offer.offer, import: offer.import }
+            "
+          ></ng-container>
+        </tr>
+      }
+
+      @case ("market") {
+        <tr>
+          <ng-container
+            *ngTemplateOutlet="
+              market;
+              context: { $implicit: offer.offer, import: offer.import }
+            "
+          ></ng-container>
+        </tr>
+      }
+
+      @case ("blended") {
+        <ng-container
+          *ngTemplateOutlet="
+            blended;
+            context: { $implicit: offer.offer, import: offer.import }
+          "
+        ></ng-container>
+      }
+
+      @case ("best") {
+        <ng-container
+          *ngTemplateOutlet="
+            best;
+            context: { $implicit: offer.offer, import: offer.import }
+          "
+        ></ng-container>
+      }
+    }
+  } @empty {
+    <tr>
+      <td>No offers imported</td>
+    </tr>
+  }
+</table>
+
+<ng-template
+  #fpt
+  let-offer
+  let-import="import"
+  let-parentType="parentType"
+  let-weight="weight"
+>
+  <td>
+    @if (!parentType) {
+      <input type="checkbox" [ngModel]="import" />
+    } @else {
+      &nbsp;
+    }
+  </td>
+  @switch (parentType) {
+    @case ("best") {
+      <td>&mdash; Fixed Per Therm</td>
+    }
+    @case ("blended") {
+      <td>&mdash; {{ weight * 100 | number: "1.0-0" }}</td>
+    }
+    @default {
+      <td>Fixed Per Therm</td>
+    }
+  }
+  <td>{{ offer.id }}</td>
+  <td>{{ offer.name }}</td>
+  <td></td>
+  <td>{{ offer.rate }}</td>
+  <td>&nbsp;</td>
+</ng-template>
+
+<ng-template
+  #fpm
+  let-offer
+  let-import="import"
+  let-parentType="parentType"
+  let-weight="weight"
+>
+  <td>
+    @if (!parentType) {
+      <input type="checkbox" [ngModel]="import" />
+    } @else {
+      &nbsp;
+    }
+  </td>
+  @switch (parentType) {
+    @case ("best") {
+      <td>&mdash; Fixed Per Month</td>
+    }
+    @case ("blended") {
+      <td>&mdash; {{ weight * 100 | number: "1.0-0" }}</td>
+    }
+    @default {
+      <td>Fixed Per Month</td>
+    }
+  }
+  <td>{{ offer.id }}</td>
+  <td>{{ offer.name }}</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+  <td>{{ offer.rate }}</td>
+</ng-template>
+
+<ng-template
+  #market
+  let-offer
+  let-import="import"
+  let-parentType="parentType"
+  let-weight="weight"
+>
+  <td>
+    @if (!parentType) {
+      <input type="checkbox" [ngModel]="import" />
+    } @else {
+      &nbsp;
+    }
+  </td>
+  @switch (parentType) {
+    @case ("blended") {
+      <td>&mdash; {{ weight * 100 | number: "1.0-0" }}</td>
+    }
+    @case ("best") {
+      <td>&mdash; Market</td>
+    }
+    @default {
+      <td>Market ({{ offer.market }})</td>
+    }
+  }
+  <td>{{ offer.id }}</td>
+  <td>{{ offer.name }}</td>
+  <td>+ {{ offer.rate }}</td>
+  <td>&nbsp;</td>
+  <td>&nbsp;</td>
+</ng-template>
+
+<ng-template #blended let-offer let-import="import">
+  <tr>
+    <td>
+      <input type="checkbox" [ngModel]="import" />
+    </td>
+    <td>Blended</td>
+    <td>{{ offer.id }}</td>
+    <td>{{ offer.name }}</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  @for (row of offer.offers; track $index) {
+    <tr class="suboffer">
+      @if (row[1]; as subOffer) {
+        @switch (subOffer.type) {
+          @case ("fpt") {
+            <ng-container
+              *ngTemplateOutlet="
+                fpt;
+                context: {
+                  $implicit: {
+                    id: '',
+                    name: subOffer.name,
+                    rate: subOffer.rate
+                  },
+                  parentType: offer.type,
+                  weight: row[0]
+                }
+              "
+            ></ng-container>
+          }
+          @case ("fpm") {
+            <ng-container
+              *ngTemplateOutlet="
+                fpm;
+                context: {
+                  $implicit: {
+                    id: '',
+                    type: subOffer.type,
+                    name: ' - ' + subOffer.name,
+                    rate: subOffer.rate
+                  },
+                  parentType: offer.type,
+                  weight: row[0]
+                }
+              "
+            ></ng-container>
+          }
+          @case ("market") {
+            <ng-container
+              *ngTemplateOutlet="
+                market;
+                context: {
+                  $implicit: {
+                    id: '',
+                    name: subOffer.name,
+                    market: subOffer.market,
+                    rate: subOffer.rate
+                  },
+                  parentType: offer.type,
+                  weight: row[0]
+                }
+              "
+            ></ng-container>
+          }
+        }
+      }
+    </tr>
+  }
+</ng-template>
+
+<ng-template #best let-offer let-import="import">
+  <tr>
+    <td>
+      <input type="checkbox" [ngModel]="import" />
+    </td>
+    <td>Best of...</td>
+    <td>{{ offer.id }}</td>
+    <td>{{ offer.name }}</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+    <td>&nbsp;</td>
+  </tr>
+  @for (subOffer of offer.offers; track $index) {
+    @switch (subOffer.type) {
+      @case ("fpt") {
+        <tr>
+          <ng-container
+            *ngTemplateOutlet="
+              fpt;
+              context: {
+                $implicit: {
+                  name: subOffer.name,
+                  rate: subOffer.rate,
+                  type: subOffer.type
+                },
+                parentType: offer.type
+              }
+            "
+          ></ng-container>
+        </tr>
+      }
+      @case ("fpm") {
+        <tr>
+          <ng-container
+            *ngTemplateOutlet="
+              fpm;
+              context: {
+                $implicit: {
+                  name: subOffer.name,
+                  rate: subOffer.rate,
+                  type: subOffer.type
+                },
+                parentType: offer.type
+              }
+            "
+          ></ng-container>
+        </tr>
+      }
+      @case ("market") {
+        <tr>
+          <ng-container
+            *ngTemplateOutlet="
+              market;
+              context: {
+                $implicit: {
+                  name: subOffer.name,
+                  rate: subOffer.rate,
+                  type: subOffer.type
+                },
+                parentType: offer.type
+              }
+            "
+          ></ng-container>
+        </tr>
+      }
+    }
+  }
+</ng-template>
+
+<ng-template #import let-import>
+  <td>
+    <input type="checkbox" name="" id="" />
+  </td>
+</ng-template>

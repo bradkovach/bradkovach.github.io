@@ -6,6 +6,8 @@
 		"start": "ng serve",
 		"prebuild": "rimraf dist && npm run generate-routes && npm run update-last-updated && npm run choice-gas",
 		"build": "ng build",
+		"choice-gas:build": "ng build choice-gas",
+		"choice-gas:build:production": "ng build choice-gas --configuration production",
 		"watch": "ng build --watch --configuration development",
 		"test": "ng test",
 		"new-page": "tsx ./scripts/new-page.ts --",
