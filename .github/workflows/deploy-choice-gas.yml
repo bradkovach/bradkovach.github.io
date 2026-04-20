@@ -1,0 +1,78 @@
+name: Deploy choice-gas
+
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - 'projects/choice-gas/**'
+            - '.github/workflows/deploy-choice-gas.yml'
+    schedule:
+        # Every 4 hours
+        - cron: '0 */4 * * *'
+    workflow_dispatch:
+
+concurrency:
+    group: deploy-choice-gas
+    cancel-in-progress: true
+
+env:
+    # SSH connection details for deployment
+    SSH_REMOTE_USER: uwacwy
+    SSH_REMOTE_HOST: choicegas.unitedwayalbanycounty.org
+    SSH_REMOTE_PATH: /home/uwacwy/sites/choicegas.unitedwayalbanycounty.org/www
+
+jobs:
+    build-and-deploy:
+        runs-on: ubuntu-latest
+
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  cache: npm
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Update Price Data
+              run: |
+                  npm run choice-gas
+                  npm run update-last-updated
+                  npm run choice-gas:build:production
+              env:
+                  BHES_ACCOUNT_NUMBER: ${{ secrets.BHES_ACCOUNT_NUMBER }}
+                  BHE_PREMISE_ID: ${{ secrets.BHE_PREMISE_ID }}
+
+            - name: Configure SSH
+              run: |
+                  # Set up SSH key for authentication
+                  install -m 600 -D /dev/null ~/.ssh/id_rsa
+                  echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+
+                  # Add the remote host to known_hosts to prevent SSH warnings
+                  ssh-keyscan -H ${{ env.SSH_REMOTE_HOST }} > ~/.ssh/known_hosts
+
+                  # Create SSH config to simplify the rsync command
+                  install -m 600 -D /dev/null ~/.ssh/config
+                  echo "Host ChoiceGas" >> ~/.ssh/config
+                  echo "  HostName ${{ env.SSH_REMOTE_HOST }}" >> ~/.ssh/config
+                  echo "  User ${{ env.SSH_REMOTE_USER }}" >> ~/.ssh/config
+                  echo "  IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config
+
+                  # Print the public key for debugging purposes (optional)
+                  echo "SSH Public Key:"
+                  ssh-keygen -y -f ~/.ssh/id_rsa
+
+            - name: Deploy to server
+              run: >
+                  rsync 
+                  -avz
+                  --exclude '.htaccess'
+                  --exclude '.well-known'
+                  dist/choice-gas/browser/
+                  ChoiceGas:${{ env.SSH_REMOTE_PATH }}
