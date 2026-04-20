@@ -20,7 +20,7 @@ env:
     # SSH connection details for deployment
     SSH_REMOTE_USER: uwacwy
     SSH_REMOTE_HOST: choicegas.unitedwayalbanycounty.org
-    SSH_REMOTE_PATH: /home/uwacwy/sites/choicegas.unitedwayalbanycounty.org/www
+    SSH_REMOTE_PATH: ~/sites/choicegas.unitedwayalbanycounty.org/www
 
 jobs:
     build-and-deploy:
@@ -29,24 +29,6 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v4
-
-            - name: Setup Node
-              uses: actions/setup-node@v4
-              with:
-                  node-version: 24
-                  cache: npm
-
-            - name: Install dependencies
-              run: npm ci
-
-            - name: Update Price Data
-              run: |
-                  npm run choice-gas
-                  npm run update-last-updated
-                  npm run choice-gas:build:production
-              env:
-                  BHES_ACCOUNT_NUMBER: ${{ secrets.BHES_ACCOUNT_NUMBER }}
-                  BHE_PREMISE_ID: ${{ secrets.BHE_PREMISE_ID }}
 
             - name: Configure SSH
               run: |
@@ -67,6 +49,33 @@ jobs:
                   # Print the public key for debugging purposes (optional)
                   echo "SSH Public Key:"
                   ssh-keygen -y -f ~/.ssh/id_rsa
+
+                  echo "SSH Known Hosts:"
+                  cat ~/.ssh/known_hosts
+
+                  echo "SSH Config"
+                  cat ~/.ssh/config
+
+                  # run test command to verify SSH connection
+                  ssh ChoiceGas "echo 'SSH connection successful!'"
+
+            - name: Setup Node
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 24
+                  cache: npm
+
+            - name: Install dependencies
+              run: npm ci
+
+            - name: Update Price Data
+              run: |
+                  npm run choice-gas
+                  npm run update-last-updated
+                  npm run choice-gas:build:production
+              env:
+                  BHES_ACCOUNT_NUMBER: ${{ secrets.BHES_ACCOUNT_NUMBER }}
+                  BHE_PREMISE_ID: ${{ secrets.BHE_PREMISE_ID }}
 
             - name: Deploy to server
               run: >
