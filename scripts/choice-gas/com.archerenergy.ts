@@ -1,13 +1,12 @@
 import * as cheerio from 'cheerio';
 
-import type { BlendedOffer } from '../../projects/choice-gas/src/app/schema/blended-offer.z';
-import type { FixedPerMonthOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-month.z';
-import type { FixedPerThermOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-therm-offer.z';
-import type { MarketOffer } from '../../projects/choice-gas/src/app/schema/market-offer.z';
-import type { OfferBase } from '../../projects/choice-gas/src/app/schema/offer-base.z';
 import type { AnyOffer } from '../../projects/choice-gas/src/app/schema/offer.z';
 
 import { Market } from '../../projects/choice-gas/src/app/data/Market';
+import { BlendedOffer } from '../../projects/choice-gas/src/app/schema/blended-offer.z';
+import { FixedPerMonthOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-month.z';
+import { FixedPerThermOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-therm-offer.z';
+import { MarketOffer } from '../../projects/choice-gas/src/app/schema/market-offer.z';
 
 const url = 'https://www.archerenergy.com/shop/black-hills';
 
@@ -43,54 +42,64 @@ export const run = (): Promise<AnyOffer[]> =>
 							const [mktRate, fptRate] = matches
 								.slice(1)
 								.map(Number);
-							const offer: BlendedOffer = {
-								confirmationCode,
-								id: `archer-pro-${term}`,
-								name: plan,
-								offers: [
-									[
-										1,
-										{
-											rate: fptRate,
-											type: 'fpt',
-										} as FixedPerThermOffer,
+							return [
+								BlendedOffer.parse({
+									confirmationCode,
+									id: `archer-pro-${term}`,
+									name: plan,
+									offers: [
+										[
+											1,
+											{
+												rate: fptRate,
+												type: 'fpt',
+											},
+										],
+										[
+											2,
+											{
+												market: Market.CIG,
+												rate: mktRate,
+												type: 'market',
+											},
+										],
 									],
-									[
-										2,
-										{
-											market: Market.CIG,
-											rate: mktRate,
-											type: 'market',
-										} as MarketOffer,
-									],
-								],
-								term,
-								type: 'blended',
-							};
-							return [offer];
+									term,
+									type: 'blended',
+								}),
+							];
 						}
 						case 'FlatBill+Cashback': {
 							// fixed per month
+							const maybeRate = Number(
+								priceText
+									.replace(/^\D*/, '')
+									.replace(/\D*$/, ''),
+							);
+
 							return [
-								{
+								FixedPerMonthOffer.parse({
 									id: `flatbill-cashback-fpm-${term}`,
 									name: plan,
-									// rate: 0,
+									rate: isNaN(maybeRate)
+										? undefined
+										: maybeRate,
 									term,
 									type: 'fpm',
-								} as FixedPerMonthOffer,
+								}),
 							];
 						}
 						case 'GreenGas': {
-							const offer: FixedPerThermOffer & OfferBase = {
-								confirmationCode,
-								id: `green-gas-${term}`,
-								name: plan,
-								rate: Number(priceText.slice(1)),
-								term,
-								type: 'fpt',
-							};
-							return [offer];
+							return [
+								FixedPerThermOffer.parse({
+									confirmationCode,
+									id: `green-gas-${term}`,
+									name: plan,
+									rate: Number(priceText.slice(1)),
+									term,
+									type: 'fpt',
+								}),
+							];
 						}
 						case 'Pass-Through': {
 							const rx = /CIG\+\s*\$([\d.]+)/;
@@ -101,37 +110,35 @@ export const run = (): Promise<AnyOffer[]> =>
 								);
 							}
 							const mktRate = Number(matches[1]);
-							const offer: MarketOffer & OfferBase = {
-								confirmationCode,
-								id: `pass-thru-${term}`,
-								market: Market.CIG,
-								name: plan,
-								rate: mktRate,
-								term,
-								type: 'market',
-							};
-							return [offer];
+							return [
+								MarketOffer.parse({
+									confirmationCode,
+									id: `pass-thru-${term}`,
+									market: Market.CIG,
+									name: plan,
+									rate: mktRate,
+									term,
+									type: 'market',
+								}),
+							];
 						}
 						case 'RateLock': {
-							const offer: FixedPerThermOffer & OfferBase = {
-								confirmationCode,
-								id: `ratelock-${term}`,
-								name: plan,
-								rate: Number(priceText.slice(1)),
-								term,
-								type: 'fpt',
-							};
-							return [offer];
+							return [
+								FixedPerThermOffer.parse({
+									confirmationCode,
+									id: `ratelock-${term}`,
+									name: plan,
+									rate: Number(priceText.slice(1)),
+									term,
+									type: 'fpt',
+								}),
+							];
 						}
 						default: {
-							console.info('Skipping unknown plan type', plan);
-							console.log({
-								confirmationCode,
-								plan,
-								priceText,
-							});
+							throw Error(
+								`com.archerenergy: Unknown plan type: ${plan}`,
+							);
 						}
 					}
-					return [];
 				});
 		});

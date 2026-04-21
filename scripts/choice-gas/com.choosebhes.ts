@@ -1,12 +1,12 @@
 import * as cheerio from 'cheerio';
 
-import type { BlendedOffer } from '../../projects/choice-gas/src/app/schema/blended-offer.z';
-import type { FixedPerMonthOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-month.z';
-import type { FixedPerThermOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-therm-offer.z';
-import type { MarketOffer } from '../../projects/choice-gas/src/app/schema/market-offer.z';
 import type { AnyOffer } from '../../projects/choice-gas/src/app/schema/offer.z';
 
 import { Market } from '../../projects/choice-gas/src/app/data/Market';
+import { BlendedOffer } from '../../projects/choice-gas/src/app/schema/blended-offer.z';
+import { FixedPerMonthOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-month.z';
+import { FixedPerThermOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-therm-offer.z';
+import { MarketOffer } from '../../projects/choice-gas/src/app/schema/market-offer.z';
 import { getEnvAsync } from '../getEnvAsync';
 
 export function run(): Promise<AnyOffer[]> {
@@ -44,7 +44,7 @@ export function run(): Promise<AnyOffer[]> {
 						number: accountNumber,
 						op: 'Continue',
 					}).reduce((formData, [key, value]) => {
-						formData.append(key, value?.toString());
+						formData.append(key, value?.toString() || '');
 						return formData;
 					}, new FormData()),
 					headers: headers(cookie),
@@ -67,10 +67,7 @@ export function run(): Promise<AnyOffer[]> {
 			})
 			.then((response) => response.text())
 			.then((accountPropertiesText) =>
-				cheerio.load(accountPropertiesText, {
-					recognizeCDATA: true,
-					recognizeSelfClosing: true,
-				}),
+				cheerio.load(accountPropertiesText),
 			)
 			.then(($) =>
 				$('#edit-premises .fieldset-wrapper details')
@@ -106,23 +103,26 @@ export function run(): Promise<AnyOffer[]> {
 							// $xxx.xx/month
 							//  ~~~~~~
 							const rate = o.priceText.slice(1).split('/')[0];
-							return <FixedPerThermOffer>{
+							return FixedPerThermOffer.parse({
 								confirmationCode,
 								id: `ratelock-${o.term}`,
 								name: 'Rate Lock',
 								rate: Number(rate),
 								term: Number(o.term),
 								type: 'fpt',
-							};
+							});
 						} else if (o.name === 'WinterGuard') {
-							return <FixedPerMonthOffer>{
+							// '$xx.xx/month'
+							//   ~~~~~
+							const rate = o.priceText.slice(1).split('/')[0];
+							return FixedPerMonthOffer.parse({
 								confirmationCode,
 								id: 'winterguard-' + o.term,
 								name: 'WinterGuard',
-								// rate: 0,
+								rate: Number(rate),
 								term: o.term,
 								type: 'fpm',
-							};
+							});
 						} else if (o.name === 'Blended Smart Rates per therm') {
 							// 50% billed at $0.45/therm and 50% billed at Market Index Rate - CIG plus an adder of $0.112/therm
 							// ~~~            ~~~~           ~~                                                      ~~~~~
@@ -139,7 +139,7 @@ export function run(): Promise<AnyOffer[]> {
 							}
 							const fpt = parseFloat(fptMatch[1]);
 							const market = parseFloat(marketMatch[1]);
-							return <BlendedOffer>{
+							return BlendedOffer.parse({
 								confirmationCode,
 								id: `blended-${o.term}`,
 								name: 'Blended',
@@ -149,7 +149,7 @@ export function run(): Promise<AnyOffer[]> {
 										{
 											rate: fpt,
 											type: 'fpt',
-										} as FixedPerThermOffer,
+										},
 									],
 									[
 										0.5,
@@ -157,12 +157,12 @@ export function run(): Promise<AnyOffer[]> {
 											market: Market.CIG,
 											rate: market,
 											type: 'market',
-										} as MarketOffer,
+										},
 									],
 								],
 								term: Number(o.term),
 								type: 'blended',
-							};
+							});
 						} else if (o.name === 'Market Index Rate per therm') {
 							// Market Index Rate - CIG plus an adder of $0.112/therm
 							//                                           ~~~~~
@@ -173,7 +173,7 @@ export function run(): Promise<AnyOffer[]> {
 								throw new Error('Failed to parse Index Rates');
 							}
 							const cig = parseFloat(cigmatch[1]);
-							return <MarketOffer>{
+							return MarketOffer.parse({
 								confirmationCode,
 								id: `market-${o.term}`,
 								market: Market.CIG,
@@ -181,7 +181,7 @@ export function run(): Promise<AnyOffer[]> {
 								rate: cig,
 								term: Number(o.term),
 								type: 'market',
-							};
+							});
 						} else {
 							throw new Error('Unknown offer type, ' + o.name);
 						}

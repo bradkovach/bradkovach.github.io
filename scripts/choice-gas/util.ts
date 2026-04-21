@@ -1,3 +1,5 @@
+import type * as cheerio from 'cheerio';
+
 import { existsSync } from 'fs';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
@@ -32,26 +34,35 @@ type WriteFileOptions = Parameters<typeof writeFile>[2];
 })
 			*/
 export const writeTo =
-	(dest: string | URL, options?: WriteFileOptions) =>
+	(dest: InstanceOrFactory<string | URL>, options?: WriteFileOptions) =>
 	<T extends WriteFileData>(
 		value: T,
-		url = new URL(dest),
+		url = new URL(resolveTypeOrFactory(dest)),
 		dir = dirname(fileURLToPath(url)),
 	) =>
 		mkdir(dir, {
 			recursive: true,
 		})
 			.catch((err) => {
-				console.error(`Error creating directory for ${dest}:`, err);
+				console.error(
+					`Error creating directory for ${fileURLToPath(url)}:`,
+					err,
+				);
 			})
-			.then(() => writeFile(dest, value, options))
+			.then(() => writeFile(url, value, options))
 			.then(() => value);
 
-export const writeCheerioRoot = (dest: string | URL) => ($: cheerio.Root) =>
-	Promise.resolve($.html())
-		.then(formatHtml())
-		.then(writeTo(dest))
-		.then(() => $);
+export type InstanceOrFactory<T> = (() => T) | T;
+
+export const resolveTypeOrFactory = <T>(input: InstanceOrFactory<T>): T =>
+	typeof input === 'function' ? (input as () => T)() : input;
+
+export const writeCheerioRoot =
+	(dest: InstanceOrFactory<string | URL>) => ($: cheerio.CheerioAPI) =>
+		Promise.resolve($.html())
+			.then(formatHtml())
+			.then(writeTo(resolveTypeOrFactory(dest)))
+			.then(() => $);
 
 export const responseToJson =
 	<T>() =>
@@ -65,19 +76,27 @@ export const responseToJson =
 	};
 export const saveOffers =
 	(
-		driver: string,
-		outputPath: URL,
-		overallStart: number,
-		driverStart: number,
+		// driver: string,
+		// outputPath: URL,
+		// overallStart: number,
+		// driverStart: number,
+		...[driver, outputPath, overallStart, driverStart]: readonly [
+			string,
+			URL,
+			number,
+			number,
+		]
 	) =>
 	(
 		{ errors, offers }: { errors: Error[]; offers: AnyOffer[] },
-		json: string = JSON.stringify(
-			offers.sort((a, b) => a.type.localeCompare(b.type)),
-			null,
-			2,
-		),
-		saveStart: number = Date.now(),
+		[json, saveStart]: readonly [string, number] = [
+			JSON.stringify(
+				offers.sort((a, b) => a.type.localeCompare(b.type)),
+				null,
+				2,
+			),
+			Date.now(),
+		],
 	): Promise<void> =>
 		writeFile(outputPath, json, 'utf-8')
 			.catch((e) => ({
@@ -86,7 +105,6 @@ export const saveOffers =
 			}))
 			.then(() => {
 				output.log((o) => o.chalk.yellow(driver));
-
 				if (errors.length) {
 					output.log(
 						(o) => o.indent(1),
@@ -135,8 +153,9 @@ export const saveOffers =
 						(o) => o.chalk.green(o.duration(overallStart)),
 					);
 			});
-export const identity = <T>(x: T): T => x; // naive implementation of findUp
+export const identity = <T>(x: T): T => x;
 
+// naive implementation of findUp
 export const findUp = (filename: string, startDir: string = process.cwd()) => {
 	// security first
 	// if file or startDir includes .., throw error

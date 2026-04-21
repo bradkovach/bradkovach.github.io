@@ -1,13 +1,12 @@
 import * as cheerio from 'cheerio';
 
-import type { BestOffer } from '../../projects/choice-gas/src/app/schema/best-offer.z';
-import type { BlendedOffer } from '../../projects/choice-gas/src/app/schema/blended-offer.z';
-import type { FixedPerThermOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-therm-offer.z';
-import type { MarketOffer } from '../../projects/choice-gas/src/app/schema/market-offer.z';
-import type { OfferBase } from '../../projects/choice-gas/src/app/schema/offer-base.z';
 import type { AnyOffer } from '../../projects/choice-gas/src/app/schema/offer.z';
 
 import { Market } from '../../projects/choice-gas/src/app/data/Market';
+import { BestOffer } from '../../projects/choice-gas/src/app/schema/best-offer.z';
+import { BlendedOffer } from '../../projects/choice-gas/src/app/schema/blended-offer.z';
+import { FixedPerThermOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-therm-offer.z';
+import { MarketOffer } from '../../projects/choice-gas/src/app/schema/market-offer.z';
 
 type ExtractFn<T extends AnyOffer> = (
 	term: number,
@@ -31,7 +30,7 @@ const extractors: Record<string, ExtractFn<AnyOffer>> = {
 		}
 		const [cigRate, fptRate] = matches.slice(1).map(parseFloat);
 
-		const offer: BlendedOffer & OfferBase = {
+		return BlendedOffer.parse({
 			confirmationCode,
 			id: `blended-${term}`,
 			name,
@@ -39,26 +38,22 @@ const extractors: Record<string, ExtractFn<AnyOffer>> = {
 				[
 					1,
 					{
-						confirmationCode,
 						rate: fptRate,
 						type: 'fpt',
-					} as FixedPerThermOffer,
+					},
 				],
 				[
 					1,
 					{
-						confirmationCode,
 						market: Market.CIG,
 						rate: cigRate,
 						type: 'market',
-					} as MarketOffer,
+					},
 				],
 			],
 			term,
 			type: 'blended',
-		};
-
-		return offer;
+		});
 	},
 	Fixed: (
 		term: number,
@@ -73,16 +68,14 @@ const extractors: Record<string, ExtractFn<AnyOffer>> = {
 		}
 		const rate = parseFloat(matches[1]);
 
-		const offer: FixedPerThermOffer & OfferBase = {
+		return FixedPerThermOffer.parse({
 			confirmationCode,
 			id: `fixed-${term}`,
 			name,
 			rate,
 			term,
 			type: 'fpt',
-		};
-
-		return offer;
+		});
 	},
 	'Index With A Cap': (
 		term: number,
@@ -100,7 +93,7 @@ const extractors: Record<string, ExtractFn<AnyOffer>> = {
 		}
 		const [cig, fpt] = matches.slice(1).map(parseFloat);
 
-		const offer: BestOffer & OfferBase = {
+		return BestOffer.parse({
 			confirmationCode,
 			id: `best-${term}`,
 			name,
@@ -108,19 +101,17 @@ const extractors: Record<string, ExtractFn<AnyOffer>> = {
 				{
 					rate: fpt,
 					type: 'fpt',
-				} as FixedPerThermOffer,
+				},
 				{
 					market: Market.CIG,
 					rate: cig,
 					type: 'market',
-				} as MarketOffer,
+				},
 			],
 			term,
 
 			type: 'best',
-		};
-
-		return offer;
+		});
 	},
 	'Market Index': (
 		term: number,
@@ -138,7 +129,7 @@ const extractors: Record<string, ExtractFn<AnyOffer>> = {
 		}
 		const rate = parseFloat(matches[1]);
 
-		const offer: MarketOffer & OfferBase = {
+		return MarketOffer.parse({
 			confirmationCode,
 			id: `market-${term}`,
 			market: Market.CIG,
@@ -146,9 +137,7 @@ const extractors: Record<string, ExtractFn<AnyOffer>> = {
 			rate,
 			term,
 			type: 'market',
-		};
-
-		return offer;
+		});
 	},
 };
 export const run = (): Promise<AnyOffer[]> =>

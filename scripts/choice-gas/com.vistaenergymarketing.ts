@@ -1,11 +1,11 @@
 import * as cheerio from 'cheerio';
 
-import type { FixedPerMonthOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-month.z';
-import type { FixedPerThermOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-therm-offer.z';
-import type { MarketOffer } from '../../projects/choice-gas/src/app/schema/market-offer.z';
 import type { AnyOffer } from '../../projects/choice-gas/src/app/schema/offer.z';
 
 import { Market } from '../../projects/choice-gas/src/app/data/Market';
+import { FixedPerMonthOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-month.z';
+import { FixedPerThermOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-therm-offer.z';
+import { MarketOffer } from '../../projects/choice-gas/src/app/schema/market-offer.z';
 import { getEnvAsync } from '../getEnvAsync';
 
 export const run = (): Promise<AnyOffer[]> =>
@@ -67,22 +67,21 @@ export const run = (): Promise<AnyOffer[]> =>
 
 						if ('per month' === typeText) {
 							// price starts with $ and ends with numeric price
-							return {
+							return FixedPerMonthOffer.parse({
 								confirmationCode,
 								id: `fpm-${term}`,
 								name: 'Go Pokes Fixed Bill',
-								// rate: Number(priceText.slice(1)),
-								// rate: 0,
+								rate: Number(priceText.slice(1)),
 								term,
 								type: 'fpm',
-							} as FixedPerMonthOffer;
+							});
 						} else if (
 							'per therm' === typeText &&
 							priceText.startsWith('+') &&
 							priceText.endsWith('¢')
 						) {
 							// price starts with +x.yy and ends with cent character
-							return {
+							return MarketOffer.parse({
 								confirmationCode,
 								id: `index-${term}`,
 								market: Market.CIG,
@@ -97,11 +96,11 @@ export const run = (): Promise<AnyOffer[]> =>
 									) / 1000,
 								term,
 								type: 'market',
-							} as MarketOffer;
+							});
 						} else if ('per therm' === typeText) {
 							// price is cents in decimal followed by cents character
 							// rate = priceWithoutCents / 100
-							return {
+							return FixedPerThermOffer.parse({
 								confirmationCode,
 								id: `fpt-${term}`,
 								name: 'Go Pokes Fixed Price',
@@ -114,10 +113,10 @@ export const run = (): Promise<AnyOffer[]> =>
 									) / 1000,
 								term,
 								type: 'fpt',
-							} as FixedPerThermOffer;
+							});
 						} else if ('price varies' === typeText) {
 							// the GLTGCA is a market rate of the GCA mkt - 0.01
-							return {
+							return MarketOffer.parse({
 								confirmationCode,
 								id: `gltgca-${term}`,
 								market: Market.GCA,
@@ -125,7 +124,7 @@ export const run = (): Promise<AnyOffer[]> =>
 								rate: -0.01,
 								term,
 								type: 'market',
-							} as MarketOffer;
+							});
 						} else {
 							throw new Error(`Unknown offer type: ${typeText}`);
 						}

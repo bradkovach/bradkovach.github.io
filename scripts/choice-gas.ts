@@ -46,6 +46,17 @@ function run() {
 
 	const vendorIdToOfferIds = new Map<string, Set<string>>();
 
+	// run with --brad to indicate that the rates in fpm offers should be left intact.
+	// if --brad is not provided, offers where offer.type === 'fpm' will have their rates set to UNDEFINED
+	const isBrad = process.argv.includes('--brad');
+
+	if (isBrad) {
+		output.log(
+			(o) => o.chalk.yellow('Running with --brad:'),
+			(o) => o.chalk.blue('fpm offers will have their rates left intact'),
+		);
+	}
+
 	return Promise.all(
 		drivers.map(
 			(
@@ -57,6 +68,16 @@ function run() {
 			) =>
 				import(`./choice-gas/${driver}`)
 					.then(({ run }: OfferDriver) => run())
+					.then((offers) =>
+						isBrad
+							? offers
+							: offers.map((o) =>
+									o.type === 'fpm'
+										? { ...o, rate: undefined }
+										: o,
+								),
+					)
+
 					.then((offers) => ({ errors: [], offers }))
 					.catch(
 						<E extends Error>(e: E) =>

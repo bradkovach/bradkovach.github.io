@@ -3,6 +3,9 @@ import * as crypto from 'crypto';
 import type { AnyOffer } from '../../projects/choice-gas/src/app/schema/offer.z';
 
 import { Market } from '../../projects/choice-gas/src/app/data/Market';
+import { FixedPerMonthOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-month.z';
+import { FixedPerThermOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-therm-offer.z';
+import { MarketOffer } from '../../projects/choice-gas/src/app/schema/market-offer.z';
 import { getEnvAsync } from '../getEnvAsync';
 
 export interface Account {
@@ -84,35 +87,33 @@ const fetchOffers = (
 							const term = Number(price.term[0]);
 							const confirmationCode = price.priceCode.toString();
 							if (price.priceOption === 'FIXED') {
-								const rate = price.price / 100;
-								return {
+								return FixedPerThermOffer.parse({
 									confirmationCode,
 									id: `fpt-${term}`,
 									name: 'Fixed Price',
-									rate,
+									rate: price.price / 100,
 									term,
 									type: 'fpt',
-								} as AnyOffer;
+								});
 							} else if (price.priceOption === 'FMB') {
-								return {
+								return FixedPerMonthOffer.parse({
 									confirmationCode,
 									id: `fpm-${term}`,
 									name: 'Fixed Monthly Bill',
-									// rate: 0,
+									rate: price.price / 100,
 									term,
 									type: 'fpm',
-								} as AnyOffer;
+								});
 							} else if (price.priceOption === 'INDEX') {
-								const rate = price.price / 100;
-								return {
+								return MarketOffer.parse({
 									confirmationCode,
 									id: `market-${term}`,
 									market: Market.CIG,
 									name: 'Market Index',
-									rate,
+									rate: price.price / 100,
 									term,
 									type: 'market',
-								} as AnyOffer;
+								});
 							} else {
 								throw new Error(
 									`Unknown price option: ${JSON.stringify(

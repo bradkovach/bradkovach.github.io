@@ -1,6 +1,9 @@
 import type { AnyOffer } from '../../projects/choice-gas/src/app/schema/offer.z';
 
 import { Market } from '../../projects/choice-gas/src/app/data/Market';
+import { FixedPerMonthOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-month.z';
+import { FixedPerThermOffer } from '../../projects/choice-gas/src/app/schema/fixed-per-therm-offer.z';
+import { MarketOffer } from '../../projects/choice-gas/src/app/schema/market-offer.z';
 
 interface GetQuotePricesResponse {
 	PriceOptions: PriceOption[];
@@ -122,15 +125,15 @@ export function run(): Promise<AnyOffer[]> {
 			quote.PriceOptions.flatMap((priceOption): AnyOffer[] => {
 				if (priceOption.Term === '12 Month') {
 					return [
-						{
+						FixedPerThermOffer.parse({
 							confirmationCode: priceOption.FixedPriceCode,
 							id: `fixed-1`,
 							name: 'Fixed Price',
 							rate: priceOption.FixedPrice,
 							term: 1,
 							type: 'fpt',
-						},
-						{
+						}),
+						MarketOffer.parse({
 							confirmationCode: priceOption.IndexPriceCode,
 							id: `index-1`,
 							market: Market.CIG,
@@ -138,27 +141,27 @@ export function run(): Promise<AnyOffer[]> {
 							rate: priceOption.Index,
 							term: 1,
 							type: 'market',
-						},
-						{
+						}),
+						FixedPerMonthOffer.parse({
 							confirmationCode: priceOption.FixedBillCode,
 							id: `fixed-bill-1`,
 							name: 'Fixed Bill',
-							// rate: 0,
+							rate: priceOption.FixedBill,
 							term: 1,
 							type: 'fpm',
-						},
+						}),
 					];
 				} else if (priceOption.Term === '24 Month') {
 					return [
-						{
+						FixedPerThermOffer.parse({
 							confirmationCode: priceOption.FixedPriceCode,
 							id: `fixed-2`,
 							name: 'Fixed Price',
 							rate: priceOption.FixedPrice,
 							term: 2,
 							type: 'fpt',
-						},
-						{
+						}),
+						MarketOffer.parse({
 							confirmationCode: priceOption.IndexPriceCode,
 							id: `index-2`,
 							market: Market.CIG,
@@ -166,15 +169,15 @@ export function run(): Promise<AnyOffer[]> {
 							rate: priceOption.Index,
 							term: 2,
 							type: 'market',
-						},
-						{
+						}),
+						FixedPerMonthOffer.parse({
 							confirmationCode: priceOption.FixedBillCode,
 							id: `fixed-bill-2`,
 							name: 'Fixed Bill',
-							// rate: 0,
+							rate: priceOption.FixedBill,
 							term: 2,
 							type: 'fpm',
-						},
+						}),
 					];
 				}
 

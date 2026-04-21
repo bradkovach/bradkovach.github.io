@@ -12,7 +12,7 @@
 		"test": "ng test",
 		"new-page": "tsx ./scripts/new-page.ts --",
 		"new-post": "tsx ./scripts/new-post.ts --",
-		"choice-gas": "tsx ./scripts/choice-gas.ts",
+		"choice-gas": "tsx ./scripts/choice-gas.ts --",
 		"generate-routes": "tsx ./scripts/generate-routes.ts --",
 		"update-last-updated": "tsx ./scripts/update-last-updated.ts --",
 		"serve:ssr:connections": "node dist/connections/server/server.mjs",

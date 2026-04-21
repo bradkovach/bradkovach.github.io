@@ -6,6 +6,29 @@ import { MarketOffer } from '../../projects/choice-gas/src/app/schema/market-off
 import { getEnvAsync } from '../getEnvAsync';
 import { responseToJson } from './util';
 
+export interface SymmetryAccount {
+	account_name: string;
+	/**
+	 * Black Hills Account #
+	 */
+	account_number: string;
+	company_name: null | string;
+	email: string;
+	first_name: string;
+	/**
+	 * Symmetry Account ID
+	 */
+	id: number;
+	last_name: string;
+	phone: string;
+	segment: string;
+	service_city: string;
+	service_state: string;
+	service_street: string;
+	service_zip: string;
+	utility_id: number;
+}
+
 export interface SymmetryProduct {
 	// broker_id: any;
 	broker_only: boolean;
@@ -39,52 +62,6 @@ export interface SymmetryProduct {
 	utility_name: string;
 }
 
-const firstRequest = (zipCode: string) => {
-	const url = new URL('./enroll', 'https://symmetryenergy.com/');
-	url.searchParams.set('zip-code', zipCode);
-	return fetch(url, {
-		credentials: 'include',
-		headers: {
-			Accept: 'application/json, text/plain, */*',
-			'Accept-Language': 'en-US,en;q=0.9',
-			Priority: 'u=0, i',
-			'Sec-Fetch-Dest': 'document',
-			'Sec-Fetch-Mode': 'navigate',
-			'Sec-Fetch-Site': 'same-origin',
-			'Sec-Fetch-User': '?1',
-			'Upgrade-Insecure-Requests': '1',
-			'User-Agent':
-				'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:148.0) Gecko/20100101 Firefox/148.0',
-		},
-		method: 'GET',
-		mode: 'cors',
-		referrer: 'https://symmetryenergy.com/service-types/residential/',
-	});
-};
-
-export interface SymmetryAccount {
-	account_name: string;
-	/**
-	 * Black Hills Account #
-	 */
-	account_number: string;
-	company_name: null | string;
-	email: string;
-	first_name: string;
-	/**
-	 * Symmetry Account ID
-	 */
-	id: number;
-	last_name: string;
-	phone: string;
-	segment: string;
-	service_city: string;
-	service_state: string;
-	service_street: string;
-	service_zip: string;
-	utility_id: number;
-}
-
 const getSymmetryAccounts = (
 	accountNumber: string,
 ): Promise<SymmetryAccount[]> => {
@@ -111,44 +88,6 @@ const getSymmetryAccounts = (
 		},
 	).then(responseToJson<SymmetryAccount[]>());
 };
-
-export interface SymmetryProduct {
-	bill_method: string;
-	bill_type: string;
-	// broker_id: any;
-	broker_only: boolean;
-	// channel: string[];
-	code: string;
-	// contract_url: any;
-	// customer_charges: any[];
-	// customer_type: string[];
-	deposit_amount: string;
-	description: string;
-	etf_amount: string;
-	id: number;
-	// incentives: any[];
-	latest_price: string;
-	name: string;
-	offer_type: string;
-
-	// likely maps to an OfferconfirmationCode
-	pool_code: string;
-	price_adder: string;
-	price_index_name?: string;
-	price_type: string;
-	price_units: string;
-	promotion_only: boolean;
-	segment: string;
-	status: string;
-	term_end_date: string;
-	term_months: string;
-	term_start_date: string;
-	term_type: string;
-	url: string;
-	utility_code: string;
-	utility_id: number;
-	utility_name: string;
-}
 
 const getSymmetryProducts = (
 	zipCode: string,
@@ -186,116 +125,51 @@ export const run = (): Promise<AnyOffer[]> =>
 				account.id.toString(),
 			),
 		)
-		.then((products) => {
-			const offers: AnyOffer[] = [];
-
-			products.forEach((product) => {
+		.then((products) =>
+			products.flatMap<AnyOffer>((product): AnyOffer[] => {
 				const name = product.name.trim();
 				const term =
 					new Date(product.term_end_date).getFullYear() -
 					new Date(product.term_start_date).getFullYear();
 
 				if (product.price_type === 'Fixed') {
-					const offer = FixedPerThermOffer.parse({
-						confirmationCode: product.pool_code,
-						id: `fpt-${term}`,
-						name,
-						rate: Number(product.price_adder),
-						term,
-						type: 'fpt',
-					});
-					offers.push(offer);
+					return [
+						FixedPerThermOffer.parse({
+							confirmationCode: product.pool_code,
+							id: `fpt-${term}`,
+							name,
+							rate: Number(product.price_adder),
+							term,
+							type: 'fpt',
+						}),
+					];
 				} else if (product.price_type === 'Indexed') {
-					const offer = MarketOffer.parse({
-						confirmationCode: product.pool_code,
-						id: `market-${term}`,
-						market: Market.CIG,
-						name,
-						rate: Number(product.price_adder),
-						term,
-						type: 'market',
-					});
-					offers.push(offer);
+					return [
+						MarketOffer.parse({
+							confirmationCode: product.pool_code,
+							id: `market-${term}`,
+							market: Market.CIG,
+							name,
+							rate: Number(product.price_adder),
+							term,
+							type: 'market',
+						}),
+					];
 				} else if (product.price_type === 'Managed') {
-					const offer = FixedPerThermOffer.parse({
-						confirmationCode: product.pool_code,
-						id: `managed-${term}`,
-						name,
-						rate: Number(product.latest_price),
-						term,
-						type: 'fpt',
-					});
-					offers.push(offer);
+					return [
+						FixedPerThermOffer.parse({
+							confirmationCode: product.pool_code,
+							id: `managed-${term}`,
+							name,
+							rate: Number(product.latest_price),
+							term,
+							type: 'fpt',
+						}),
+					];
 				} else {
-					console.warn(`Unknown price type: '${product.price_type}'`);
+					throw Error(
+						`com.symmetryenergy: Unknown price type: ${product.price_type}`,
+					);
 				}
-			});
-
-			return offers;
-		});
-// fetch(
-// 	'https://symmetryenergy.com/enrollment/api/products?zipCode=82070&type=Residential&serviceId=12&customerType=existing&bhAccountId=783138',
-// 	{
-// 		credentials: 'omit',
-// 		headers: {
-// 			Accept: 'application/json, text/plain, */*',
-// 			'Accept-Language': 'en-US,en;q=0.5',
-// 			'Alt-Used': 'choice.symmetryenergy.com',
-// 			'Cache-Control': 'no-cache',
-// 			Pragma: 'no-cache',
-// 			'Sec-Fetch-Dest': 'empty',
-// 			'Sec-Fetch-Mode': 'cors',
-// 			'Sec-Fetch-Site': 'same-origin',
-// 			'User-Agent':
-// 				'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:124.0) Gecko/20100101 Firefox/124.0',
-// 		},
-// 		method: 'POST',
-// 		mode: 'cors',
-// 		referrer: 'https://choice.symmetryenergy.com/enrollment/',
-// 	},
-// )
-// 	.then((response) => response.json())
-// 	.then((products: SymmetryProduct[]) =>
-// 		products.map((product) => {
-// 			// term_start_date and term_end_date are yyyy-mm-dd
-// 			// id = product.code
-// 			// end_date year - start_date year = term
-// 			const term =
-// 				new Date(product.term_end_date).getFullYear() -
-// 				new Date(product.term_start_date).getFullYear();
-// 			// confirmationCode = pool_code
-// 			if (product.price_type === 'Indexed') {
-// 				return <MarketOffer & OfferBase>{
-// 					confirmationCode: product.pool_code,
-// 					id: product.code,
-// 					market: Market.CIG,
-// 					name: product.name,
-// 					rate: Number(product.price_adder),
-// 					term,
-// 					type: 'market',
-// 				};
-// 			} else if (product.price_type === 'Fixed') {
-// 				return <FixedPerThermOffer & OfferBase>{
-// 					confirmationCode: product.pool_code,
-// 					id: product.code,
-// 					name: product.name,
-// 					rate: Number(product.price_adder),
-// 					term,
-// 					type: 'fpt',
-// 				};
-// 			} else if (product.price_type === 'Managed') {
-// 				return <FixedPerThermOffer & OfferBase>{
-// 					confirmationCode: product.pool_code,
-// 					id: product.code,
-// 					name: product.name,
-// 					rate: Number(product.latest_price),
-// 					term,
-// 					type: 'fpt',
-// 				};
-// 			} else {
-// 				throw new Error(
-// 					`Unknown price type: ${product.price_type}`,
-// 				);
-// 			}
-// 		}),
-// 	);
+			}),
+		);
