@@ -41,13 +41,18 @@ import { RateCell } from '../rate-cell/rate-cell.component';
 		.is-vendor-min {
 			font-weight: bold;
 		}
-		.lowest-average {
-			box-shadow: inset 0 0 0 2px #00990080;
-			font-weight: bold;
-		}
-		.highest-average {
-			box-shadow: inset 0 0 0 2px #00000080;
-			font-weight: bold;
+
+		td.heat {
+			background-color: var(--heat-color);
+			color: var(--heat-contrast-color);
+			&.lowest-average,
+			&.highest-average {
+				box-shadow: inset 0 0 0 3px var(--heat-shaded, transparent);
+				font-weight: bold;
+				.inner {
+					margin-right: 2px;
+				}
+			}
 		}
 	`,
 	template: `
@@ -99,34 +104,46 @@ import { RateCell } from '../rate-cell/rate-cell.component';
 		}
 
 		@if (preferences.enabledColumns().has(ExplorerColumn.Average)) {
+			@let billAverage = offerWithBills().billAverage;
+			@let globalMax = globalAverages().max;
+			@let globalMin = globalAverages().min;
+			@let isGlobalMaxAverage =
+				billCalculated && billAverage === globalMax;
+			@let isGlobalMinAverage =
+				billCalculated && billAverage === globalMin;
 			<td
 				class="text-end"
 				[heat]="billCalculated"
 				[scale]="scaleAverage()"
 				[value]="offerWithBills().billAverage"
 				[values]="globalAverages().all"
-				[class.highest-average]="
-					billCalculated &&
-					offerWithBills().billAverage === globalAverages().max
-				"
-				[class.lowest-average]="
-					billCalculated &&
-					offerWithBills().billAverage === globalAverages().min
+				[class.highest-average]="isGlobalMaxAverage"
+				[class.lowest-average]="isGlobalMinAverage"
+				[title]="
+					isGlobalMaxAverage
+						? messages.globalAverageMax
+						: isGlobalMinAverage
+							? messages.globalAverageMin
+							: billCalculated === false
+								? messages.editOfferToSeeAverage
+								: ''
 				">
-				@if (billCalculated) {
-					@if (
-						offerWithBills().billAverage === globalAverages().max
-					) {
-						<footnote [text]="messages.globalAverageMax"></footnote>
-					} @else if (
-						offerWithBills().billAverage === globalAverages().min
-					) {
-						<footnote [text]="messages.globalAverageMin"></footnote>
+				<div class="inner">
+					@if (billCalculated) {
+						@if (isGlobalMaxAverage) {
+							<footnote
+								[text]="messages.globalAverageMax"></footnote>
+						} @else if (isGlobalMinAverage) {
+							<footnote
+								[text]="messages.globalAverageMin"></footnote>
+						}
+						{{ offerWithBills().billAverage | number: '1.2-2' }}
+					} @else {
+						<span [title]="messages.editOfferToSeeAverage"
+							>- - -</span
+						>
 					}
-					{{ offerWithBills().billAverage | number: '1.2-2' }}
-				} @else {
-					<span [title]="messages.editOfferToSeeAverage">- - -</span>
-				}
+				</div>
 			</td>
 		}
 

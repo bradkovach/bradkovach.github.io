@@ -4,14 +4,15 @@ import chroma from 'chroma-js';
 type HeatScheme = {
 	contrastColor: string;
 	heatColor: string;
+	heatShaded: string;
 };
 
 @Directive({
 	host: {
+		'[class.heat]': 'heat',
 		'[style.--heat-color]': 'styles()?.heatColor',
 		'[style.--heat-contrast-color]': 'styles()?.contrastColor',
-		'[style.backgroundColor]': 'styles()?.heatColor',
-		'[style.color]': 'styles()?.contrastColor',
+		'[style.--heat-shaded]': 'styles()?.heatShaded',
 	},
 	selector: `[heat]`,
 })
@@ -41,13 +42,15 @@ export class HeatDirective {
 			scale = scale.domain(domain.sort((a, b) => a - b));
 		}
 
-		const heatColor = scale(value).hex();
+		const heatColor = scale(value);
 		const contrastColor =
 			chroma.contrast(heatColor, '#000') > 4.5 ? '#000' : '#fff';
+		const heatShaded = chroma(heatColor).saturate(3).darken(2);
 
 		return {
 			contrastColor,
-			heatColor,
+			heatColor: heatColor.hex(),
+			heatShaded: heatShaded.hex(),
 		};
 	});
 }
