@@ -7,9 +7,9 @@ on:
         paths:
             - 'projects/choice-gas/**'
             - '.github/workflows/deploy-choice-gas.yml'
-    schedule:
+    # schedule:
         # Every 4 hours
-        - cron: '0 */4 * * *'
+        # - cron: '0 */4 * * *'
     workflow_dispatch:
 
 concurrency:
